@@ -1,0 +1,201 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  COMPANY
+  ADVISOR
+  ADMIN
+}
+
+model User {
+  id              String             @id @default(uuid())
+  name            String
+  userName        String
+  email           String
+  specialty       String?
+  location        String?
+  bio             String
+  dateOfBirth     String?
+  password        String?
+  pdp             String
+  number          Int
+  cover           String
+  socials         String[]
+  active          Boolean            @default(false)
+  premuim         Boolean            @default(false)
+  role            Role
+  project         Project[]
+  posts           Post[]
+  project_comment Project_comments[]
+  Post_comments   Post_comments[]
+  service         Service[]
+  report          Report[]
+  notification    Notifications[]
+  favList         FavList[]
+  Basket          Basket[]
+  Forum_Posts     Forum_Posts[]
+  FPost_comments  FPost_comments[]
+  Technologies    Technologies[]
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  content     String[] @db.Text
+  images      String[]
+  likes       Int      @default(0)
+
+  User         User?              @relation(fields: [userId], references: [id])
+  userId       String?
+  comment      Project_comments[]
+  favList      FavList[]
+  Technologies Technologies[]
+}
+
+model Post {
+  id       String          @id @default(uuid())
+  title    String
+  content  String          @db.Text
+  images   String          @db.Text
+  likes    Int             @default(0)
+  User     User?           @relation(fields: [userId], references: [id])
+  userId   String?
+  comments Post_comments[]
+  favList  FavList[]
+}
+
+model Project_comments {
+  id        String    @id @default(uuid())
+  content   String    @db.Text
+  likes     Int       @default(0)
+  User      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+  images    String
+  Project   Project?  @relation(fields: [projectId], references: [id])
+  projectId String?
+  replies   Replies[]
+}
+
+model Post_comments {
+  id      String    @id @default(uuid())
+  content String    @db.Text
+  likes   Int       @default(0)
+  images  String
+  User    User?     @relation(fields: [userId], references: [id])
+  userId  String?
+  Post    Post?     @relation(fields: [postId], references: [id])
+  postId  String?
+  replies Replies[]
+}
+
+model Service {
+  id          String    @id @default(uuid())
+  title       String
+  description String    @db.Text
+  image       String
+  Price       Int
+  likes       Int       @default(0)
+  User        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+  favList     FavList[]
+  Basket      Basket[]
+}
+
+model Replies {
+  id      String @id @default(uuid())
+  content String @db.Text
+  likes   Int    @default(0)
+
+  Post_comments      Post_comments?    @relation(fields: [post_commentsId], references: [id])
+  post_commentsId    String?
+  Project_comments   Project_comments? @relation(fields: [project_commentsId], references: [id])
+  project_commentsId String?
+
+  FPost_comments   FPost_comments? @relation(fields: [fPost_commentsId], references: [id])
+  fPost_commentsId String?
+}
+
+model Report {
+  id       String  @id @default(uuid())
+  category String  @db.Text
+  evidence String  @db.Text
+  User     User?   @relation(fields: [userId], references: [id])
+  userId   String?
+}
+
+model Notifications {
+  id      String  @id @default(uuid())
+  content String  @db.Text
+  seen    Boolean @default(false)
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  String?
+}
+
+model FavList {
+  id String @id @default(uuid())
+
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  Project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    String?
+  Service   Service? @relation(fields: [serviceId], references: [id])
+  serviceId String?
+}
+
+model Basket {
+  id String @id @default(uuid())
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  Service   Service? @relation(fields: [serviceId], references: [id])
+  serviceId String?
+}
+
+model Forum_Posts {
+  id       String           @id @default(uuid())
+  title    String
+  content  String           @db.Text
+  images   String[]         @db.Text
+  likes    Int              @default(0)
+  User     User?            @relation(fields: [userId], references: [id])
+  userId   String?
+  comments FPost_comments[]
+}
+
+model FPost_comments {
+  id      String   @id @default(uuid())
+  content String   @db.Text
+  images  String[] @db.Text
+  likes   Int      @default(0)
+  User    User?    @relation(fields: [userId], references: [id])
+  userId  String?
+
+  Forum_Posts   Forum_Posts? @relation(fields: [forum_PostsId], references: [id])
+  forum_PostsId String?
+  Replies       Replies[]
+}
+
+model Technologies {
+  id    String @id @default(uuid())
+  name  String
+  image String
+
+  Project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+}
