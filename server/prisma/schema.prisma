@@ -193,7 +193,6 @@ model Technologies {
   id    String @id @default(uuid())
   name  String
   image String
-
   Project   Project? @relation(fields: [projectId], references: [id])
   projectId String?
   User      User?    @relation(fields: [userId], references: [id])
