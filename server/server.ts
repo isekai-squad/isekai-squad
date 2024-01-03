@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-import favotitRouter from "./router/favorite_route.ts"
+import favotitRouter from "./router/favorite_route"
 // import basket  from "../server/router/basket"
 config();
 import { userRoutes } from "./router/user_router";
@@ -67,9 +67,10 @@ app.use('/api',userRoutes)
 app.use('/Posts' , postsRoute);
 app.use('/Services', servicesRoute);
 app.use('/Reports' , reportsRoute)
-
-
-
+import technologiesRoute from "./router/Technologies_route"
+import postsCommentsRoute from "./router/PostsComment_route"
+app.use('/Expertise', technologiesRoute);
+app.use('/Comments', postsCommentsRoute);
 
 
 

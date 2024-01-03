@@ -12,6 +12,11 @@ route.delete("/Projects/:userId/:projectId", PostController.deleteProject)
 route.delete("/Posts/:userId/:postId", PostController.deletePost)
 route.put("/Projects/:userId/:projectId", PostController.updateProject)
 route.put("/Posts/:userId/:postId" , PostController.updatePost)
-
+route.post("/Projects/UpVote/:userId/:projectId", PostController.upVoteProject)
+route.post("/Projects/DownVote/:userId/:projectId" , PostController.downVoteProject)
+route.post("/Posts/UpVote/:userId/:postId" , PostController.upVotePost)
+route.post("/Posts/DownVote/:userId/:postId" , PostController.downVotePost)
+route.get("/Projects/Likes/:projectId", PostController.getAlllLikesProject)
+route.get("/Projects/Likes/:postId", PostController.getAllLikesPosts)
 
 export default route;
