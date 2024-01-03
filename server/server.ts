@@ -1,12 +1,19 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
+import favotitRouter from "./router/favorite_route.ts"
+// import basket  from "../server/router/basket"
 config();
 import { userRoutes } from "./router/user_router";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use("/favorit",favotitRouter )
+// app.use("/baskets", basket);
+
+
 
 // ===================================Ahmed==============================
 // import Routes
@@ -24,5 +31,6 @@ app.listen(process.env.PORT, () => {
     `Neverr GIVEEEE upppppppppppppppp http://localhost:${process.env.PORT}`
   );
 });
+
 
 app.use('/api',userRoutes)
