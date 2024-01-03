@@ -2,6 +2,8 @@ import { Prisma } from "@prisma/client";
 import { Request, Response } from 'express';
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -136,5 +138,14 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 };
 
+const forgotPass = (req:Request,res:Response)=>{
+    const code = crypto.randomUUID().slice(0,6).toString
+    try{
+        const User = prisma.user.update({where: {email:req.body.email})
 
+    }catch(err){
+        console.log(err);
+        
+    }
+}
 
