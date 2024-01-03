@@ -46,6 +46,7 @@ model User {
   Forum_Posts     Forum_Posts[]
   FPost_comments  FPost_comments[]
   Technologies    Technologies[]
+  replies         Replies[]
 }
 
 model Project {
@@ -124,6 +125,8 @@ model Replies {
 
   FPost_comments   FPost_comments? @relation(fields: [fPost_commentsId], references: [id])
   fPost_commentsId String?
+  User             User?           @relation(fields: [userId], references: [id])
+  userId           String?
 }
 
 model Report {
