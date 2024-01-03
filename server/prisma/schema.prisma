@@ -21,14 +21,14 @@ model User {
   id              String             @id @default(uuid())
   name            String
   userName        String
-  email           String
+  email           String             @unique
   specialty       String?
   location        String?
-  bio             String
+  bio             String?
   dateOfBirth     String?
   password        String?
   pdp             String
-  number          Int
+  number          Int?
   cover           String
   socials         String[]
   active          Boolean            @default(false)
