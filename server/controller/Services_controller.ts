@@ -13,7 +13,6 @@ export const addService = async (req : Request , res : Response) => {
                 description,
                 image,
                 Price,
-                likes : 0,
                 userId
             }
         })

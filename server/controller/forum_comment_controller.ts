@@ -41,19 +41,19 @@ export async function getAllComments(
 export async function addComment(req: Request, res: Response): Promise<void> {
   const { userId, postId } = req.params;
   const { content, images } = req.body;
-  try {
-    const newComment: ForumComment = await prisma.fPost_comments.create({
-      data: {
-        userId: userId,
-        forum_PostsId: postId,
-        content: content,
-        images: images,
-      },
-    });
-    res.status(200).send(newComment);
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   const newComment: ForumComment = await prisma.fPost_comments.create({
+  //     data: {
+  //       userId: userId,
+  //       forum_PostsId: postId,
+  //       content: content,
+  //       images: images,
+  //     },
+  //   });
+  //   res.status(200).send(newComment);
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 export async function updateComment(
   req: Request,
@@ -79,34 +79,34 @@ export async function incrementCommentLike(
   res: Response
 ): Promise<void> {
   const { commentId } = req.params;
-  try {
-    await prisma.fPost_comments.update({
-      where: { id: commentId },
-      data: {
-        likes: { increment: 1 },
-      },
-    });
-    res.status(200).send("incremented");
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   await prisma.fPost_comments.update({
+  //     where: { id: commentId },
+  //     data: {
+  //       likes: { increment: 1 },
+  //     },
+  //   });
+  //   res.status(200).send("incremented");
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 export async function decrementCommentLike(
   req: Request,
   res: Response
 ): Promise<void> {
   const { commentId } = req.params;
-  try {
-    await prisma.fPost_comments.update({
-      where: { id: commentId },
-      data: {
-        likes: { increment: 1 },
-      },
-    });
-    res.status(200).send("incremented");
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   await prisma.fPost_comments.update({
+  //     where: { id: commentId },
+  //     data: {
+  //       likes: { increment: 1 },
+  //     },
+  //   });
+  //   res.status(200).send("incremented");
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 
 export async function deleteComment(
@@ -178,40 +178,40 @@ export async function incrementCommentLikeReplies(
   res: Response
 ): Promise<void> {
   const { userId, repliCommentId, commentId } = req.params;
-  try {
-    await prisma.replies.update({
-      where: {
-        id: repliCommentId,
-        userId: userId,
-        fPost_commentsId: commentId,
-      },
-      data: {
-        likes: { increment: 1 },
-      },
-    });
-    res.status(200).send("incremented");
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   await prisma.replies.update({
+  //     where: {
+  //       id: repliCommentId,
+  //       userId: userId,
+  //       fPost_commentsId: commentId,
+  //     },
+  //     data: {
+  //       likes: { increment: 1 },
+  //     },
+  //   });
+  //   res.status(200).send("incremented");
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 export async function decrementCommentLikeReplies(
   req: Request,
   res: Response
 ): Promise<void> {
   const { userId, repliCommentId, commentId } = req.params;
-  try {
-    await prisma.replies.update({
-      where: {
-        id: repliCommentId,
-        userId: userId,
-        fPost_commentsId: commentId,
-      },
-      data: {
-        likes: { decrement: 1 },
-      },
-    });
-    res.status(200).send("incremented");
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   await prisma.replies.update({
+  //     where: {
+  //       id: repliCommentId,
+  //       userId: userId,
+  //       fPost_commentsId: commentId,
+  //     },
+  //     data: {
+  //       likes: { decrement: 1 },
+  //     },
+  //   });
+  //   res.status(200).send("incremented");
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }

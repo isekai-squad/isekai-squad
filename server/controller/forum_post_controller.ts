@@ -53,19 +53,19 @@ export async function addPost(req: Request, res: Response): Promise<void> {
   const { userId } = req.params;
 
   const { title, content, images } = req.body;
-  try {
-    const newPost: ForumPost = await prisma.forum_Posts.create({
-      data: {
-        userId: userId,
-        title: title,
-        content: content,
-        images: images,
-      },
-    });
-    res.status(200).send(newPost);
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   const newPost: ForumPost = await prisma.forum_Posts.create({
+  //     data: {
+  //       userId: userId,
+  //       title: title,
+  //       content: content,
+  //       images: images,
+  //     },
+  //   });
+  //   res.status(200).send(newPost);
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 export async function updatePost(req: Request, res: Response): Promise<void> {
   const { postId } = req.params;
@@ -99,32 +99,32 @@ export async function incrementLike(
   res: Response
 ): Promise<void> {
   const { postId } = req.params;
-  try {
-    await prisma.forum_Posts.update({
-      where: { id: postId },
-      data: {
-        likes: { increment: 1 },
-      },
-    });
-    res.status(200).send("incremented");
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   await prisma.forum_Posts.update({
+  //     where: { id: postId },
+  //     data: {
+  //       likes: { increment: 1 },
+  //     },
+  //   });
+  //   res.status(200).send("incremented");
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 export async function decrementLike(
   req: Request,
   res: Response
 ): Promise<void> {
   const { postId } = req.params;
-  try {
-    await prisma.forum_Posts.update({
-      where: { id: postId },
-      data: {
-        likes: { decrement: 1 },
-      },
-    });
-    res.status(200).send("incremented");
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   await prisma.forum_Posts.update({
+  //     where: { id: postId },
+  //     data: {
+  //       likes: { decrement: 1 },
+  //     },
+  //   });
+  //   res.status(200).send("incremented");
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
