@@ -5,6 +5,9 @@ import favotitRouter from "./router/favorite_route.ts"
 // import basket  from "../server/router/basket"
 config();
 import { userRoutes } from "./router/user_router";
+import postsRoute from "./router/Posts_route"
+import servicesRoute from "./router/Services_route"
+import reportsRoute from "./router/Reports_route"
 
 const app = express();
 app.use(cors());
@@ -26,6 +29,56 @@ app.use("/forumComment", forumComment);
 app.use("/notification", notification);
 // ===================================Ahmed==============================
 
+//===============================Adam====================================
+app.use('/api',userRoutes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//===============================Adam=====================================
+//===============================Ameur====================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//===============================Ameur=====================================
+//===============================Hasan====================================
+app.use('/Posts' , postsRoute);
+app.use('/Services', servicesRoute);
+app.use('/Reports' , reportsRoute)
+
+
+
+
+
+
+
+
+
+
+
+//===============================Hasan=====================================
 app.listen(process.env.PORT, () => {
   console.log(
     `Neverr GIVEEEE upppppppppppppppp http://localhost:${process.env.PORT}`
@@ -33,4 +86,3 @@ app.listen(process.env.PORT, () => {
 });
 
 
-app.use('/api',userRoutes)
