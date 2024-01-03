@@ -16,6 +16,7 @@ export const getAllNotificationsForUser = async (
           select: {
             id: true,
             name: true,
+            pdp:true
           },
         },
       },
