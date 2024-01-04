@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-import favotitRouter from "./router/favorite_route.ts"
+import favotitRouter from "./router/favorite_route"
 // import basket  from "../server/router/basket"
 config();
 import { userRoutes } from "./router/user_router";

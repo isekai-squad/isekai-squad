@@ -52,19 +52,19 @@ export async function addPost(req: Request, res: Response): Promise<void> {
   const { userId } = req.params;
 
   const { title, content, images } = req.body;
-  try {
-    const newPost: ForumPost = await prisma.forum_Posts.create({
-      data: {
-        userId: userId,
-        title: title,
-        content: content,
-        images: images,
-      },
-    });
-    res.status(200).send(newPost);
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   const newPost: ForumPost = await prisma.forum_Posts.create({
+  //     data: {
+  //       userId: userId,
+  //       title: title,
+  //       content: content,
+  //       images: images,
+  //     },
+  //   });
+  //   res.status(200).send(newPost);
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 export async function updatePost(req: Request, res: Response): Promise<void> {
   const { postId } = req.params;

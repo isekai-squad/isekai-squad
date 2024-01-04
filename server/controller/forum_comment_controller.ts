@@ -64,19 +64,19 @@ export async function getAllComments(
 export async function addComment(req: Request, res: Response): Promise<void> {
   const { userId, postId } = req.params;
   const { content, images } = req.body;
-  try {
-    const newComment: ForumComment = await prisma.fPost_comments.create({
-      data: {
-        userId: userId,
-        forum_PostsId: postId,
-        content: content,
-        images: images,
-      },
-    });
-    res.status(200).send(newComment);
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  // try {
+  //   const newComment: ForumComment = await prisma.fPost_comments.create({
+  //     data: {
+  //       userId: userId,
+  //       forum_PostsId: postId,
+  //       content: content,
+  //       images: images,
+  //     },
+  //   });
+  //   res.status(200).send(newComment);
+  // } catch (err) {
+  //   res.status(500).send(err);
+  // }
 }
 export async function updateComment(
   req: Request,

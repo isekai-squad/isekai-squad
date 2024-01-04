@@ -14,7 +14,6 @@ export const addProject = async (req : Request , res : Response) => {
                 description,
                 content,
                 images,
-                likes : 0,
                 userId
             }
         })
@@ -34,7 +33,7 @@ export const addPost = async (req : Request , res : Response) => {
                 title,
                 content,
                 images,
-                likes : 0,
+               
                 userId
             }
         })
