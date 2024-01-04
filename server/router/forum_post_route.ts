@@ -12,9 +12,14 @@ forumPostRouter.put("/:postId", FormPostController.updatePost);
 
 forumPostRouter.delete("/:postId", FormPostController.deletePost);
 
-forumPostRouter.put("/increment/:postId", FormPostController.incrementLike);
+forumPostRouter.post("/increment/:postId/:userId", FormPostController.incrementLike);
 
-forumPostRouter.put("/decrement/:postId", FormPostController.decrementLike);
+forumPostRouter.post("/decrement/:postId/:userId", FormPostController.decrementLike);
+
+forumPostRouter.get("/likes/:postId/:userId", FormPostController.getForumPostLikes);
+
+forumPostRouter.get("/likes/:postId", FormPostController.getForumPostUserLikes);
+
 
 
 export default forumPostRouter;

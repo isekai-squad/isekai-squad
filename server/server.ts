@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-import favotitRouter from "./router/favorite_route"
+// import favotitRouter from "./router/favorite_route"
 // import basket  from "../server/router/basket"
 config();
 import { userRoutes } from "./router/user_router";
@@ -13,10 +13,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
+
+
 app.use("/favorit",favotitRouter )
 // app.use("/baskets", basket);
-
-
+// app.use("/stripe",stripe)
+app.use("/api",router)
 
 // ===================================Ahmed==============================
 // import Routes
@@ -48,7 +52,10 @@ app.use('/api',userRoutes)
 //===============================Adam=====================================
 //===============================Ameur====================================
 
-
+import favotitRouter from "./router/favorite_route"
+// import stripe from "./router/stripe_route"
+// import basket  from "../server/router/basket"
+import {router} from "./controller/stripe"
 
 
 

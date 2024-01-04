@@ -8,7 +8,6 @@ interface ForumComment {
   forum_PostsId: string | null;
   content: string;
   images: string[];
-  likes: number;
 }
 interface ForumCommentReplies {
   id: string;
@@ -18,9 +17,32 @@ interface ForumCommentReplies {
   content: string;
 }
 
+export async function getUserComments(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { userId } = req.params;
+  try {
+    const comments = await prisma.fPost_comments.findMany({
+      where: { userId: userId },
+      include: {
+        User: {
+          select: {
+            id: true,
+            name: true,
+            pdp: true,
+          },
+        },
+      },
+    });
+    res.status(200).send(comments);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
 export async function getAllComments(
-  request: Request,
-  response: Response
+  req: Request,
+  res: Response
 ): Promise<void> {
   try {
     const comments = await prisma.fPost_comments.findMany({
@@ -29,13 +51,14 @@ export async function getAllComments(
           select: {
             id: true,
             name: true,
+            pdp: true,
           },
         },
       },
     });
-    response.status(200).send(comments);
+    res.status(200).send(comments);
   } catch (error) {
-    response.status(500).send(error);
+    res.status(500).send(error);
   }
 }
 export async function addComment(req: Request, res: Response): Promise<void> {
@@ -59,11 +82,11 @@ export async function updateComment(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { commentId, userId, postId } = req.params;
+  const { commentId, userId } = req.params;
   const { content, images } = req.body;
   try {
     await prisma.fPost_comments.update({
-      where: { id: commentId, userId: userId, forum_PostsId: postId },
+      where: { id: commentId, userId: userId },
       data: {
         content: content,
         images: images,
@@ -78,44 +101,40 @@ export async function incrementCommentLike(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { commentId } = req.params;
-  // try {
-  //   await prisma.fPost_comments.update({
-  //     where: { id: commentId },
-  //     data: {
-  //       likes: { increment: 1 },
-  //     },
-  //   });
-  //   res.status(200).send("incremented");
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
-}
-export async function decrementCommentLike(
-  req: Request,
-  res: Response
-): Promise<void> {
-  const { commentId } = req.params;
-  // try {
-  //   await prisma.fPost_comments.update({
-  //     where: { id: commentId },
-  //     data: {
-  //       likes: { increment: 1 },
-  //     },
-  //   });
-  //   res.status(200).send("incremented");
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
+  const { userId, commentId } = req.params;
+  try {
+    const findComment = await prisma.likes.findFirst({
+      where: { userId: userId, fPost_commentsId: commentId },
+    });
+
+    if (!findComment) {
+      await prisma.likes.create({
+        data: {
+          like: 1,
+          fPost_commentsId: commentId,
+          userId: userId,
+        },
+      });
+    } else {
+      await prisma.likes.deleteMany({
+        where: { userId: userId, fPost_commentsId: commentId },
+      });
+    }
+    res.status(200).send("incremented");
+  } catch (err) {
+    res.status(500).send(err);
+  }
 }
 
 export async function deleteComment(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { userId } = req.params;
+  const { userId, commentId } = req.params;
   try {
-    await prisma.fPost_comments.delete({ where: { id: userId } });
+    await prisma.fPost_comments.delete({
+      where: { id: commentId, userId: userId },
+    });
     res.status(200).send("deleted");
   } catch (err) {
     res.status(500).send(err);
@@ -123,17 +142,20 @@ export async function deleteComment(
 }
 
 export async function getAllReplisOneComments(
-  request: Request,
-  response: Response
+  req: Request,
+  res: Response
 ): Promise<void> {
-  const { commentId } = request.params;
+  const { commentId } = req.params;
   try {
     const comments = await prisma.replies.findMany({
       where: { fPost_commentsId: commentId },
+      include: {
+        FPost_comments: true,
+      },
     });
-    response.status(200).send(comments);
+    res.status(200).send(comments);
   } catch (error) {
-    response.status(500).send(error);
+    res.status(500).send(error);
   }
 }
 export async function addRepliesComment(
@@ -163,7 +185,7 @@ export async function repliesUpdate(
   const { content } = req.body;
   try {
     await prisma.replies.update({
-      where: { id: userId, fPost_commentsId: commentId },
+      where: { id: commentId, userId: userId },
       data: {
         content: content,
       },
@@ -173,45 +195,33 @@ export async function repliesUpdate(
     res.status(500).send(err);
   }
 }
-export async function incrementCommentLikeReplies(
+
+export async function CommentLikeReplies(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { userId, repliCommentId, commentId } = req.params;
-  // try {
-  //   await prisma.replies.update({
-  //     where: {
-  //       id: repliCommentId,
-  //       userId: userId,
-  //       fPost_commentsId: commentId,
-  //     },
-  //     data: {
-  //       likes: { increment: 1 },
-  //     },
-  //   });
-  //   res.status(200).send("incremented");
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
-}
-export async function decrementCommentLikeReplies(
-  req: Request,
-  res: Response
-): Promise<void> {
-  const { userId, repliCommentId, commentId } = req.params;
-  // try {
-  //   await prisma.replies.update({
-  //     where: {
-  //       id: repliCommentId,
-  //       userId: userId,
-  //       fPost_commentsId: commentId,
-  //     },
-  //     data: {
-  //       likes: { decrement: 1 },
-  //     },
-  //   });
-  //   res.status(200).send("incremented");
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
+  const { userId, commentId } = req.params;
+  try {
+    const findRepliComment = await prisma.likes.findFirst({
+      where: { userId: userId, repliesId: commentId },
+    });
+
+    if (!findRepliComment) {
+      await prisma.likes.create({
+        data: {
+          like: 1,
+          repliesId: commentId,
+          userId: userId,
+        },
+      });
+    } else {
+      await prisma.likes.deleteMany({
+        where: { userId: userId, repliesId: commentId },
+      });
+    }
+
+    res.status(200).send("incremented");
+  } catch (err) {
+    res.status(500).send(err);
+  }
 }
