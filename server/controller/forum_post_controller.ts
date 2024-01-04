@@ -8,7 +8,6 @@ interface ForumPost {
   title: string;
   content: String;
   images: string[];
-  likes: number;
 }
 
 export async function getOne(req: Request, res: Response): Promise<void> {
@@ -94,37 +93,94 @@ export async function deletePost(req: Request, res: Response): Promise<void> {
     res.status(500).send(err);
   }
 }
+
+export async function getForumPostUserLikes(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { postId, userId } = req.params;
+  try {
+    const posts = await prisma.likes.count({
+      where: { postId: postId, userId: userId },
+    });
+    res.status(200).send(posts);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}
+export async function getForumPostLikes(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { postId } = req.params;
+  try {
+    const posts = await prisma.likes.count({
+      where: { postId: postId, like: 1 },
+    });
+    res.status(200).send(posts);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}
+
 export async function incrementLike(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { postId } = req.params;
-  // try {
-  //   await prisma.forum_Posts.update({
-  //     where: { id: postId },
-  //     data: {
-  //       likes: { increment: 1 },
-  //     },
-  //   });
-  //   res.status(200).send("incremented");
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
+  const { postId, userId } = req.params;
+  try {
+    const findUser = await prisma.likes.findFirst({
+      where: { userId: userId, postId: postId },
+    });
+
+    if (!findUser) {
+      await prisma.likes.create({
+        data: {
+          like: 1,
+          postId: postId,
+          userId: userId,
+        },
+      });
+    } else {
+      await prisma.likes.deleteMany({
+        where: { userId: userId, postId: postId },
+      });
+    }
+
+    res.status(200).send("incremented");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
 }
+
 export async function decrementLike(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { postId } = req.params;
-  // try {
-  //   await prisma.forum_Posts.update({
-  //     where: { id: postId },
-  //     data: {
-  //       likes: { decrement: 1 },
-  //     },
-  //   });
-  //   res.status(200).send("incremented");
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
+  const { postId, userId } = req.params;
+  try {
+    const findUser = await prisma.likes.findFirst({
+      where: { userId: userId, postId: postId },
+    });
+
+    if (!findUser) {
+      await prisma.likes.create({
+        data: {
+          like: 0,
+          postId: postId,
+          userId: userId,
+        },
+      });
+    } else {
+      await prisma.likes.deleteMany({
+        where: { userId: userId, postId: postId },
+      });
+    }
+
+    res.status(200).send("decremented");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
 }
