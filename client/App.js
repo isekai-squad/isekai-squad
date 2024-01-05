@@ -1,16 +1,25 @@
 import React from "react";
-import { Navigation } from "./Navigation";
-import { AuthProvider } from "./App/Context/AuthContext";
 import { StripeProvider } from "@stripe/stripe-react-native";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { Navigation } from "./Navigation";
+
+import { AuthProvider } from "./App/Context/AuthContext";
+import { ProfileProvider } from "./App/Context/ProfileContext";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <StripeProvider
-    publishableKey={process.env.EXPO_PUBLIC_PUBLISH_KEY}
-    >
-      <AuthProvider>
-        <Navigation />
-      </AuthProvider>
-    </StripeProvider>
+    <QueryClientProvider client={queryClient}>
+      <StripeProvider publishableKey={process.env.EXPO_PUBLIC_PUBLISH_KEY}>
+        <AuthProvider>
+          <ProfileProvider id={1}>
+            <Navigation />
+          </ProfileProvider>
+        </AuthProvider>
+      </StripeProvider>
+    </QueryClientProvider>
   );
 }

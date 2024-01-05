@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 const Tab = createBottomTabNavigator();
+
 export const MainContainer = () => {
   return (
     <Tab.Navigator
@@ -52,16 +53,7 @@ export const MainContainer = () => {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
-        name="About"
-        component={AboutScreen}
-        options={{ headerShown: false }}
-      />
-          <Tab.Screen
-        name="code"
-        component={code}
-        options={{ headerShown: false }}
-      />
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
