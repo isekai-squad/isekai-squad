@@ -19,6 +19,7 @@ export const MainContainer = () => {
           borderTopRightRadius: 50,
           paddingBottom: 5,
         },
+
         tabBarIcon: ({ focused, size }) => {
           const iconColor = focused ? "#8244CB" : "black";
 

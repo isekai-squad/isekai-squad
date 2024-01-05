@@ -18,8 +18,8 @@ app.use(express.json());
 
 
 // app.use("/favorit",favotitRouter )
-// app.use("/baskets", basket);
-// app.use("/stripe",stripe)
+// // app.use("/baskets", basket);
+// // app.use("/stripe",stripe)
 // app.use("/api",router)
 
 // ===================================Ahmed==============================

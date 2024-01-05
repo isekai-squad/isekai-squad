@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
-import { Request, Response } from "express";
-const bcrypt = require("bcrypt");
+import { $Enums, Prisma } from "@prisma/client";
+import { Request, Response } from 'express';
+const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 import * as crypto from "crypto";
@@ -51,28 +51,31 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const SignIn = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
+    
+    try {
+        const { email, password,role } = req.body;
+        
+        if (!email || !password || !role
+            ) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        const user = await prisma.user.findUnique({
+            where: { email, role },
+        });
 
-    if (!email || !password) {
-      return res.status(400).json({ error: "Email and password are required" });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const storedPassword = user.password;
-
-    if (!storedPassword) {
-      return res
-        .status(500)
-        .json({ error: "User record does not have a password" });
-    }
+        if (!user) {
+            
+            
+            return res.status(404).json({ error: 'User not found' });
+            
+        }
+        
+        const storedPassword = user.password;
+        
+        if (!storedPassword) {
+            return res.status(500).json({ error: 'User record does not have a password' });
+        }
 
     if (typeof password !== "string") {
       return res.status(400).json({ error: "Invalid password format" });
