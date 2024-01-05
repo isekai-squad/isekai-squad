@@ -17,10 +17,10 @@ app.use(express.json());
 
 
 
-app.use("/favorit",favotitRouter )
+// app.use("/favorit",favotitRouter )
 // app.use("/baskets", basket);
 // app.use("/stripe",stripe)
-app.use("/api",router)
+// app.use("/api",router)
 
 // ===================================Ahmed==============================
 // import Routes
