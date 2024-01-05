@@ -12,10 +12,12 @@ export const MainContainer = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          height: 60,
+          height: 50,
           borderTopLeftRadius: 50,
           borderTopRightRadius: 50,
+          paddingBottom: 5,
         },
+
         tabBarIcon: ({ focused, size }) => {
           let iconName;
           let iconColor;

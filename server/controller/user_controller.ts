@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { $Enums, Prisma } from "@prisma/client";
 import { Request, Response } from 'express';
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
@@ -53,23 +53,28 @@ export const createUser = async (req: Request, res: Response) => {
 
 
 export const SignIn = async (req: Request, res: Response) => {
+    
     try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
+        const { email, password,role } = req.body;
+        
+        if (!email || !password || !role
+            ) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
-
+        
         const user = await prisma.user.findUnique({
-            where: { email },
+            where: { email, role },
         });
 
         if (!user) {
+            
+            
             return res.status(404).json({ error: 'User not found' });
+            
         }
-
+        
         const storedPassword = user.password;
-
+        
         if (!storedPassword) {
             return res.status(500).json({ error: 'User record does not have a password' });
         }
@@ -77,7 +82,7 @@ export const SignIn = async (req: Request, res: Response) => {
         if (typeof password !== 'string') {
             return res.status(400).json({ error: 'Invalid password format' });
         }
-
+        
         const isMatch = await bcrypt.compare(password, storedPassword);
 
         if (isMatch) {
