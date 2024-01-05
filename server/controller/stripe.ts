@@ -5,7 +5,7 @@ import express from "express";
 import stripeLib from "stripe";
 
 const prisma = new PrismaClient();
-const stripeSecretKey = process.env.STRIPE_KEY || " sk_test_51OUFLqLxTXlxxAPII2BUdD5JyMjV1pnDQscQmJxMIQSMdS3XNfnjZNkee8QsMmU9H84GTPxgaRt7PhzXv1cbTF0g004qXYPtIO"
+const stripeSecretKey = process.env.STRIPE_KEY || ""
 
 const stripe = new stripeLib(stripeSecretKey);
 
@@ -32,7 +32,7 @@ router.post('/payment-sheet', async (req: Request, res: Response) => {
       paymentIntent: paymentIntent.client_secret,
       ephemeralKey: ephemeralKey.secret,
       customer: customer.id,
-      publishableKey:process.env.PUBLISH_KEY, // Replace with your actual publishable key
+      publishableKey:process.env.PUBLISH_KEY, 
     });
   } catch (error) {
     console.error("Error creating payment sheet:", error);

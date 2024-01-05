@@ -27,20 +27,20 @@ function ProfileScreen() {
     );
   }
 
-  if (isError) {
-    return (
-      <SafeAreaView style={styles.errorContainer}>
-        <Image
-          source={{
-            uri: "https://img.freepik.com/premium-vector/error-404-concept-app-ui-page_637684-11.jpg?w=360",
-            width: "100%",
-            height: "100%",
-          }}
-          resizeMode="cover"
-        />
-      </SafeAreaView>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <SafeAreaView style={styles.errorContainer}>
+  //       <Image
+  //         source={{
+  //           uri: "https://img.freepik.com/premium-vector/error-404-concept-app-ui-page_637684-11.jpg?w=360",
+  //           width: "100%",
+  //           height: "100%",
+  //         }}
+  //         resizeMode="cover"
+  //       />
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <SafeAreaView style={styles.container}>

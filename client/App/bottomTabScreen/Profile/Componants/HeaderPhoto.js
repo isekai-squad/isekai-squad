@@ -5,7 +5,6 @@ const HeaderPhoto = ({ profileData }) => {
   return (
     <View>
       <ImageBackground
-        resizeMode="cover"
         source={{
           uri: profileData.cover,
         }}

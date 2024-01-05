@@ -48,7 +48,7 @@ async function fetchProfile(id) {
   
   try {
     console.log(id);
-    const response = await fetch(`http://172.20.0.80:4070/api/user/${id}`);
+    const response = await fetch(`http://172.20.0.74:4070/api/user/${id}`);
     const data = await response.json();
     return data;
   } catch (error) {

@@ -2,8 +2,10 @@ import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { STYLES } from "../../GlobalCss";
-
-const SearchHeader = ({ value, onChangeText }) => (
+import { useNavigation } from "@react-navigation/native";
+const SearchHeader = ({ value, onChangeText }) => {
+  const navigation = useNavigation()
+  return (
   <View style={styles.searchContainer}>
     <TouchableOpacity style={styles.iconContainer}>
       <Ionicons name="menu" size={25} color={STYLES.COLORS.Priamary} />
@@ -22,11 +24,12 @@ const SearchHeader = ({ value, onChangeText }) => (
         onChangeText={onChangeText}
       />
     </View>
-    <TouchableOpacity style={styles.iconContainer}>
+    <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('aboutScreen')} >
       <Ionicons name="qr-code" size={25} color={STYLES.COLORS.Priamary} />
     </TouchableOpacity>
   </View>
-);
+  )
+}
 
 const styles = StyleSheet.create({
   searchContainer: {

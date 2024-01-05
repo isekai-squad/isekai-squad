@@ -1,9 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-// import favotitRouter from "./router/favorite_route"
-// import basket  from "../server/router/basket"
-config();
+// rsconfig();
 import { userRoutes } from "./router/user_router";
 import postsRoute from "./router/Posts_route"
 import servicesRoute from "./router/Services_route"
@@ -17,10 +15,6 @@ app.use(express.json());
 
 
 
-// app.use("/favorit",favotitRouter )
-// // app.use("/baskets", basket);
-// // app.use("/stripe",stripe)
-// app.use("/api",router)
 
 // ===================================Ahmed==============================
 // import Routes
@@ -53,11 +47,15 @@ app.use('/api',userRoutes)
 //===============================Ameur====================================
 
 import favotitRouter from "./router/favorite_route"
-// import stripe from "./router/stripe_route"
-// import basket  from "../server/router/basket"
+import basket  from "./router/basket_route"
 import {router} from "./controller/stripe"
+// import stripe from "./router/stripe_route"
 
 
+app.use("/favorit",favotitRouter )
+app.use("/baskets", basket);
+app.use("/api",router)
+// app.use("/stripe",stripe)
 
 
 
