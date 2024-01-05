@@ -47,15 +47,15 @@ app.use('/api',userRoutes)
 //===============================Ameur====================================
 
 import favotitRouter from "./router/favorite_route"
-// import stripe from "./router/stripe_route"
-// import basket  from "../server/router/basket"
+import basket  from "./router/basket_route"
 import {router} from "./controller/stripe"
+// import stripe from "./router/stripe_route"
 
 
 app.use("/favorit",favotitRouter )
-// app.use("/baskets", basket);
-// app.use("/stripe",stripe)
+app.use("/baskets", basket);
 app.use("/api",router)
+// app.use("/stripe",stripe)
 
 
 

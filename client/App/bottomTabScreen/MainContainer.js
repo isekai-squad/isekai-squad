@@ -3,6 +3,7 @@ import HomeScreen from "./Home/HomeScreen";
 import AboutScreen from "./About/AboutScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
 import code from "../component/QR_code";
+import basket from "../component/basket";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -64,6 +65,11 @@ export const MainContainer = () => {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="basket"
+        component={basket}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

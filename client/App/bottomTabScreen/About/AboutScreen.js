@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import QRCode from 'react-native-qrcode-svg';
 
 const FlexDimensionsBasics = () => {
+  const [user, setUser] = useState({
+    name: "Ameur Koidja",
+    qrCodeUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOjynLaramHQQQCsoObb7Jpp9ebhcy98dxiA&usqp=CAU",
+    profileImageUrl: "https://picsum.photos/200",
+  });
+
+  const handleLogin = () => {
+    <QRCode
+    value="http://awesome.link.qr"
+  />
+    setUser({
+      name: "New User",
+      qrCodeUrl: "https://example.com/newQRCode",
+      profileImageUrl: "https://example.com/newProfileImage",
+    });
+  };
+
   return (
+    
     <View style={styles.container}>
       <Text style={styles.text}>Isekai QR code</Text>
 
@@ -19,36 +38,52 @@ const FlexDimensionsBasics = () => {
         <Text style={styles.scan}>Scan</Text>
       </View>
       <View style={styles.backgroundcodeQR}>
-      <View style={styles.profileImgContainer}>
+        <View style={styles.profileImgContainer}>
+          <Image
+            source={{
+              uri: user.profileImageUrl,
+            }}
+            style={styles.profileImg}
+          />
+          <Text style={styles.profileName}>{user.name}</Text>
+        </View>
         <Image
           source={{
-            uri: "https://picsum.photos/200",
-          }}
-          style={styles.profileImg}
-        />
-          <Text style={styles.profileName}>Ameur koidja </Text> 
-
-      </View>
-        <Image
-          source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOjynLaramHQQQCsoObb7Jpp9ebhcy98dxiA&usqp=CAU",
+            uri: user.qrCodeUrl,
           }}
           style={styles.codeQr}
         />
       </View>
       <View style={styles.container}>
-  <Text style={styles.save}>Save to gallery</Text>
-  
-  <MaterialIcons name="save-alt" size={18} color={"black"} style={styles.materialIcons} />
-  
-  <View>
-    <Text style={styles.share}>Share my code</Text> 
-    <AntDesign name="sharealt" size={18} color={"black"} style={styles.antDesign} />
-  </View>
-</View>
+        <Text style={styles.save} onPress={handleLogin}>
+          Save to gallery
+        </Text>
+
+        <MaterialIcons
+          name="save-alt"
+          size={18}
+          color={"black"}
+          style={styles.materialIcons}
+        />
+
+        <View>
+          <Text style={styles.share}>Share my code</Text>
+          <AntDesign
+            name="sharealt"
+            size={18}
+            color={"black"}
+            style={styles.antDesign}
+          />
+        </View>
+      </View>
     </View>
   );
 };
+
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -85,7 +120,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,  
     borderWidth: 2,   
     borderColor: '#ABB8C3',
-top: -20,      
+    top: -20,      
   },
   backgroundcodeQR: {
     width: 340,
@@ -125,7 +160,7 @@ top: -20,
     fontSize: 15,
     fontWeight: "bold",
     marginBottom: 10,
-
+    
   },
   share:{
     fontSize: 15,
@@ -136,7 +171,7 @@ top: -20,
     marginTop: -10, 
     fontSize: 18,
     fontWeight: "bold",
-   
+    
   },
 });
 
