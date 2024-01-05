@@ -12,7 +12,7 @@ export const STYLES = {
   },
   SIZES: {
     sizeS: 8,
-    sizeM: 10,
+    sizeM: 15,
     sizeL: 20,
     sizeXL: 30,
     sizeXXL: 40,
