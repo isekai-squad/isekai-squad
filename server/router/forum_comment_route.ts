@@ -10,23 +10,18 @@ forumCommentRouter.post(
 );
 
 forumCommentRouter.put(
-  "/:userId/:postId/:commentId/comments",
+  "/:userId/:commentId/comments",
   FormCommentController.updateComment
 );
 
 forumCommentRouter.delete(
-  "/:userId/:postId/:commentId/comments",
+  "/:userId/:commentId/comments",
   FormCommentController.deleteComment
 );
 
 forumCommentRouter.put(
-  "/:commentId/comments/increment",
+  "/:commentId/:userId/comments/increment",
   FormCommentController.incrementCommentLike
-);
-
-forumCommentRouter.put(
-  "/:commentId/comments/decrement",
-  FormCommentController.decrementCommentLike
 );
 
 forumCommentRouter.get(
@@ -45,13 +40,13 @@ forumCommentRouter.put(
 );
 
 forumCommentRouter.put(
-  "/:userId/:commentId/:repliCommentId/comments/replies/increment",
-  FormCommentController.incrementCommentLikeReplies
+  "/:commentId/:userId/comments/replies/increment",
+  FormCommentController.CommentLikeReplies
 );
 
 forumCommentRouter.put(
-  "/:userId/:commentId/comments/:repliCommentId/replies/decrement",
-  FormCommentController.decrementCommentLikeReplies
+  "/:commentId/:userId/comments/replies/decrement",
+  FormCommentController.CommentLikeReplies
 );
 
 export default forumCommentRouter;
