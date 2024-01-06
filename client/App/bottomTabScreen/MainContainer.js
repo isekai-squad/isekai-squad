@@ -2,20 +2,24 @@ import React from "react";
 import HomeScreen from "./Home/HomeScreen";
 import AboutScreen from "./About/AboutScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
+import code from "../component/QR_code";
+import basket from "../component/basket";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Posts from "../component/Posts";
 const Tab = createBottomTabNavigator();
+
 export const MainContainer = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          height: 60,
+          height: 50,
           borderTopLeftRadius: 50,
           borderTopRightRadius: 50,
+          paddingBottom: 5,
         },
         tabBarIcon: ({ focused, size }) => {
           let iconName;
@@ -55,11 +59,7 @@ export const MainContainer = () => {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
-        name="About"
-        component={AboutScreen}
-        options={{ headerShown: false }}
-      />
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
@@ -71,6 +71,11 @@ export const MainContainer = () => {
         options={{ headerShown: false }}
       />
       
+      <Tab.Screen
+        name="basket"
+        component={basket}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 };

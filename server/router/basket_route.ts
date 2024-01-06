@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as basketController from "../controller/Basket.ts"
+import * as basketController from "../controller/Basket"
 const router = Router();
 
 router.post("/:userId/:itemId", basketController.addToBasket)

@@ -1,37 +1,63 @@
 import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { View, TextInput, StyleSheet } from "react-native";
-
-const SearchHeader = ({ value, onChangeText }) => (
+import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { STYLES } from "../../GlobalCss";
+import { useNavigation } from "@react-navigation/native";
+const SearchHeader = ({ value, onChangeText }) => {
+  const navigation = useNavigation()
+  return (
   <View style={styles.searchContainer}>
-    <Ionicons style={styles.searchIcon} name="search-outline" size={20} color={"#8244CB"} />
-    <TextInput
-      style={styles.searchInput}
-      placeholder="Search Company Student..."
-      value={value}
-      onChangeText={onChangeText}
-    />
+    <TouchableOpacity style={styles.iconContainer}>
+      <Ionicons name="menu" size={25} color={STYLES.COLORS.Priamary} />
+    </TouchableOpacity>
+    <View style={styles.inputContainer}>
+      <Ionicons
+        name="search-outline"
+        size={20}
+        color={STYLES.COLORS.Priamary}
+        style={styles.searchIcon}
+      />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search Company Student..."
+        value={value}
+        onChangeText={onChangeText}
+      />
+    </View>
+    <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('aboutScreen')} >
+      <Ionicons name="qr-code" size={25} color={STYLES.COLORS.Priamary} />
+    </TouchableOpacity>
   </View>
-);
+  )
+}
 
 const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
-    justifyContent: "right",
     alignItems: "center",
-    width: "90%",
+    justifyContent: "center", 
+    width: "100%"
   },
-  searchInput: {
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
     height: 40,
-    width: "100%",
     borderColor: "#dbdbdb",
     borderWidth: 1,
     borderRadius: 8,
-    paddingLeft: 40,
+    marginLeft: 10, 
+  },
+  searchInput: {
+    flex: 1,
+    paddingLeft: 10,
     color: "#000",
   },
   searchIcon: {
-   left: 30,
+    marginLeft: 10,
+  },
+  iconContainer: {
+    marginHorizontal: 10,
   },
 });
 
