@@ -1,13 +1,16 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import Posts from "./App/component/Posts/Posts";
 import { MainContainer } from "./App/bottomTabScreen/MainContainer";
 import { Test } from "./App/component/Test";
 import SearchHeader from "./App/component/SearchHeader";
+import PostDetails from "./App/component/Posts/PostDetails";
 import SignIn from "./App/Screens/Authentication/SignIn/SignIn";
 import Signup from "./App/Screens/Authentication/signUp/signup";
 import QR_code from "./App/component/QR_code";
 import FlexDimensionsBasics from "./App/bottomTabScreen/About/AboutScreen";
+import ForumCategories from "./App/component/Posts/ForumCategories";
 const Stack = createStackNavigator();
 
 export const Navigation = () => {
@@ -52,6 +55,9 @@ export const Navigation = () => {
           name="signUp"
           component={Signup}
         />
+        <Stack.Screen name="Posts" component={Posts} />
+        <Stack.Screen name="PostDetails" component={PostDetails} options={{headerShown : false}} />
+        <Stack.Screen name="Forum" component={ForumCategories} options={{headerShown : false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

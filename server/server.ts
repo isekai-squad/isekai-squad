@@ -72,9 +72,10 @@ app.use("/api",router)
 app.use('/Posts' , postsRoute);
 app.use('/Services', servicesRoute);
 app.use('/Reports' , reportsRoute)
-
-
-
+import technologiesRoute from "./router/Technologies_route"
+import postsCommentsRoute from "./router/PostsComment_route"
+app.use('/Expertise', technologiesRoute);
+app.use('/Comments', postsCommentsRoute);
 
 
 
