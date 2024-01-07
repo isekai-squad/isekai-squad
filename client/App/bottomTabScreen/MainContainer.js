@@ -8,7 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Posts from "../component/Posts";
+import ForumCategories from "../component/Posts/ForumCategories";
 const Tab = createBottomTabNavigator();
 
 export const MainContainer = () => {
@@ -67,10 +67,9 @@ export const MainContainer = () => {
       />
       <Tab.Screen
         name="Community"
-        component={Posts}
+        component={ForumCategories}
         options={{ headerShown: false }}
       />
-      
       <Tab.Screen
         name="basket"
         component={basket}
