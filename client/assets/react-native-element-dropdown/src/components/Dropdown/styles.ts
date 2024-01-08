@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white',
     shadowColor: '#000',
     borderRadius:8,
-    height: '160%',
+    height: '200%',
     shadowOffset: {
       width: 0,
       height: 1,
