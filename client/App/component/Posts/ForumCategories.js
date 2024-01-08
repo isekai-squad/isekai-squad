@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Feather";
+import Arrow from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ForumCategories = () => {
   let arr = [1, 1, 1, 1, 1, 1];
@@ -27,9 +28,9 @@ const ForumCategories = () => {
             padding: 20,
           }}
         >
-          {/* <TouchableOpacity style={{position : 'absolute' , top : 45 , left:10}}>
-             <Icon name='arrow-left-thin' size={40} color='#674188' onPress={() => navigation.navigate('Posts') }/>
-            </TouchableOpacity> */}
+          <TouchableOpacity>
+             <Arrow name='arrow-left-thin' size={30} color='#674188' onPress={() => navigation.navigate('Home') }/>
+            </TouchableOpacity>
 
           <Text style={{ fontSize: 24, fontWeight: "bold" }}>
             Explore by categories
@@ -95,6 +96,7 @@ const ForumCategories = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingVertical : 40,
     backgroundColor : 'white',
   },
 });
