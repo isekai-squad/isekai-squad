@@ -108,12 +108,12 @@ export const SignIn = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const userId = req.params.userId;
-
+console.log(userId);
   if (!userId) {
     return res.status(400).json({ error: "User ID is required" });
   }
 
-  const updateData = req.body; // Object containing fields to update
+  const updateData = req.body; 
 
   try {
     const user = await prisma.user.findUnique({

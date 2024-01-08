@@ -7,5 +7,8 @@ route.get("/:userId", ServicesController.getAllServicesOneUser)
 route.post("/:userId", ServicesController.addService)
 route.delete("/:userId/:serviceId", ServicesController.deleteService)
 route.put("/:userId/:serviceId" , ServicesController.updateService)
+route.post("/UpVote/:userId/:serviceId", ServicesController.upVoteService)
+route.post("/DownVote/:userId/:serviceId", ServicesController.downVoteService)
+route.get("/Likes" , ServicesController.getAllLikesService)
 
 export default route;

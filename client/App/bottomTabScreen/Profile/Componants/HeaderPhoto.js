@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
+import { ProfileContext } from "../../../Context/ProfileContext";
 
-const HeaderPhoto = ({ profileData }) => {
+const HeaderPhoto = () => {
+  const { ProfileData } = useContext(ProfileContext);
+
   return (
     <View>
       <ImageBackground
         source={{
-          uri: profileData.cover,
+          uri: ProfileData.cover,
         }}
         style={styles.backgroundImage}
       >
@@ -14,16 +17,16 @@ const HeaderPhoto = ({ profileData }) => {
       </ImageBackground>
 
       <View style={styles.profileContainer}>
-          <Image
-            source={{
-              uri: profileData.pdp,
-            }}
-            style={styles.profileImage}
-          />
+        <Image
+          source={{
+            uri: ProfileData.pdp,
+          }}
+          style={styles.profileImage}
+        />
 
         <View style={styles.descriptionContainer}>
           <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>{profileData.project.length}</Text>
+            <Text style={styles.detailText}>{ProfileData.project?.length}</Text>
             <Text style={styles.detailLabel}>Projects</Text>
           </View>
 
@@ -43,8 +46,6 @@ const HeaderPhoto = ({ profileData }) => {
 };
 
 const styles = StyleSheet.create({
-
-
   backgroundImage: {
     width: "100%",
     height: 130,

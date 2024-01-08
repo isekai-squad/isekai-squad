@@ -21,10 +21,10 @@ const Basket = () => {
   useEffect(() => {
     fetchBasket();
   }, []);
- 
+
   const fetchBasket = async () => {
     try {
-      const response = await axios.get(`http://172.20.0.88:4070/baskets/1`);
+      const response = await axios.get(`http://192.168.1.29:4070/baskets/1`);
       setBasketItems(response.data);
     } catch (error) {
       console.error("Error fetching basket:", error);
@@ -33,7 +33,7 @@ const Basket = () => {
 
   const deleteFromBasket = async (serviceId) => {
     try {
-      await axios.delete(`http://172.20.0.88:4070/baskets/1/${serviceId}`);
+      await axios.delete(`http://192.168.1.29:4070/baskets/1/${serviceId}`);
       fetchBasket();
     } catch (error) {
       console.error("Error deleting from basket:", error);
@@ -51,7 +51,7 @@ const Basket = () => {
           <AntDesign name="delete" size={25} color="white" />
         </View>
       ),
-      backgroundColor: "#FF4F4F",
+      backgroundColor: "#d41f35",
       onPress: () => {
         setSwipeoutOpen(false);
         deleteFromBasket(serviceId);
@@ -90,25 +90,25 @@ const Basket = () => {
                     </Text>
                   </View>
                   <View style={styles.container}>
-                    {/* <TouchableOpacity
+                    <TouchableOpacity
                       style={styles.buyButton}
                       onPress={async () => await  openPaymentSheet()}
                     >
                       <Text style={styles.buttonText}>Buy</Text>
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
             </Animated.View>
           </Swipeout>
-          
+
           ))}
-        
+
       </View>
       <Text style={styles.totalPrice}>
         Total Price: ${calculateTotalPrice()}
       </Text>
-          <CheckoutScreen/>
+          {/* <CheckoutScreen/> */}
     </View>
   );
 };
@@ -136,10 +136,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
-    marginBottom: 11,
+    
     backgroundColor: "#fff",
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: "#d41f35",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -186,3 +186,160 @@ const styles = StyleSheet.create({
 });
 
 export default Basket;
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   Image,
+//   TouchableOpacity,
+//   StyleSheet,
+//   Animated,
+// } from "react-native";
+// import axios from "axios";
+// import Swipeout from "react-native-swipeout";
+// import Ionicons from "react-native-vector-icons/Ionicons";
+
+// const favoriteList = () => {
+//   const [faveritem, setfaverlist] = useState([]);
+
+//   useEffect(() => {
+//     fetchFavoriteList();
+//   }, []);
+
+//   const fetchFavoriteList = async () => {
+//     try {
+//       const response = await axios.get(`http://192.168.1.29:4070/favorit/1`);
+//       setfaverlist(response.data);
+//     } catch (error) {
+//       console.error("Error fetching basket:", error);
+//     }
+//   };
+
+//   const deleteFromFavorites = async (itemId) => {
+//     try {
+//       await axios.delete(`http://192.168.1.29:4070/favorit/1/${itemId}`);
+//       fetchFavoriteList();
+//     } catch (error) {
+//       console.error("Error deleting from favorites:", error);
+//     }
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.heading}>FavoriteList </Text>
+//       <View style={styles.itemsContainer}>
+//         {faveritem.map((item) => (
+//           <Swipeout key={item.id}>
+//             <View style={styles.itemContainer}>
+//               <View style={styles.itemContainer}>
+//                 <Image
+//                   style={styles.image}
+//                   source={{ uri: item.Service.image }}
+//                 />
+//                 <View style={styles.textContainer}>
+//                   <Text style={styles.title}>{item.Service.title}</Text>
+//                   <Text style={styles.price}>{item.Service.Price}</Text>
+//                   <Text style={styles.description}>
+//                     {item.Service.description}
+//                   </Text>
+//                   <Text style={styles.createdAt}>
+//                     {item.Service.created_at}
+//                   </Text>
+//                 </View>
+//                 <View style={styles.container}></View>
+//                 <Ionicons
+//                   name="heart-dislike-sharp"
+//                   size={30}
+//                   color="red"
+//                   onPress={() => deleteFromFavorites(item.id)}
+//                 />
+//               </View>
+//             </View>
+
+//             <View></View>
+//           </Swipeout>
+//         ))}
+//       </View>
+//     </View>
+//   );
+// };
+// const styles = StyleSheet.create({
+//   container: {
+//     padding: 20,
+//   },
+
+//   totalPrice: {
+//     fontSize: 18,
+//     fontWeight: "bold",
+//     marginTop: 20,
+//   },
+
+//   heading: {
+//     alignItems: "ce",
+//     fontSize: 30,
+//     fontWeight: "bold",
+//     marginBottom: 10,
+//   },
+//   itemsContainer: {
+//     marginTop: 10,
+//   },
+//   itemContainer: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     padding: 10,
+//     backgroundColor: "#d9e3f0",
+//     borderRadius: 9,
+//     shadowColor: "red",
+//     shadowOffset: {
+//       width: 0,
+//       height: 2,
+//     },
+//     shadowOpacity: 0.25,
+//     shadowRadius: 3.84,
+//     elevation: 5,
+//   },
+//   image: {
+//     width: 80,
+//     height: 80,
+//     borderRadius: 5,
+//     marginRight: 10,
+//   },
+//   textContainer: {
+//     flex: 1,
+//   },
+//   title: {
+//     fontSize: 16,
+//     fontWeight: "bold",
+//   },
+//   price: {
+//     fontSize: 14,
+//     color: "#8244CB",
+//   },
+//   description: {
+//     fontSize: 14,
+//     color: "#555",
+//   },
+//   createdAt: {
+//     fontSize: 12,
+//     color: "#777",
+//   },
+//   buyButton: {
+//     backgroundColor: "#8244CB",
+//     padding: 10,
+//     borderRadius: 5,
+//     marginLeft: 10,
+//   },
+//   buttonText: {
+//     color: "#fff",
+//     fontWeight: "bold",
+//   },
+// });
+
+// export default favoriteList;
