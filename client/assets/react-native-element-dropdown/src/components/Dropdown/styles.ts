@@ -1,4 +1,5 @@
 import { I18nManager, StyleSheet } from 'react-native';
+import { STYLES } from '../../../../../GlobalCss';
 
 export const styles = StyleSheet.create({
   mainWrap: {
@@ -26,7 +27,7 @@ export const styles = StyleSheet.create({
   flex1: {
     flex: 1,
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: STYLES.COLORS.ShadowColor,
 
   },
   flexShrink: {

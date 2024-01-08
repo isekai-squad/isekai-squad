@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
+import { STYLES } from "../../../../GlobalCss";
 
 function HeaderPhoto() {
   return (
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   darkness: {
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: STYLES.COLORS.ShadowColor,
     width: "100%",
     height: 130,
   },
