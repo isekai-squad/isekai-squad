@@ -8,7 +8,7 @@ const Basket = () => {
   const [basketItems, setBasketItems] = useState([]);
 
   useEffect(() => {
-    fetchBasket();
+    // fetchBasket();
   }, []);
 
   const fetchBasket = async () => {
