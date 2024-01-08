@@ -21,12 +21,15 @@ export const MainContainer = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          height: 50,
+          height: 60,
           borderTopLeftRadius: 50,
           borderTopRightRadius: 50,
           paddingBottom: 5,
+          backfaceVisibility: "hidden",
           display: activeMiddleTab == "Edit" ? "none" : "flex",
+          position: 'absolute',
         },
+    
         tabBarIcon: ({ focused, size }) => {
           let iconName;
           let iconColor;
@@ -45,16 +48,12 @@ export const MainContainer = () => {
             return (
               <MaterialIcons name={iconName} size={size} color={iconColor} />
             );
-          }else if (route.name === "Community"){
-            iconName = focused? "people" : "people-outline";
-            return (
-              <Ionicons name={iconName} size={size} color={iconColor} />
-            );
-          }else if (route.name === 'Post'){
-            iconName = focused? "add-circle" : "add-circle-outline";
-            return (
-              <Ionicons name={iconName} size={size} color={iconColor} />
-            )
+          } else if (route.name === "Community") {
+            iconName = focused ? "people" : "people-outline";
+            return <Ionicons name={iconName} size={size} color={iconColor} />;
+          } else if (route.name === "Post") {
+            iconName = focused ? "add-circle" : "add-circle-outline";
+            return <Ionicons name={iconName} size={size} color={iconColor} />;
           }
         },
       })}
@@ -68,31 +67,20 @@ export const MainContainer = () => {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        // options={{ headerShown: false }}
-          options={({ navigation }) => ({
-                headerTitle: () => (
-                  <SearchHeader
-                    onChangeText={(text) => console.log("Search:", text)}
-                    
-                  />
-                ),
-                headerTitleContainerStyle: { width: "100%" },
-              })
-          
-            }
+        options={({ navigation }) => ({
+          headerTitle: () => (
+            <SearchHeader
+              onChangeText={(text) => console.log("Search:", text)}
+            />
+          ),
+          headerTitleContainerStyle: { width: "100%" },
+        })}
       />
 
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-           
-            options={{ headerShown: false }}
-      />
-      <Tab.Screen
-      name='Post'
-      component={CreatePost}
-      options={{headerShown:false}}
-      
+        name="Post"
+        component={CreatePost}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Community"
@@ -102,6 +90,11 @@ export const MainContainer = () => {
       <Tab.Screen
         name="basket"
         component={basket}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>
