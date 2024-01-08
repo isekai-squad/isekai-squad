@@ -108,7 +108,10 @@ const styles = {
   tagText: {
     color: "#555",
     fontSize: 13,
-  },
+
+textTransform:"capitalize",
+  }
+  ,
 };
 
 export default Bio;

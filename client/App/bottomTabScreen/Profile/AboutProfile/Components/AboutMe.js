@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     fontSize: STYLES.SIZES.sizeM,
     fontWeight: STYLES.FONTS.bold,
     marginRight: 10,
-    color: "rgba(0,0,0,0.5)",
+    color: STYLES.COLORS.ShadowColor,
   },
   value: {
     fontSize: STYLES.SIZES.sizeM,

@@ -128,7 +128,7 @@ export const getAllProjectOneUser = async (req : Request , res :Response) => {
     let {userId} = req.params
     try {
         const result = await prisma.project.findMany({
-            where : {userId}
+            where : {userId},
         })
         res.status(200).json(result)
     }catch (err) {

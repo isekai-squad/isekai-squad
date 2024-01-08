@@ -2,6 +2,7 @@ export const STYLES = {
   COLORS: {
     Priamary: "#8244CB",
     Secondry: "#F3CCF3",
+    ShadowColor:"rgba(0,0,0,0.5)"
   },
 
   FONTS: {

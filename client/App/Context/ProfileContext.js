@@ -2,14 +2,13 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { storage } from "../../FirebaseConfig";
-import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
 
 export const ProfileContext = createContext();
 export const ProfileProvider = ({ children }) => {
   const navigation = useNavigation();
 
-  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [showSelectTech, setShowSelectTech] = useState(false);
   const [ProfileData, setProfileData] = useState({});
@@ -28,10 +27,19 @@ export const ProfileProvider = ({ children }) => {
   const {
     data: UserData,
     isLoading: LoadingProfile,
-    refetch,
+    refetch: refetchProfile,
   } = useQuery({
     queryKey: ["profile", userId],
     queryFn: () => fetchProfile(userId),
+  });
+
+  const {
+    data: profilePosts,
+    isLoading,
+    refetch: refetchPosts,
+  } = useQuery({
+    queryKey: ["posts", userId],
+    queryFn: () => fetchPosts(userId),
   });
 
   const { mutateAsync: mutateAsyncInfo } = useMutation({
@@ -66,9 +74,9 @@ export const ProfileProvider = ({ children }) => {
       await uploadBytes(imageRef, blob);
 
       const downloadURL = await getDownloadURL(imageRef);
-      console.log('====================================');
+      console.log("====================================");
       console.log(downloadURL);
-      console.log('====================================');
+      console.log("====================================");
       return { url: downloadURL, type: imageType };
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -137,7 +145,7 @@ export const ProfileProvider = ({ children }) => {
       value={{
         LoadingProfile,
         loading,
-        refetch,
+        refetchProfile,
         ProfileData,
         setProfileData,
         activeMiddleTab,
@@ -158,6 +166,8 @@ export const ProfileProvider = ({ children }) => {
         setShowSelectTech,
         handleSubmit,
         userId,
+        profilePosts,
+        refetchPosts,
       }}
     >
       {children}
@@ -218,6 +228,23 @@ export async function updateProfileTechnologie(data, userId) {
     );
     console.log("yeeee2222");
     return response.data;
+  } catch (error) {
+    console.error("Error updating technologie:", error);
+    throw error;
+  }
+}
+
+export async function fetchPosts(userId) {
+  console.log("====================================");
+  console.log(userId);
+  console.log("====================================");
+  try {
+    const response = await fetch(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/${userId}`
+    );
+    console.log("yeeee2222");
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error updating technologie:", error);
     throw error;
