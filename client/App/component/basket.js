@@ -7,19 +7,21 @@ import {
   StyleSheet,
   Animated,
 } from "react-native";
+import CheckoutScreen from "./Stripe"
 import Swipeout from "react-native-swipeout";
 import axios from "axios";
-import openPaymentSheet from "./FunPayement";
+
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 const Basket = () => {
+
   const [basketItems, setBasketItems] = useState([]);
   const [swipeoutOpen, setSwipeoutOpen] = useState(false);
 
   useEffect(() => {
     fetchBasket();
   }, []);
-
+ 
   const fetchBasket = async () => {
     try {
       const response = await axios.get(`http://172.20.0.88:4070/baskets/1`);
@@ -88,22 +90,25 @@ const Basket = () => {
                     </Text>
                   </View>
                   <View style={styles.container}>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       style={styles.buyButton}
-                      onPress={async () => await FunPayement.openPaymentSheet()}
+                      onPress={async () => await  openPaymentSheet()}
                     >
                       <Text style={styles.buttonText}>Buy</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                 </View>
               </View>
             </Animated.View>
           </Swipeout>
-        ))}
+          
+          ))}
+        
       </View>
       <Text style={styles.totalPrice}>
         Total Price: ${calculateTotalPrice()}
       </Text>
+          <CheckoutScreen/>
     </View>
   );
 };

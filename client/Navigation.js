@@ -8,12 +8,16 @@ import SignIn from "./App/Screens/Authentication/SignIn/SignIn";
 import Signup from "./App/Screens/Authentication/signUp/signup";
 import QR_code from "./App/component/QR_code";
 import FlexDimensionsBasics from "./App/bottomTabScreen/About/AboutScreen";
+// import CheckoutScreen from "./App/component/Stripe";
+
 const Stack = createStackNavigator();
 
 export const Navigation = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
+    <NavigationContainer >
+      <Stack.Navigator
+          // initialRouteName="aboutScreen"
+       >
         <Stack.Screen
           name="tabs"
           component={MainContainer}
@@ -45,13 +49,14 @@ export const Navigation = () => {
           name="signIn"
           component={SignIn}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{
             headerShown: false,
           }}
           name="signUp"
           component={Signup}
         />
+        <Stack.Screen name="stripetest" component={CheckoutScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

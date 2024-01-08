@@ -81,7 +81,7 @@ const FlexDimensionsBasics = () => {
             Save to gallery
           </Text>
         </View>
-
+          <Text onPress={()=>navigation.navigate('stripetest')}>go to test</Text>
         <View>
           <Text style={styles.share}>Share my code</Text>
           <AntDesign

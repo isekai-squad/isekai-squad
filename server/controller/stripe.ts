@@ -5,7 +5,7 @@ import express from "express";
 import stripeLib from "stripe";
 
 const prisma = new PrismaClient();
-const stripeSecretKey = process.env.STRIPE_KEY || ""
+const stripeSecretKey = process.env.STRIPE_KEY ||""
 
 const stripe = new stripeLib(stripeSecretKey);
 
