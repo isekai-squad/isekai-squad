@@ -1,22 +1,26 @@
 import React from "react";
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity, ImageBackground } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 // import { Image } from '@gluestack-ui/themed';
 import Post from "./Post";
 import { Box } from "@gluestack-ui/themed";
+import { useNavigation } from "@react-navigation/native";
 
 const Posts = () => {
   const arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+  const navigation = useNavigation();
   return (
     <ScrollView style={{backgroundColor : 'white'}}>
       <View style={{backgroundColor : 'white'}}>
-        <Image
+        <ImageBackground
           source={{
             uri: "https://img.freepik.com/premium-photo/man-woman-are-working-computer-with-laptop-computer-screen-with-word-com-it_745528-1518.jpg",
           }}
           alt="404"
           style={{ width: 400, height: 200 }}
-        />
+        >
+                <Icon name='arrow-left-thin' size={50} style={{position : 'absolute' , top : 30 , left : 10}} color="#674188" onPress={() => navigation.navigate('Community')}/>
+        </ImageBackground>
         <View
           style={{
             display: "flex",

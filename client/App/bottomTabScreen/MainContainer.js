@@ -10,6 +10,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ProfileContext } from "../Context/ProfileContext";
 import ForumCategories from "../component/Posts/ForumCategories";
+import CreatePost from "../component/Posts/CreatePost";
+import SearchHeader from "../component/SearchHeader";
 const Tab = createBottomTabNavigator();
 
 export const MainContainer = () => {
@@ -48,6 +50,11 @@ export const MainContainer = () => {
             return (
               <Ionicons name={iconName} size={size} color={iconColor} />
             );
+          }else if (route.name === 'Post'){
+            iconName = focused? "add-circle" : "add-circle-outline";
+            return (
+              <Ionicons name={iconName} size={size} color={iconColor} />
+            )
           }
         },
       })}
@@ -61,7 +68,18 @@ export const MainContainer = () => {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
+          options={({ navigation }) => ({
+                headerTitle: () => (
+                  <SearchHeader
+                    onChangeText={(text) => console.log("Search:", text)}
+                    
+                  />
+                ),
+                headerTitleContainerStyle: { width: "100%" },
+              })
+          
+            }
       />
 
       <Tab.Screen
@@ -70,7 +88,12 @@ export const MainContainer = () => {
            
             options={{ headerShown: false }}
       />
-
+      <Tab.Screen
+      name='Post'
+      component={CreatePost}
+      options={{headerShown:false}}
+      
+      />
       <Tab.Screen
         name="Community"
         component={ForumCategories}
