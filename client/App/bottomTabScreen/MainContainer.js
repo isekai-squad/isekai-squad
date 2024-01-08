@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import HomeScreen from "./Home/HomeScreen";
 import AboutScreen from "./About/AboutScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
@@ -8,9 +8,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { ProfileContext } from "../Context/ProfileContext";
 const Tab = createBottomTabNavigator();
 
 export const MainContainer = () => {
+  const { activeMiddleTab } = useContext(ProfileContext);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -19,6 +22,7 @@ export const MainContainer = () => {
           borderTopLeftRadius: 50,
           borderTopRightRadius: 50,
           paddingBottom: 5,
+          display: activeMiddleTab == "Edit" ? "none" : "flex",
         },
         tabBarIcon: ({ focused, size }) => {
           let iconName;
@@ -57,8 +61,10 @@ export const MainContainer = () => {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ headerShown: false }}
+           
+            options={{ headerShown: false }}
       />
+
       <Tab.Screen
         name="basket"
         component={basket}

@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MainContainer } from "./App/bottomTabScreen/MainContainer";
-import { Test } from "./App/component/Test";
 import SearchHeader from "./App/component/SearchHeader";
 import SignIn from "./App/Screens/Authentication/SignIn/SignIn";
 import Signup from "./App/Screens/Authentication/signUp/signup";
 import QR_code from "./App/component/QR_code";
 import FlexDimensionsBasics from "./App/bottomTabScreen/About/AboutScreen";
+import EditProfile from "./App/Screens/EditProfile/EditProfileScreen";
+import { ProfileProvider } from "./App/Context/ProfileContext";
 const Stack = createStackNavigator();
 
 export const Navigation = () => {
   return (
     <NavigationContainer>
+       <ProfileProvider >
       <Stack.Navigator>
         <Stack.Screen
           name="tabs"
@@ -31,7 +33,16 @@ export const Navigation = () => {
           component={FlexDimensionsBasics}
           options={{ headerShown: false }}
         />
-      
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{
+            headerTitle: "",
+            headerLeft: null,
+            headerStyle: { height: 50 },
+          }}
+        />
+
         <Stack.Screen
           name="ScanCode"
           component={QR_code}
@@ -53,6 +64,8 @@ export const Navigation = () => {
           component={Signup}
         />
       </Stack.Navigator>
+      </ProfileProvider>
+
     </NavigationContainer>
   );
 };

@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import { STYLES } from "../../../../GlobalCss";
+import { ProfileContext } from "../../../Context/ProfileContext";
 
-const Bio = ({ profileData }) => {
-  console.log(profileData);
+const Bio = () => {
+  const { ProfileData } = useContext(ProfileContext);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.nameContainer}>
-          <Text style={styles.name}>{profileData.name}</Text>
-          <Text style={styles.role}>{profileData.role}</Text>
+          <Text style={styles.name}>{ProfileData.name}</Text>
+          <Text style={styles.role}>{ProfileData.role}</Text>
         </View>
 
-        <Text style={styles.username}>@ {profileData.userName}</Text>
+        <Text style={styles.username}>@ {ProfileData.userName}</Text>
       </View>
 
       <View style={styles.detailsContainer}>
-        <Text style={styles.detailText}>{profileData.location}</Text>
+        <Text style={styles.detailText}>{ProfileData.location}</Text>
         <Text style={styles.detailText}>|</Text>
-        {/* <Text style={styles.detailText}>{profileData.specialty[0].name}</Text> */}
+        <Text style={styles.detailText}>{ProfileData.specialty[0].name}</Text>
       </View>
 
       <ScrollView
@@ -27,7 +29,7 @@ const Bio = ({ profileData }) => {
         contentContainerStyle={styles.scrollViewContent}
       >
         <View style={styles.interestingContainer}>
-          {profileData.Technologies.map((technologie, i) => (
+          {ProfileData.Technologies.map((technologie, i) => (
             <TouchableOpacity key={i} style={styles.interestingTag}>
               <Image
                 source={{ uri: technologie.image }}
