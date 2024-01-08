@@ -1,13 +1,11 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { app } from "../../FirebaseConfig";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../FirebaseConfig";
+import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
 
 export const ProfileContext = createContext();
-const storageRef = ref(getStorage(app));
-
 export const ProfileProvider = ({ children }) => {
   const navigation = useNavigation();
 
@@ -41,7 +39,7 @@ export const ProfileProvider = ({ children }) => {
       setLoading(true);
       try {
         const response = await updateProfile(userId, data);
-        setLoading(false); 
+        setLoading(false);
         return response;
       } catch (error) {
         setLoading(false);
@@ -63,10 +61,14 @@ export const ProfileProvider = ({ children }) => {
       const blob = await response.blob();
       const filename = imageFile.substring(imageFile.lastIndexOf("/") + 1);
 
+      const storageRef = ref(storage, `/profileImage/${UserData.name}`);
       const imageRef = ref(storageRef, filename);
       await uploadBytes(imageRef, blob);
 
       const downloadURL = await getDownloadURL(imageRef);
+      console.log('====================================');
+      console.log(downloadURL);
+      console.log('====================================');
       return { url: downloadURL, type: imageType };
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -75,7 +77,7 @@ export const ProfileProvider = ({ children }) => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); 
+    setLoading(true);
     let updatedProfileImage = null;
     let updatedCoverImage = null;
 
@@ -113,7 +115,7 @@ export const ProfileProvider = ({ children }) => {
     } catch (error) {
       console.error("Error during submission:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 

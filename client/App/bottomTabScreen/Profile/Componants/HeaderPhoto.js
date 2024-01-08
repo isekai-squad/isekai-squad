@@ -17,12 +17,12 @@ const HeaderPhoto = () => {
       </ImageBackground>
 
       <View style={styles.profileContainer}>
-          <Image
-            source={{
-              uri: ProfileData.pdp,
-            }}
-            style={styles.profileImage}
-          />
+        <Image
+          source={{
+            uri: ProfileData.pdp,
+          }}
+          style={styles.profileImage}
+        />
 
         <View style={styles.descriptionContainer}>
           <View style={styles.descriptionDetails}>
@@ -46,8 +46,6 @@ const HeaderPhoto = () => {
 };
 
 const styles = StyleSheet.create({
-
-
   backgroundImage: {
     width: "100%",
     height: 130,
