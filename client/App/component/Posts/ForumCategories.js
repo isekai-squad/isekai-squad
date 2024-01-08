@@ -2,22 +2,35 @@ import { Image } from "@gluestack-ui/themed";
 import { Box, Center } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ScrollView, ImageBackground } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Feather'
-
+import  { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 const ForumCategories = () => {
     let arr = [1,1,1,1,1,1,]
     const navigation = useNavigation()
+    // const {data , isLoading , error} = useQuery({
+    //     queryKey: ['forumCategories'],
+    //     queryFn: async () => {
+    //      return axios.get('http://172.20.0.74:4070/Category/').then((res) => res.data).catch((err) =>{ throw(err)});
+    //     }
+    // })
 
+    // if(isLoading) {
+    //     return (
+    //         <View style={[styles.loadingContainer , styles.horizontal]}>
+    //             <ActivityIndicator size='large' color='#674188'/>
+    //         </View>
+    //     )
+    // }
+    // if(error) <Text>{error.message}</Text>
+    
     return (
         <ScrollView>
          <View as={SafeAreaView} style = {styles.container}>
          <Center style={{flexDirection : 'row', justifyContent : 'space-between' , padding : 20}}>
-         {/* <TouchableOpacity style={{position : 'absolute' , top : 45 , left:10}}>
-             <Icon name='arrow-left-thin' size={40} color='#674188' onPress={() => navigation.navigate('Posts') }/>
-            </TouchableOpacity> */}
              <Text style={{fontSize : 24 , fontWeight : 'bold'}}>Explore by categories</Text>
              <TouchableOpacity>
              <Icon name='search' size={24}/>
@@ -47,7 +60,16 @@ const ForumCategories = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    }
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+      },
+      horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10,
+      },
 });
 
 export default ForumCategories

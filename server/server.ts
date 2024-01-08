@@ -76,8 +76,8 @@ import technologiesRoute from "./router/Technologies_route"
 import postsCommentsRoute from "./router/PostsComment_route"
 app.use('/Expertise', technologiesRoute);
 app.use('/Comments', postsCommentsRoute);
-
-
+import CategoryRoute from './router/Category_route'
+app.use('/Category', CategoryRoute)
 
 
 

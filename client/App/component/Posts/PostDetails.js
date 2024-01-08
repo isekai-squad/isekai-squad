@@ -44,7 +44,7 @@ const PostDetails = () => {
              <TouchableOpacity style={{position : 'absolute' , top : 45 , left:10}}>
              <Icon name='arrow-left-thin' size={40} color='#674188' onPress={() => navigation.navigate('Posts') }/>
              </TouchableOpacity>
-             <Text style={{fontSize:25 , padding:20 , fontWeight : 'bold' , letterSpacing : 4 , lineHeight : 50}}>The top 5 travel destination for 2024</Text>
+             <Text style={{fontSize:25 , padding:20 , fontWeight : 'bold' , letterSpacing : 4 , lineHeight : 50}}>Lorem ipsum dolor sit amet</Text>
              <Divider />
              <Box style={{padding :10 , flexDirection: 'row'}}>
                 <Avatar size = 'lg'>
