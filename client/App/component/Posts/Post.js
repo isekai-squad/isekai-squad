@@ -21,8 +21,6 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 
 const Post = () => {
   const navigation = useNavigation();
-  let mobileWidth = Dimensions.get("window").width;
-  console.log(mobileWidth);
   return (
     <Box h={200} style={Styles.container}>
       <Image
@@ -60,6 +58,7 @@ const Post = () => {
               source={{
                 uri: "https://pbs.twimg.com/media/GAXaW5CWIAElaqj.jpg",
               }}
+              alt="404"
             />
           </Avatar>
           <Text style={{ marginLeft: 10, color: "#674188" }}  onPress={()=> navigation.navigate('UserProfile')}>author name</Text>
