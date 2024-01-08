@@ -1,11 +1,12 @@
-import express from "express";
-import * as Technologies_controller from "../controller/Technologies_controller";
-const technologiesRouter = express.Router();
-technologiesRouter.get("/", Technologies_controller.getAllTechno);
-technologiesRouter.delete("/:id", Technologies_controller.deleteTechnology);
-technologiesRouter.post("/:id", Technologies_controller.addNewTechnology);
-technologiesRouter.post("/user/:id", Technologies_controller.addUserTechnology);
+import * as technologyController from "../controller/Technologies_controller";
 
-export default technologiesRouter;
+const route = require("express").Router();
 
+route.get("/", technologyController.getAllTechno);
+route.post("/user/:id", technologyController.addUserTechnology);
+route.post("/Technology", technologyController.addNewTechnology);
+route.delete("/Technology", technologyController.deleteTechnology);
+route.post("/Speciality", technologyController.addSpeciality);
+route.delete("/Speciality", technologyController.deleteSpeciality);
 
+export default route;

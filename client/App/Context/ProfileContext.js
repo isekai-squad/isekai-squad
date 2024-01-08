@@ -113,7 +113,7 @@ export const ProfileProvider = ({ children }) => {
     } catch (error) {
       console.error("Error during submission:", error);
     } finally {
-      setLoading(false); // Set loading to false after the submission
+      setLoading(false); 
     }
   };
 

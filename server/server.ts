@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-// rsconfig();
+ config();
 import { userRoutes } from "./router/user_router";
 import postsRoute from "./router/Posts_route";
 import servicesRoute from "./router/Services_route";
@@ -21,13 +21,13 @@ import notification from "./router/notification_route";
 app.use("/forumPost", forumPost);
 app.use("/forumComment", forumComment);
 app.use("/notification", notification);
-// ===================================Ahmed==============================
+// // ===================================Ahmed==============================
 
-//===============================Adam====================================
+// //===============================Adam====================================
 app.use("/api", userRoutes);
 app.use("/technologie", technoRoute);
-//===============================Adam=====================================
-//===============================Ameur====================================
+// //===============================Adam=====================================
+// //===============================Ameur====================================
 
 import favotitRouter from "./router/favorite_route";
 import basket from "./router/basket_route";
@@ -39,11 +39,18 @@ app.use("/baskets", basket);
 app.use("/api", router);
 // app.use("/stripe",stripe)
 
-//===============================Ameur=====================================
-//===============================Hasan====================================
+// //===============================Ameur=====================================
+// //===============================Hasan====================================
 app.use("/Posts", postsRoute);
 app.use("/Services", servicesRoute);
 app.use("/Reports", reportsRoute);
+app.use("/Posts", postsRoute);
+app.use("/Services", servicesRoute);
+app.use("/Reports", reportsRoute);
+import technologiesRoute from "./router/Technologies_route";
+import postsCommentsRoute from "./router/PostsComment_route";
+app.use("/Expertise", technologiesRoute);
+app.use("/Comments", postsCommentsRoute);
 
 //===============================Hasan=====================================
 app.listen(process.env.PORT, () => {

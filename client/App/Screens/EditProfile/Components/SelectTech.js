@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 import { StyleSheet, ActivityIndicator } from "react-native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ToastAndroid } from "react-native";
-import { SelectCountry } from "react-native-element-dropdown";
+import { SelectCountry } from "../../../../assets/react-native-element-dropdown";
 import { ProfileContext } from "../../../Context/ProfileContext";
 import { fetchTechnologie } from "../../../Context/ProfileContext";
 import { STYLES } from "../../../../GlobalCss";
@@ -23,38 +23,37 @@ const SelectTech = () => {
     return <ActivityIndicator size="large" color={STYLES.COLORS.Priamary} />;
   }
 
-
   // const memoizedSelectCountry = useMemo(() => {
-    return (
-      <SelectCountry
-        style={styles.dropdown}
-        selectedTextStyle={styles.selectedTextStyle}
-        placeholderStyle={styles.placeholderStyle}
-        imageStyle={styles.imageStyle}
-        iconStyle={styles.iconStyle}
-        maxHeight={300}
-        search
-        data={TechnoData}
-        valueField="name"
-        labelField="name"
-        imageField="image"
-        placeholder="Select Technologie"
-        searchPlaceholder="Search..."
-        onChange={(e) => {
-          let selected = mainSkills.some((ele) => ele.name === e?.name);
+  return (
+    <SelectCountry
+      style={styles.dropdown}
+      selectedTextStyle={styles.selectedTextStyle}
+      placeholderStyle={styles.placeholderStyle}
+      imageStyle={styles.imageStyle}
+      iconStyle={styles.iconStyle}
+      maxHeight={300}
+      search
+      data={TechnoData}
+      valueField="name"
+      labelField="name"
+      imageField="image"
+      placeholder="Select Technologie"
+      searchPlaceholder="Search..."
+      onChange={(e) => {
+        let selected = mainSkills.some((ele) => ele.name === e?.name);
 
-          if (!selected) {
-            setMainSkills((prevMainSkills) => [...prevMainSkills, e]);
-          } else {
-            ToastAndroid.showWithGravity(
-              "You already possess the skill you're trying to add. No changes made.",
-              ToastAndroid.SHORT,
-              ToastAndroid.CENTER
-            );
-          }
-        }}
-      />
-    );
+        if (!selected) {
+          setMainSkills((prevMainSkills) => [...prevMainSkills, e]);
+        } else {
+          ToastAndroid.showWithGravity(
+            "You already possess the skill you're trying to add. No changes made.",
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+          );
+        }
+      }}
+    />
+  );
   // }, [TechnoData]);
 
   // return <>{memoizedSelectCountry}</>;

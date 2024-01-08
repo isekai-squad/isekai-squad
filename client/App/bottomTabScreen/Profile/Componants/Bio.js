@@ -5,43 +5,47 @@ import { ProfileContext } from "../../../Context/ProfileContext";
 
 const Bio = () => {
   const { ProfileData } = useContext(ProfileContext);
-
+  if (!ProfileData) {
+    return <Text>Loading...</Text>;
+  }
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <View style={styles.nameContainer}>
-          <Text style={styles.name}>{ProfileData.name}</Text>
-          <Text style={styles.role}>{ProfileData.role}</Text>
+    ProfileData && (
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <View style={styles.nameContainer}>
+            <Text style={styles.name}>{ProfileData.name}</Text>
+            <Text style={styles.role}>{ProfileData.role}</Text>
+          </View>
+
+          <Text style={styles.username}>@ {ProfileData.userName}</Text>
         </View>
 
-        <Text style={styles.username}>@ {ProfileData.userName}</Text>
-      </View>
-
-      <View style={styles.detailsContainer}>
-        <Text style={styles.detailText}>{ProfileData.location}</Text>
-        <Text style={styles.detailText}>|</Text>
-        <Text style={styles.detailText}>{ProfileData.specialty[0].name}</Text>
-      </View>
-
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
-      >
-        <View style={styles.interestingContainer}>
-          {ProfileData.Technologies.map((technologie, i) => (
-            <TouchableOpacity key={i} style={styles.interestingTag}>
-              <Image
-                source={{ uri: technologie.image }}
-                style={styles.tagImage}
-              />
-
-              <Text style={styles.tagText}>{technologie.name}</Text>
-            </TouchableOpacity>
-          ))}
+        <View style={styles.detailsContainer}>
+          <Text style={styles.detailText}>{ProfileData.location}</Text>
+          <Text style={styles.detailText}>|</Text>
+          <Text style={styles.detailText}>{ProfileData.specialty[0].name}</Text>
         </View>
-      </ScrollView>
-    </View>
+
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContent}
+        >
+          <View style={styles.interestingContainer}>
+            {ProfileData.Technologies.map((technologie, i) => (
+              <TouchableOpacity key={i} style={styles.interestingTag}>
+                <Image
+                  source={{ uri: technologie.image }}
+                  style={styles.tagImage}
+                />
+
+                <Text style={styles.tagText}>{technologie.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    )
   );
 };
 const styles = {
@@ -102,7 +106,7 @@ const styles = {
     borderRadius: 100,
   },
   tagText: {
-    color: '#555', 
+    color: "#555",
     fontSize: 13,
   },
 };

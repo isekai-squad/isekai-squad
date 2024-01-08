@@ -147,6 +147,7 @@ CREATE TABLE "Forum_Posts" (
     "images" TEXT[],
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT,
+    "forum_CategoryId" TEXT,
 
     CONSTRAINT "Forum_Posts_pkey" PRIMARY KEY ("id")
 );
@@ -218,6 +219,15 @@ CREATE TABLE "Specialty" (
     CONSTRAINT "Specialty_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Forum_Category" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+
+    CONSTRAINT "Forum_Category_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -280,6 +290,9 @@ ALTER TABLE "Basket" ADD CONSTRAINT "Basket_serviceId_fkey" FOREIGN KEY ("servic
 
 -- AddForeignKey
 ALTER TABLE "Forum_Posts" ADD CONSTRAINT "Forum_Posts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Forum_Posts" ADD CONSTRAINT "Forum_Posts_forum_CategoryId_fkey" FOREIGN KEY ("forum_CategoryId") REFERENCES "Forum_Category"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FPost_comments" ADD CONSTRAINT "FPost_comments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

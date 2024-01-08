@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ProfileContext } from "../Context/ProfileContext";
+import ForumCategories from "../component/Posts/ForumCategories";
 const Tab = createBottomTabNavigator();
 
 export const MainContainer = () => {
@@ -42,6 +43,11 @@ export const MainContainer = () => {
             return (
               <MaterialIcons name={iconName} size={size} color={iconColor} />
             );
+          }else if (route.name === "Community"){
+            iconName = focused? "people" : "people-outline";
+            return (
+              <Ionicons name={iconName} size={size} color={iconColor} />
+            );
           }
         },
       })}
@@ -65,6 +71,11 @@ export const MainContainer = () => {
             options={{ headerShown: false }}
       />
 
+      <Tab.Screen
+        name="Community"
+        component={ForumCategories}
+        options={{ headerShown: false }}
+      />
       <Tab.Screen
         name="basket"
         component={basket}

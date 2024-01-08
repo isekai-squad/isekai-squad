@@ -176,15 +176,17 @@ model Basket {
 }
 
 model Forum_Posts {
-  id         String           @id @default(uuid())
-  title      String
-  content    String           @db.Text
-  images     String[]         @db.Text
-  created_at DateTime         @default(now())
-  User       User?            @relation(fields: [userId], references: [id])
-  userId     String?
-  comments   FPost_comments[]
-  likes      Likes[]
+  id               String           @id @default(uuid())
+  title            String
+  content          String           @db.Text
+  images           String[]         @db.Text
+  created_at       DateTime         @default(now())
+  User             User?            @relation(fields: [userId], references: [id])
+  userId           String?
+  comments         FPost_comments[]
+  likes            Likes[]
+  Forum_Category   Forum_Category?  @relation(fields: [forum_CategoryId], references: [id])
+  forum_CategoryId String?
 }
 
 model FPost_comments {
@@ -257,4 +259,11 @@ model Specialty {
 
   User   User?   @relation(fields: [userId], references: [id])
   userId String?
+}
+
+model Forum_Category {
+  id          String        @id @default(uuid())
+  name        String
+  image       String        @db.Text
+  Forum_Posts Forum_Posts[]
 }
