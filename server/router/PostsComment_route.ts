@@ -1,6 +1,6 @@
 import * as PostsComments from "../controller/PostsComment_controller"
 
-const route = require("express").Router;
+const route = require("express").Router();
 
 route.post('/Projects/:projectId/:userId' , PostsComments.addCommentProject);
 route.post('/Posts/:projectId/:userId' , PostsComments.addCommentPost);

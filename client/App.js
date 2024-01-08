@@ -6,9 +6,19 @@ import { GluestackUIProvider } from "@gluestack-ui/themed"
 import { Navigation } from "./Navigation";
 import { config } from "@gluestack-ui/config"
 import { AuthProvider } from "./App/Context/AuthContext";
-import { ProfileProvider } from "./App/Context/ProfileContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      useErrorBoundary: true,
+      retry: 3,
+      retryDelay: 1000,
+      staleTime: 10 * (60 * 1000),
+      cacheTime: 15 * (60 * 1000),
+      refetchOnMount: false,
+    },
+  },
+});
 
 export default function App() {
   return (
@@ -16,9 +26,7 @@ export default function App() {
       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_PUBLISH_KEY}>
         <AuthProvider>
       <GluestackUIProvider config={config}>
-          <ProfileProvider id={1}>
       <Navigation />
-          </ProfileProvider>
         </GluestackUIProvider>
     </AuthProvider>
       </StripeProvider>

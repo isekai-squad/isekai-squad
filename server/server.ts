@@ -1,20 +1,16 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-// rsconfig();
+ config();
 import { userRoutes } from "./router/user_router";
-import postsRoute from "./router/Posts_route"
-import servicesRoute from "./router/Services_route"
-import reportsRoute from "./router/Reports_route"
+import postsRoute from "./router/Posts_route";
+import servicesRoute from "./router/Services_route";
+import reportsRoute from "./router/Reports_route";
+import technoRoute from "./router/Technologies_route";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-
-
-
-
 
 // ===================================Ahmed==============================
 // import Routes
@@ -25,36 +21,22 @@ import notification from "./router/notification_route";
 app.use("/forumPost", forumPost);
 app.use("/forumComment", forumComment);
 app.use("/notification", notification);
-// ===================================Ahmed==============================
+// // ===================================Ahmed==============================
 
-//===============================Adam====================================
-app.use('/api',userRoutes)
+// //===============================Adam====================================
+app.use("/api", userRoutes);
+app.use("/technologie", technoRoute);
+// //===============================Adam=====================================
+// //===============================Ameur====================================
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//===============================Adam=====================================
-//===============================Ameur====================================
-
-import favotitRouter from "./router/favorite_route"
-import basket  from "./router/basket_route"
-import {router} from "./controller/stripe"
+import favotitRouter from "./router/favorite_route";
+import basket from "./router/basket_route";
+import { router } from "./controller/stripe";
 // import stripe from "./router/stripe_route"
 
-
-app.use("/favorit",favotitRouter )
+app.use("/favorit", favotitRouter);
 app.use("/baskets", basket);
-app.use("/api",router)
+app.use("/api", router);
 // app.use("/stripe",stripe)
 
 
@@ -90,5 +72,3 @@ app.listen(process.env.PORT, () => {
     `Neverr GIVEEEE upppppppppppppppp http://localhost:${process.env.PORT}`
   );
 });
-
-

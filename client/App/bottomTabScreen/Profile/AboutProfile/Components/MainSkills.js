@@ -4,30 +4,7 @@ import { STYLES } from "../../../../../GlobalCss";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ProfileContext } from "../../../../Context/ProfileContext";
 const MainSkills = () => {
-  const { data: profileData, isLoading, isError } = useContext(ProfileContext);
-
-  if (isLoading) {
-    return (
-      <SafeAreaView style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </SafeAreaView>
-    );
-  }
-
-  // if (isError) {
-  // return (
-  //   <SafeAreaView style={styles.errorContainer}>
-  //     <Image
-  //       source={{
-  //         uri: "https://img.freepik.com/premium-vector/error-404-concept-app-ui-page_637684-11.jpg?w=360",
-  //         width: "100%",
-  //         height: "100%",
-  //       }}
-  //       resizeMode="cover"
-  //     />
-  //   </SafeAreaView>
-  // )}
-
+  const { ProfileData } = useContext(ProfileContext);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -39,7 +16,7 @@ const MainSkills = () => {
         <Text style={styles.headerText}>Main Skills</Text>
       </View>
       <View style={styles.interestingContainer}>
-        {profileData.Technologies.map((technologie, i) => (
+        {ProfileData.Technologies.map((technologie, i) => (
           <TouchableOpacity key={i} style={styles.interestingTag}>
             <Image
               source={{ uri: technologie.image }}
@@ -93,7 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   tagText: {
-    color: '#555', 
+    color: "#555",
     fontSize: 13,
   },
 });
