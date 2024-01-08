@@ -20,7 +20,6 @@ import Dots from "react-native-vector-icons/Entypo";
 import { useNavigation, useTheme } from "@react-navigation/native";
 
 const Post = () => {
-  const colors = useTheme();
   const navigation = useNavigation();
   let mobileWidth = Dimensions.get("window").width;
   console.log(mobileWidth);
@@ -63,7 +62,7 @@ const Post = () => {
               }}
             />
           </Avatar>
-          <Text style={{ marginLeft: 10, color: "#674188" }}>author name</Text>
+          <Text style={{ marginLeft: 10, color: "#674188" }}  onPress={()=> navigation.navigate('UserProfile')}>author name</Text>
         </View>
 
         <View>
@@ -89,15 +88,16 @@ const Post = () => {
 };
 const Styles = StyleSheet.create({
   container: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "white",
     // paddingHorizontal: 5,
     flexDirection: "row",
     flex: 1,
 
     alignItems: "center",
     paddingHorizontal: 5,
-    marginBottom: 4,
-    // elevation: 1,
+    marginBottom: 12,
+    elevation: 5,
+    shadowColor:'#52006A'
   },
   headerContainer: {
     flexDirection: "row",

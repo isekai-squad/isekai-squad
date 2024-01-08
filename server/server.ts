@@ -39,18 +39,32 @@ app.use("/baskets", basket);
 app.use("/api", router);
 // app.use("/stripe",stripe)
 
-// //===============================Ameur=====================================
-// //===============================Hasan====================================
-app.use("/Posts", postsRoute);
-app.use("/Services", servicesRoute);
-app.use("/Reports", reportsRoute);
-app.use("/Posts", postsRoute);
-app.use("/Services", servicesRoute);
-app.use("/Reports", reportsRoute);
-import technologiesRoute from "./router/Technologies_route";
-import postsCommentsRoute from "./router/PostsComment_route";
-app.use("/Expertise", technologiesRoute);
-app.use("/Comments", postsCommentsRoute);
+
+
+
+
+
+
+
+
+
+
+//===============================Ameur=====================================
+//===============================Hasan====================================
+app.use('/Posts' , postsRoute);
+app.use('/Services', servicesRoute);
+app.use('/Reports' , reportsRoute)
+import technologiesRoute from "./router/Technologies_route"
+import postsCommentsRoute from "./router/PostsComment_route"
+app.use('/Expertise', technologiesRoute);
+app.use('/Comments', postsCommentsRoute);
+import CategoryRoute from './router/Category_route'
+app.use('/Category', CategoryRoute)
+
+
+
+
+
 
 //===============================Hasan=====================================
 app.listen(process.env.PORT, () => {

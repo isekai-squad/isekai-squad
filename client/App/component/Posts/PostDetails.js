@@ -46,13 +46,13 @@ const PostDetails = () => {
              </TouchableOpacity>
              <Text style={{fontSize:25 , padding:20 , fontWeight : 'bold' , letterSpacing : 4 , lineHeight : 50}}>Lorem ipsum dolor sit amet</Text>
              <Divider />
-             <Box style={{padding :10 , flexDirection: 'row'}}>
+             <View style={{padding :10 , flexDirection: 'row'}}>
                 <Avatar size = 'lg'>
                     <AvatarFallbackText>SS</AvatarFallbackText>
                     <AvatarImage source={{uri : 'https://p16-capcut-sign-va.ibyteimg.com/tos-maliva-v-be9c48-us/o8dABIU6JPBd2AJiwAAb6EZjn9NKPQ9iS3iUv~tplv-nhvfeczskr-1:250:0.webp?lk3s=44acef4b&x-expires=1735219775&x-signature=oJRko2PZ4YuOxVZy15vYlkjENcQ%3D'}}/>
                 </Avatar>
                 <View style={{marginLeft : 30}}>
-                <Text style={{fontWeight : 'bold' , fontSize : 21, color : '#674188'}}>Nah i'd win</Text>
+                <Text style={{fontWeight : 'bold' , fontSize : 21, color : '#674188'}} onPress={() => navigation.navigate('UserProfile')}>Nah i'd win</Text>
                 <Text style={{fontWeight : 200 , fontSize : 21}}>@Nah i'd win</Text>
                 </View>
                 <Center style={{marginLeft : 40}}>
@@ -67,7 +67,7 @@ const PostDetails = () => {
                     <ButtonText color='white'>Follow</ButtonText>
                 </Button>
                     </Center>
-             </Box>
+             </View>
              <Divider/>
              <Box style={{flexDirection :'row' , padding : 15}}>
                 <Button

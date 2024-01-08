@@ -7,8 +7,8 @@ import HeaderPhoto from "./Componants/HeaderPhoto";
 import Bio from "./Componants/Bio";
 import Report from "./Componants/Report";
 import MiddelTab from "./Componants/MiddelTab";
-import EditProfile from "./Componants/"
-function ProfileScreen() {
+// import EditProfile from "./Componants/"
+function UserProfile() {
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../../../assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Bold": require("../../../assets/fonts/Roboto-Bold.ttf"),
@@ -52,4 +52,4 @@ const styles = StyleSheet.create({
     borderTopColor: "red",
   },
 });
-export default ProfileScreen;
+export default UserProfile;

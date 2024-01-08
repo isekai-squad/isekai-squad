@@ -12,6 +12,8 @@ import FlexDimensionsBasics from "./App/bottomTabScreen/About/AboutScreen";
 import EditProfile from "./App/Screens/EditProfile/EditProfileScreen";
 import { ProfileProvider } from "./App/Context/ProfileContext";
 import ForumCategories from "./App/component/Posts/ForumCategories";
+import UserProfile from "./App/Screens/UserProfile/UserProfile";
+
 const Stack = createStackNavigator();
 
 export const Navigation = () => {
@@ -54,7 +56,7 @@ export const Navigation = () => {
               options={{ headerShown: false }}
             />
 
-            <Stack.Screen name="Posts" component={Posts} />
+            <Stack.Screen name="Posts" component={Posts} options={{headerShown : false}} />
             <Stack.Screen
               name="PostDetails"
               component={PostDetails}
@@ -63,7 +65,12 @@ export const Navigation = () => {
             <Stack.Screen
               name="Forum"
               component={ForumCategories}
-              options={{ headerShown: false }}
+              options={{ headerShown: false}}
+            />
+            <Stack.Screen
+            name='UserProfile'
+            component={UserProfile}
+            options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </ProfileProvider>
