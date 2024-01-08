@@ -147,10 +147,9 @@ const styles = StyleSheet.create({
     left: -30,
   },
   materialIcons: {
-    // alignItems: "left",
-    // position: "absolute",
-    // left: -13,
-    // top: 12,
+    alignItems: "left",
+    position: "absolute",
+    left: -30,
   },
   codeQr: {
     width: 250,
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
   save: {
     fontSize: 15,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 12,
   },
   share: {
     fontSize: 15,

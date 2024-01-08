@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet,Animated } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+} from "react-native";
 import Swipeout from "react-native-swipeout";
 import axios from "axios";
-import { openPaymentSheet } from "./FunPayement";
+import openPaymentSheet from "./FunPayement";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 const Basket = () => {
@@ -15,7 +22,7 @@ const Basket = () => {
 
   const fetchBasket = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.29:4070/baskets/1`);
+      const response = await axios.get(`http://172.20.0.88:4070/baskets/1`);
       setBasketItems(response.data);
     } catch (error) {
       console.error("Error fetching basket:", error);
@@ -24,7 +31,7 @@ const Basket = () => {
 
   const deleteFromBasket = async (serviceId) => {
     try {
-      await axios.delete(`http://192.168.1.29:4070/baskets/1/${serviceId}`);
+      await axios.delete(`http://172.20.0.88:4070/baskets/1/${serviceId}`);
       fetchBasket();
     } catch (error) {
       console.error("Error deleting from basket:", error);
@@ -65,24 +72,29 @@ const Basket = () => {
           >
             <Animated.View style={{ opacity: swipeoutOpen ? 0.5 : 1 }}>
               <View style={styles.itemContainer}>
-              <View style={styles.itemContainer}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.Service.image }}
-              />
+                <View style={styles.itemContainer}>
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.Service.image }}
+                  />
                   <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.Service.title}</Text>
-                <Text style={styles.price}>{item.Service.Price}</Text>
-                <Text style={styles.description}>{item.Service.description}</Text>
-                <Text style={styles.createdAt}>{item.Service.created_at}</Text>
-                </View>
-         
+                    <Text style={styles.title}>{item.Service.title}</Text>
+                    <Text style={styles.price}>{item.Service.Price}</Text>
+                    <Text style={styles.description}>
+                      {item.Service.description}
+                    </Text>
+                    <Text style={styles.createdAt}>
+                      {item.Service.created_at}
+                    </Text>
+                  </View>
+                  <View style={styles.container}>
                     <TouchableOpacity
-                    style={styles.buyButton}
-                    onPress={() => openPaymentSheet()}
-                  >
-                    <Text style={styles.buttonText}>Buy</Text>
-                  </TouchableOpacity>
+                      style={styles.buyButton}
+                      onPress={async () => await FunPayement.openPaymentSheet()}
+                    >
+                      <Text style={styles.buttonText}>Buy</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </Animated.View>
@@ -103,13 +115,13 @@ const styles = StyleSheet.create({
   totalPrice: {
     fontSize: 18,
     fontWeight: "bold",
-    marginTop: 20, // Add marginTop for spacing
+    marginTop: 20,
   },
-  
+
   heading: {
-    alignItems: 'ce',
+    alignItems: "ce",
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   itemsContainer: {

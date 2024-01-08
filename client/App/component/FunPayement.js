@@ -1,13 +1,17 @@
-// import { useStripe } from "@stripe/stripe-react-native";
+import { useStripe } from "@stripe/stripe-react-native";
 
-// const { initPaymentSheet, presentPaymentSheet } = useStripe();
+const FunPayement = {
+  openPaymentSheet: async () => {
+    const { presentPaymentSheet } = useStripe();
 
-// export const openPaymentSheet = async () => {
-//   const { error } = await presentPaymentSheet();
+    const { error } = await presentPaymentSheet();
 
-//   if (error) {
-//     Alert.alert(`Error code: ${error.code}`, error.message);
-//   } else {
-//     Alert.alert("Success", "Your order is confirmed!");
-//   }
-// };
+    if (error) {
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      Alert.alert("Success", "Your order is confirmed!");
+    }
+  },
+};
+
+export default FunPayement;
