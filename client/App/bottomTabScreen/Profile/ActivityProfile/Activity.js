@@ -38,10 +38,19 @@ const Activity = () => {
   const { profilePosts, profileImage, ProfileData } =
     useContext(ProfileContext);
 
+
+  const sortedPosts = profilePosts
+    ? profilePosts.sort((post1, post2) => {
+        const date1 = moment(post1.created_at, "YYYY-MM-DD HH:mm");
+        const date2 = moment(post2.created_at, "YYYY-MM-DD HH:mm");
+        return date2 - date1;
+      })
+    : [];
+
   return (
     <ScrollView style={styles.container}>
-      {profilePosts ? (
-        profilePosts.map((post) => (
+      {sortedPosts.length ? (
+        sortedPosts.map((post) => (
           <View key={post.id} style={styles.postContainer}>
             <View style={styles.userContainer}>
               <View style={styles.userInfoContainer}>
@@ -107,7 +116,7 @@ const Activity = () => {
               }}
             >
               <View style={styles.voteButtons}>
-                <TouchableOpacity style={{alignItems:"center"}}>
+                <TouchableOpacity style={{ alignItems: "center" }}>
                   <Entypo
                     name={"arrow-bold-up"}
                     color={"#e5e4e4"}

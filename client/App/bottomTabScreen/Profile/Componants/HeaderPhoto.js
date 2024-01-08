@@ -49,7 +49,7 @@ const HeaderPhoto = () => {
 const styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
-    height: 130,
+    height: 180,
   },
   darkOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    top: 25,
+    top: "70%",
+    transform: [{ translateY: -70 }],
     width: "100%",
   },
   profileImage: {

@@ -8,12 +8,14 @@ const Basket = () => {
   const [basketItems, setBasketItems] = useState([]);
 
   useEffect(() => {
-    // fetchBasket();
+    fetchBasket();
   }, []);
 
   const fetchBasket = async () => {
     try {
-      const response = await axios.get(`http://172.20.0.74:4070/baskets/1`);
+      const response = await axios.get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/1`
+      );
       setBasketItems(response.data);
     } catch (error) {
       console.error("Error fetching basket:", error);
@@ -22,7 +24,9 @@ const Basket = () => {
 
   const deleteFromBasket = async (serviceId) => {
     try {
-      await axios.delete(`http://172.20.0.74:4070/baskets/1/${serviceId}`);
+      await axios.delete(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/1/${serviceId}`
+      );
       fetchBasket();
     } catch (error) {
       console.error("Error deleting from basket:", error);
@@ -48,11 +52,16 @@ const Basket = () => {
             autoClose={true}
           >
             <View style={styles.itemContainer}>
-              <Image style={styles.image} source={{ uri: item.Service.image }} />
+              <Image
+                style={styles.image}
+                source={{ uri: item.Service.image }}
+              />
               <View style={styles.textContainer}>
                 <Text style={styles.title}>{item.Service.title}</Text>
                 <Text style={styles.price}>{item.Service.Price}</Text>
-                <Text style={styles.description}>{item.Service.description}</Text>
+                <Text style={styles.description}>
+                  {item.Service.description}
+                </Text>
                 <Text style={styles.createdAt}>{item.Service.created_at}</Text>
               </View>
               <TouchableOpacity
