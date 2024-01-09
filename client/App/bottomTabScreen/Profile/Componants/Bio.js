@@ -32,7 +32,7 @@ const Bio = () => {
           contentContainerStyle={styles.scrollViewContent}
         >
           <View style={styles.interestingContainer}>
-            {ProfileData.Technologies.map((technologie, i) => (
+            {ProfileData.Technologies?.map((technologie, i) => (
               <TouchableOpacity key={i} style={styles.interestingTag}>
                 <Image
                   source={{ uri: technologie.image }}

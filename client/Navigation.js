@@ -102,7 +102,9 @@ export const Navigation = () => {
             name="signUp"
             component={Signup}
           />
+          
         </Stack.Navigator>
+        
       )}
     </NavigationContainer>
   );
