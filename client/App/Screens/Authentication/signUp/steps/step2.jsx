@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import  { useState,useContext } from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -15,20 +15,48 @@ import {
     TouchableOpacity,
     ScrollView,
     TextInput,
-    Vibration
+    Vibration,
+    useWindowDimensions
 
 } from 'react-native'
 import { useFonts } from 'expo-font'
 import { STYLES } from '../../../../../GlobalCss'
 import { axios } from 'axios'
-function Step2() {
+function Step2({setStep,email,setEmail,password,setPassword,conPassword,setConPassword}) {
     const [shown,setShown]=useState(true)
     const [shown2,setShown2]=useState(true)
+    const [inputError,setInputError]=useState()
 
-
+    const checkEmail  = async()=>{
+        if (!email) return;
+     try {
+      const response = await   axios.get(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/email/${email}`)
+      console.log(response.statusCode,'heeeeeeeeeeere');
+      if  (response.statusCode ===404) {
+        setInputError('Invalid email address')
+      }
+     }catch(err){}
+    }
+    useEffect(()=>{
+       
+    },[email,password])
+const nextStep = async()=>{
+  
+    checkEmail()
+   if (!email && !password && !conPassword) {
+    setInputError('all')
+    Vibration.vibrate()
     
+   } else if (password !== conPassword){
+       setInputError('password')
+   }else {
+    setStep(3)
+   }
+}
+const {width} = useWindowDimensions()
+
   return (
-    <View>
+    <View style={{width}}>
            <View style={{marginLeft:40, marginTop:100}} >
                         <Text style={Styles.SignUp}>SignUp</Text>
                         <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>SignUp And Join Us</Text>
@@ -43,15 +71,18 @@ function Step2() {
     <TextInput
         style={Styles.loginInput}
         placeholder="Your Email"
+        onChangeText={(text)=>setEmail(text)}
     />
 </View>
-<View style={Styles.loginContainer2}>
+<View style={Styles.loginContainer3}>
                             <Ionicons  style={Styles.loginIcon} name="key-outline" size={20} color={"#8244CB"} />
                             <TextInput
                                 
                             secureTextEntry={shown}
                                 style={Styles.loginInput}
                                 placeholder="Your Password"
+                                onChangeText={(text)=>setPassword(text)}
+
                                 >
 
                                 </TextInput>
@@ -61,15 +92,20 @@ function Step2() {
                                 <Feather size={20} name="eye-off" />}
                                 </TouchableOpacity>
                         </View>
+                        <View>
+
 <View style={Styles.loginContainer2}>
                             <Ionicons  style={Styles.loginIcon} name="key-outline" size={20} color={"#8244CB"} />
                             <TextInput
                                                        secureTextEntry={shown2}
 
                                 style={Styles.loginInput}
-                                placeholder="Your Password"
-                                >
+                                placeholder="Confirm Password"
 
+                                onChangeText={(text)=>setConPassword(text)}
+
+                                >
+                           
                                 </TextInput>
                                 <TouchableOpacity style={{right:28, }} onPress={()=>setShown2(!shown2)}>
 
@@ -77,10 +113,14 @@ function Step2() {
                                 <Feather size={20} name="eye-off" />}
                                 </TouchableOpacity>
                         </View>
+                        {inputError === 'all' && <Text style={{ color:'red', top: 40 }}>Enter Full Information Pleaser</Text>}
+                        {inputError === 'password' && <Text style={{ color:'red', top: 40 }}>Confirmed password is wrong</Text>}
+
+                                </View>
 
 <TouchableOpacity
                     
-                
+                onPress={()=>nextStep()}
                      style={{
                         backgroundColor: STYLES.COLORS.Priamary,
                         width: 150,
@@ -149,12 +189,20 @@ const Styles = StyleSheet.create({
         right:34,
         top:40,
     },
-    loginContainer2: {
+    loginContainer3: {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
         width: "90%",
         right:24,
+        top:40,
+    },
+    loginContainer2: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "90%",
+        right:16,
         top:40,
     },
 

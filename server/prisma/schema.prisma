@@ -29,7 +29,7 @@ model User {
   password        String?
   pdp             String
   number          Int?
-  cover           String
+  cover           String?
   socials         String[]
   active          Boolean            @default(false)
   premuim         Boolean            @default(false)

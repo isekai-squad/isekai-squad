@@ -9,6 +9,7 @@ import {
   ChangePassword,
   getUser,
   getAllUser,
+  checkEmail
 } from "../controller/user_controller";
 
 userRoutes.get("/users", getAllUser);
@@ -19,3 +20,4 @@ userRoutes.put("/user/update/:userId", updateUser);
 userRoutes.post("/user/forgotPassword", forgotPass);
 userRoutes.post("/user/forgotPassword/code", SubmitForgotPassword);
 userRoutes.post("/user/changePassword", ChangePassword);
+userRoutes.get('/user/email/:email',checkEmail)

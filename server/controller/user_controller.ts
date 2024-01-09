@@ -31,7 +31,8 @@ interface Student {
 
 export const createUser = async (req: Request, res: Response) => {
   const body = req.body as Student;
-
+ console.log(body);
+ 
   try {
     // Check if a password is provided
     if (body.password) {
@@ -42,7 +43,18 @@ export const createUser = async (req: Request, res: Response) => {
     const student = await prisma.user.create({
       data: body as Prisma.UserCreateInput,
     });
-
+    const token = jwt.sign(
+      {
+        userName: student.userName,
+        pdp: student.pdp,
+        cover: student.cover,
+        role: student.role,
+        name: student.name,
+        id: student.id,
+      },
+      "secretKey"
+    );
+     
     res.json(student);
   } catch (err) {
     console.log(err);
@@ -284,3 +296,28 @@ export const getUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const checkEmail = async (req:Request,res:Response)=>{
+console.log('here');
+
+  const {email}=req.params
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+  });
+
+  if (!user) {
+      
+      
+      return res.status(404).json({ error: 'User not found' });
+      
+  } else {
+    res.json('found')
+  }
+  
+  }catch(err){
+    res.json(err)
+    console.log(err);
+    
+  }
+}

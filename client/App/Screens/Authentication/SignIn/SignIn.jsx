@@ -22,6 +22,7 @@ import {
 import { STYLES } from '../../../../GlobalCss'
 import { useFonts } from 'expo-font'
 
+
 export default function SignIn({navigation}) {
     const {token,setToken} = useContext(AuthContext)
 
