@@ -55,10 +55,12 @@ const styles = {
     borderColor: "#eee",
   },
   headerContainer: {
+    justifyContent: "center",
     paddingTop: 10,
   },
   nameContainer: {
     flexDirection: "row",
+
     alignItems: "center",
     gap: 10,
   },
@@ -67,8 +69,9 @@ const styles = {
     fontSize: STYLES.SIZES.sizeL,
   },
   role: {
-    fontWeight: STYLES.FONTS.Light,
-    fontSize: 10,
+    fontWeight: STYLES.FONTS.Medium,
+    fontSize: 11,
+    marginTop:6
   },
   username: {
     fontWeight: STYLES.FONTS.Light,
@@ -108,6 +111,8 @@ const styles = {
   tagText: {
     color: "#555",
     fontSize: 13,
+
+    textTransform: "capitalize",
   },
 };
 

@@ -203,13 +203,15 @@ const FavoriteList = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
 
   useEffect(() => {
-    fetchFavoriteList();
+    fetchBasket();
   }, []);
 
   const fetchFavoriteList = async () => {
     try {
-      const response = await axios.get(`http://172.20.0.88:4070/favorit/1`);
-      setFavoriteItems(response.data);
+      const response = await axios.get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/1`
+      );
+      setBasketItems(response.data);
     } catch (error) {
       console.error("Error fetching favorites:", error);
     }
@@ -217,8 +219,10 @@ const FavoriteList = () => {
 
   const deleteFromFavorites = async (itemId) => {
     try {
-      await axios.delete(`http://172.20.0.88:4070/favorit/1/${itemId}`);
-      fetchFavoriteList();
+      await axios.delete(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/1/${serviceId}`
+      );
+      fetchBasket();
     } catch (error) {
       console.error("Error deleting from favorites:", error);
     }
@@ -242,16 +246,37 @@ const FavoriteList = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Favorite List</Text>
-      {favoriteItems.length === 0 ? (
-        <Text style={styles.noItemsText}>No favorite items yet</Text>
-      ) : (
-        <FlatList
-        data={favoriteItems}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderFavoriteItem}
-      />
-      )}
+      <Text style={styles.heading}>Basket Items:</Text>
+      <View style={styles.itemsContainer}>
+        {basketItems.map((item) => (
+          <Swipeout
+            key={item.id}
+            right={swipeoutBtns(item.Service.id)}
+            autoClose={true}
+          >
+            <View style={styles.itemContainer}>
+              <Image
+                style={styles.image}
+                source={{ uri: item.Service.image }}
+              />
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>{item.Service.title}</Text>
+                <Text style={styles.price}>{item.Service.Price}</Text>
+                <Text style={styles.description}>
+                  {item.Service.description}
+                </Text>
+                <Text style={styles.createdAt}>{item.Service.created_at}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.buyButton}
+                onPress={() => openPaymentSheet()}
+              >
+                <Text style={styles.buttonText}>Buy</Text>
+              </TouchableOpacity>
+            </View>
+          </Swipeout>
+        ))}
+      </View>
     </View>
   );
 };
