@@ -101,12 +101,18 @@ export const Navigation = () => {
             options={{
               headerShown: false,
             }}
-            name="signUp"
+            name="signup"
             component={Signup}
           />
-          
-        </Stack.Navigator>
-      </ProfileProvider>
-    </NavigationContainer>
-  );
+        <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+
+       
+      
+       
+        </Stack.Navigator>)}
+
+
+          </NavigationContainer>
+    
+    );
 };
