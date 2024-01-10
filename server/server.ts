@@ -36,7 +36,7 @@ import { router } from "./controller/stripe";
 
 app.use("/favorit", favotitRouter);
 app.use("/baskets", basket);
-app.use("/api", router);
+// app.use("/api", router);
 // app.use("/stripe",stripe)
 
 

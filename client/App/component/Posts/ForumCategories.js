@@ -1,7 +1,10 @@
 import { Image } from "@gluestack-ui/themed";
 import { Box, Center } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import React from "react";
+import { ActivityIndicator } from "react-native";
 import {
   Text,
   View,
@@ -17,7 +20,14 @@ import Arrow from "react-native-vector-icons/MaterialCommunityIcons";
 const ForumCategories = () => {
   let arr = [1, 1, 1, 1, 1, 1];
   const navigation = useNavigation();
+  const {data , isLoading , error} = useQuery({
+    queryKey: ["Category"],
+    queryFn: async () => axios.get(`http://172.19.0.189:4070/Category/`).then((res) => res.data)
+  })
 
+  if(isLoading) return <Center>
+    <ActivityIndicator size="large" color='#674188' />
+  </Center>
   return (
     <ScrollView>
       <View as={SafeAreaView} style={styles.container}>
@@ -48,20 +58,22 @@ const ForumCategories = () => {
             gap: 20,
           }}
         >
-          {arr.map(() => (
-            <TouchableOpacity onPress={() => navigation.navigate("Posts")}>
+          {data?.map((category) => (
+            <TouchableOpacity onPress={() => navigation.navigate("Posts", {category})}>
               <ImageBackground
                 source={{
-                  uri: "https://img.freepik.com/premium-photo/man-woman-are-working-computer-with-laptop-computer-screen-with-word-com-it_745528-1518.jpg",
+                  uri : category.image,
                 }}
                 style={{
                   height: 150,
                   width: 160,
                   position: "relative",
+                  
                 }}
                 imageStyle={{ borderRadius: 20 }}
                 resizeMode="cover"
-              >
+                >
+                <View style={styles.darkOverlay}/>
                 <Text
                   style={{
                     color: "white",
@@ -72,7 +84,7 @@ const ForumCategories = () => {
                     left: 10,
                   }}
                 >
-                  Technology
+                  {category.name}
                 </Text>
                 <Text
                   style={{
@@ -99,6 +111,11 @@ const styles = StyleSheet.create({
     paddingVertical : 40,
     backgroundColor : 'white',
   },
+  darkOverlay : {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.2)",
+    borderRadius : 20
+  }
 });
 
 export default ForumCategories;

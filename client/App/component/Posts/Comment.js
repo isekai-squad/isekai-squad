@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Image } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import {
   Avatar,
@@ -10,12 +10,15 @@ import {
   Button,
   ButtonText,
   Center,
+  Divider,
+  VStack,
 } from "@gluestack-ui/themed";
 import Dots from "react-native-vector-icons/Entypo";
 import Heart from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const Comment = () => {
+const Comment = ({post , user , data}) => {
+  console.log(data)
   return (
     <View style={styles.container}>
       <Box style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -24,7 +27,7 @@ const Comment = () => {
             <AvatarFallbackText>SS</AvatarFallbackText>
             <AvatarImage
               source={{
-                uri: "https://p16-capcut-sign-va.ibyteimg.com/tos-maliva-v-be9c48-us/o8dABIU6JPBd2AJiwAAb6EZjn9NKPQ9iS3iUv~tplv-nhvfeczskr-1:250:0.webp?lk3s=44acef4b&x-expires=1735219775&x-signature=oJRko2PZ4YuOxVZy15vYlkjENcQ%3D",
+                uri: user.pdp,
               }}
             />
           </Avatar>
@@ -37,7 +40,7 @@ const Comment = () => {
             }}
           >
             {" "}
-            Bababoeey
+            {user.name}
           </Text>
         </View>
 
@@ -49,16 +52,25 @@ const Comment = () => {
           />
         </TouchableOpacity>
       </Box>
-      <Box style={{padding : 10}}>
-        <Text style={{fontSize : 18 , lineHeight : 30}}>Lorem ipsum dolor sit amet. Eum blanditiis veritatis est nihil eligendi id dolores totam hic internos voluptas eos nemo quia est quia laudantium. Qui unde quos in veritatis neque sit sapiente deleniti.</Text>
-      </Box>
+      <VStack space="md" style={{padding : 10}}>
+        <Text style={{fontSize : 18 , lineHeight : 30}}>{data.content}</Text>
+        <Image
+        style={{width : '%full' , height : 200 , borderRadius : 20}}
+        source={{uri : data.images[0]}}
+        resizeMode="stretch"
+        />
+      </VStack>
       <Box style={{flexDirection : 'row' , padding : 10 , gap : 10 , alignItems : 'center'}}>
-        <TouchableOpacity>
-            <Heart name="cards-heart-outline" size={24}  color="#674188"/>
-        </TouchableOpacity>
+      <TouchableOpacity>
+                <Dots name='arrow-up' color='#674188' size={30}/>
+                </TouchableOpacity>
             <Text>360</Text>
+                <TouchableOpacity>
+                <Dots name='arrow-down' color='#674188' size={30}/>
+                </TouchableOpacity>
             <Text style={{marginLeft : 50}}>1 day ago</Text>
       </Box>
+      <Divider/>
     </View>
   );
 };

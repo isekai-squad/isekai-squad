@@ -47,19 +47,6 @@ const CreatePost = () => {
       );
     };
 
-    const handleDocumentSelection = async () => {
-      try {
-        const result = await DocumentPicker.getDocumentAsync({
-          multiple : true,
-          
-        })
-          result.assets.map(file => 
-            setFileResponse(prev => [...prev , file.uri]))
-            
-      }catch (err) {
-        console.log(err)
-      }
-    }
 
     const handleImageSelection = async () => {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -121,12 +108,6 @@ return (
                 <InputField placeholder='Article Title' onChangeText={(text) => setTitle(text)}/>
                 </Input>
             <Text style={{fontSize : 22, fontWeight : 600}}>Project Files</Text>
-                <Box style={{alignItems : 'center'}}>
-            <Center bgColor='#fafafa' h={200} w={200} borderRadius={15} borderWidth={0.5} borderColor='#ede6f0'>
-                <File name='file-download' size={50} color='#dbcde2' onPress={handleDocumentSelection}/>
-                <Text style={{color : "#dbcde2" , paddingVertical : 10 , fontWeight : 600 }}>Add Article Cover Image</Text>
-            </Center>
-                </Box>
             <Text style={{fontSize : 22, fontWeight : 600}}>Content</Text>
             <Textarea
             variant='outline'

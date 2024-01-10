@@ -1,13 +1,23 @@
 import React from 'react'
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Box } from '@gluestack-ui/themed'
+import { Box, Center } from '@gluestack-ui/themed'
 import Comment from './Comment'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 
-const CommentList = () => {
+const CommentList = ({post , user}) => {
     const colors = useTheme()
+    const {data , isLoading , error} = useQuery({
+      queryKey : ['Comments'],
+      queryFn : async () => axios.get(`http://172.19.0.189:4070/forumComment/${post.id}`).then(res => res.data)
+    })
+    if(isLoading) return <Center>
+    <ActivityIndicator size="large" color='#674188' />
+  </Center>
+    console.log(data)
     return (
         <View
         style= {styles.container}
@@ -16,7 +26,9 @@ const CommentList = () => {
        <Text>Comments (120)</Text>
         <Icon name='arrow-right-thin'size={24} color='#674188' />
             </Box>
-        <Comment/>
+            {data.map(comment => 
+        <Comment data={comment} post={post} user={user}/>
+              )}
         </View>
     )
 }

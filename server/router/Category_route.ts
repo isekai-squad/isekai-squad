@@ -4,5 +4,6 @@ const route = express.Router();
 
 route.get('/' , categoryController.getAllCategory)
 route.post('/' , categoryController.addCategory);
+route.get('/:id' , categoryController.getAllPostsCategory)
 
 export default route;

@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
-import { Image } from "@gluestack-ui/themed";
+import { Center, Image } from "@gluestack-ui/themed";
 import {
   Avatar,
   AvatarBadge,
@@ -18,9 +19,20 @@ import { Box } from "@gluestack-ui/themed";
 import Icon from "react-native-vector-icons/Feather";
 import Dots from "react-native-vector-icons/Entypo";
 import { useNavigation, useTheme } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const Post = () => {
+const Post = ({post}) => {
   const navigation = useNavigation();
+  const id = post.userId
+  const {data , isLoading , error} = useQuery({
+    queryKey : ["forumUser", post.userId],
+    queryFn : async () => axios.get(`http://172.19.0.189:4070/api/user/${id}`).then(res => res.data),
+  })
+  if(isLoading) return <Center>
+  <ActivityIndicator size="large" color='#674188' />
+</Center>
+
   return (
     <Box h={200} style={Styles.container}>
       <Image
@@ -28,7 +40,7 @@ const Post = () => {
         // style={{ marginLeft: 10 }}
         alt="404"
         source={{
-          uri: "https://img.freepik.com/premium-photo/man-woman-are-working-computer-with-laptop-computer-screen-with-word-com-it_745528-1518.jpg",
+          uri: post.images[0],
         }}
         borderRadius="$lg"
       />
@@ -44,10 +56,10 @@ const Post = () => {
               fontSize: 15,
               width: 200,
             }}
-            onPress={() => navigation.navigate("PostDetails")}
+            numberOfLines={2}
+            onPress={() => navigation.navigate("PostDetails" , {post , data})}
           >
-            Lorem ipsum dolor sit amet. Est cupiditate aliquam id optio odio et
-            sunt rerum.
+            {post.content}
           </Text>
         </TouchableOpacity>
 
@@ -56,12 +68,12 @@ const Post = () => {
             <AvatarFallbackText>SS</AvatarFallbackText>
             <AvatarImage
               source={{
-                uri: "https://pbs.twimg.com/media/GAXaW5CWIAElaqj.jpg",
+                uri: data.pdp,
               }}
               alt="404"
             />
           </Avatar>
-          <Text style={{ marginLeft: 10, color: "#674188" }}  onPress={()=> navigation.navigate('UserProfile')}>author name</Text>
+          <Text style={{ marginLeft: 10, color: "#674188" }}  onPress={()=> navigation.navigate('UserProfile')}>{data.name}</Text>
         </View>
 
         <View>
