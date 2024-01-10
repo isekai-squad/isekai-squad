@@ -17,6 +17,7 @@ route.post("/Projects/DownVote/:userId/:projectId" , PostController.downVoteProj
 route.post("/Posts/UpVote/:userId/:postId" , PostController.upVotePost)
 route.post("/Posts/DownVote/:userId/:postId" , PostController.downVotePost)
 route.get("/Projects/Likes/:projectId", PostController.getAlllLikesProject)
-route.get("/Projects/Likes/:postId", PostController.getAllLikesPosts)
+route.get("/Projects/:userId/Likes", PostController.getUserLikes)
+route.get("/Posts/Likes/:postId", PostController.getAllLikesPosts)
 
 export default route;

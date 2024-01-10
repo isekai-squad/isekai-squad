@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Posts from "./App/component/Posts/Posts";
@@ -19,6 +19,7 @@ const Stack = createStackNavigator();
 
 export const Navigation = () => {
   const [auth, setAuth] = useState(true);
+  
   return (
     <NavigationContainer>
       {auth ? (
@@ -27,19 +28,17 @@ export const Navigation = () => {
             <Stack.Screen
               name="tabs"
               component={MainContainer}
-            //   options={({ navigation }) => ({
-            //     headerTitle: () => (
-            //       <SearchHeader
-            //         onChangeText={(text) => console.log("Search:", text)}
-                    
-            //       />
-            //     ),
-            //     headerTitleContainerStyle: { width: "100%" },
-            //   })
-          
-            // }
-            options={{headerShown:false}}
-              
+              //   options={({ navigation }) => ({
+              //     headerTitle: () => (
+              //       <SearchHeader
+              //         onChangeText={(text) => console.log("Search:", text)}
+              //       />
+              //     ),
+              //     headerTitleContainerStyle: { width: "100%" },
+              //   })
+
+              // }
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="aboutScreen"
@@ -62,27 +61,30 @@ export const Navigation = () => {
               options={{ headerShown: false }}
             />
 
-            <Stack.Screen name="Posts" component={Posts} options={{headerShown : false}} />
+            <Stack.Screen
+              name="Posts"
+              component={Posts}
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="PostDetails"
               component={PostDetails}
               options={{ headerShown: false }}
-              
             />
             <Stack.Screen
               name="Forum"
               component={ForumCategories}
-              options={{ headerShown: false}}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
-            name='UserProfile'
-            component={UserProfile}
-            options={{ headerShown: false }}
+              name="UserProfile"
+              component={UserProfile}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
-            name='Post'
-            component={CreatePost}
-            options={{headerTitle : "" , headerShown: false}}
+              name="Post"
+              component={CreatePost}
+              options={{ headerTitle: "", headerShown: false }}
             />
           </Stack.Navigator>
         </ProfileProvider>
@@ -92,15 +94,15 @@ export const Navigation = () => {
             options={{
               headerShown: false,
             }}
-            name="signIn"
-            component={SignIn}
+            name="signUp"
+            component={Signup}
           />
           <Stack.Screen
             options={{
               headerShown: false,
             }}
-            name="signUp"
-            component={Signup}
+            name="signIn"
+            component={SignIn}
           />
           
         </Stack.Navigator>

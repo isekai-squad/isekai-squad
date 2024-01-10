@@ -44,8 +44,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 25,
     paddingVertical: 15,
-    borderBottomWidth: 5,
-    borderColor: "#eee",
   },
   headerContainer: {
     flexDirection: "row",
