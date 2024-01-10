@@ -5,17 +5,21 @@ const prisma = new PrismaClient();
 
 export const addToBasket = async (req: Request, res: Response) => {
   try {
-    const userId = +req.params.userId;
-    const serviceId = +req.params.serviceId;
+    const userId = req.params.idUser;
+    const serviceId = req.params.idItem;
+    
     const item = await prisma.basket.create({
       data: {
-        userId: String(userId),
-        serviceId: String(serviceId),
+        userId: userId,
+        serviceId:serviceId,
       },
+      
     });
     res.status(201).send("successful");
-  } catch {
-    res.status(404).send("failed");
+  } catch(error) {
+    console.log(error);
+    
+    res.status(404).send(error);
   }
 };
 

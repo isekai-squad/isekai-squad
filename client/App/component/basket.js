@@ -3,187 +3,140 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
   StyleSheet,
-  Animated,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import CheckoutScreen from "./Stripe"
-import Swipeout from "react-native-swipeout";
 import axios from "axios";
+import Foundation from "react-native-vector-icons/Foundation";
 
-import AntDesign from "react-native-vector-icons/AntDesign";
-
-const Basket = () => {
-
-  const [basketItems, setBasketItems] = useState([]);
-  const [swipeoutOpen, setSwipeoutOpen] = useState(false);
-
+const AllServices = ({ navigation }) => {
+  const [services, setServices] = useState([]);
+  const [Detail, setdetail] = useState([]);
   useEffect(() => {
-    fetchBasket();
+    fetchServices();
   }, []);
 
-  const fetchBasket = async () => {
+  const fetchServices = async () => {
     try {
-      const response = await axios.get(`http://172.20.0.88:4070/baskets/1`);
-      setBasketItems(response.data);
+      const response = await axios.get("http://172.29.0.73:4070/Services/");
+      setServices(response.data.map((service) => ({ ...service, likes:0  })));
     } catch (error) {
-      console.error("Error fetching basket:", error);
+      console.error("Error fetching services:", error);
     }
   };
 
-  const deleteFromBasket = async (serviceId) => {
+  const handleUpVote = async () => {
     try {
-      await axios.delete(`http://192.168.1.29:4070/baskets/1/${serviceId}`);
-      fetchBasket();
+      const response = await axios.post('http://172.29.0.73:4070/Services/UpVote/1/2');
+      
+      console.log('UpVote successful:', response.data);
     } catch (error) {
-      console.error("Error deleting from basket:", error);
+      console.error('Error during UpVote:', error.message);
     }
   };
 
-  const calculateTotalPrice = () => {
-    return basketItems.reduce((total, item) => total + item.Service.Price, 0);
+  const handleDownVote = async () => {
+    try {
+      const response = await axios.post('http://172.29.0.73:4070/Services/DownVote/1/2');
+    
+      console.log('DownVote successful:', response.data);
+    } catch (error) {
+      console.error('Error during DownVote:', error.message);
+    }
   };
 
-  const swipeoutBtns = (serviceId) => [
-    {
-      text: (
-        <View>
-          <AntDesign name="delete" size={25} color="white" />
-        </View>
-      ),
-      backgroundColor: "#d41f35",
-      onPress: () => {
-        setSwipeoutOpen(false);
-        deleteFromBasket(serviceId);
-      },
-    },
-  ];
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Basket </Text>
-      <View style={styles.itemsContainer}>
-        {basketItems.map((item) => (
-          <Swipeout
-            key={item.id}
-            right={swipeoutBtns(item.Service.id)}
-            autoClose={true}
-            onOpen={() => setSwipeoutOpen(true)}
-            onClose={() => setSwipeoutOpen(false)}
-            openClose={swipeoutOpen}
-          >
-            <Animated.View style={{ opacity: swipeoutOpen ? 0.5 : 1 }}>
-              <View style={styles.itemContainer}>
-                <View style={styles.itemContainer}>
-                  <Image
-                    style={styles.image}
-                    source={{ uri: item.Service.image }}
-                  />
-                  <View style={styles.textContainer}>
-                    <Text style={styles.title}>{item.Service.title}</Text>
-                    <Text style={styles.price}>{item.Service.Price}</Text>
-                    <Text style={styles.description}>
-                      {item.Service.description}
-                    </Text>
-                    <Text style={styles.createdAt}>
-                      {item.Service.created_at}
-                    </Text>
-                  </View>
-                  <View style={styles.container}>
-                    <TouchableOpacity
-                      style={styles.buyButton}
-                      onPress={async () => await  openPaymentSheet()}
-                    >
-                      <Text style={styles.buttonText}>Buy</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </Animated.View>
-          </Swipeout>
-
-          ))}
-
-      </View>
-      <Text style={styles.totalPrice}>
-        Total Price: ${calculateTotalPrice()}
+  const renderItem = ({ item }) => (
+    <View style={styles.gridItem}>
+      <Text
+        style={styles.title}
+        onPress={() =>
+          navigation.navigate("serviceDetails", {
+            item: item,
+          })
+        }
+      >
+        {item.title}
       </Text>
-          {/* <CheckoutScreen/> */}
+      <Image style={styles.image} source={{ uri: item.image }} />
+      <Text style={styles.price}>Price: {item.Price}</Text>
+      <View style={styles.voteContainer}>
+        <TouchableOpacity onPress={() => handleUpVote(item.serviceId)}>
+          <Foundation name="like" size={30} color="#8244CB" />
+        </TouchableOpacity>
+        
+        <Text style={styles.likes}>{item.likes}</Text>
+
+        <TouchableOpacity onPress={() => handleDownVote(item.serviceId)}>
+          <Foundation name="dislike" size={30} color="#8244CB" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
+
+  if (services.length === 0) {
+    return <ActivityIndicator size="large" color="#8244CB" />;
+  }
+
+  return (
+    <FlatList
+      data={services}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={renderItem}
+      numColumns={2}
+    />
+  );
 };
+
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-
-  totalPrice: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 20,
-  },
-
-  heading: {
-    alignItems: "ce",
-    fontSize: 30,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  itemsContainer: {
-    marginTop: 10,
-  },
-  itemContainer: {
-    flexDirection: "row",
+  gridItem: {
+    flex: 1,
+    margin: 4,
+    padding:56 ,
+    borderRadius: 8,
+    backgroundColor: "#f0f0f0",
     alignItems: "center",
-    padding: 10,
+    elevation: 8,
 
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    shadowColor: "#d41f35",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 5,
-    marginRight: 10,
+    width: 150,
+    height: 150,
+    borderRadius: 8,
   },
-  textContainer: {
-    flex: 1,
-  },
-  title: {
+  description: {
     fontSize: 16,
-    fontWeight: "bold",
+    marginBottom: 8,
   },
   price: {
     fontSize: 14,
-    color: "#8244CB",
-  },
-  description: {
-    fontSize: 14,
-    color: "#555",
+    marginBottom: 8,
   },
   createdAt: {
-    fontSize: 12,
-    color: "#777",
+    fontSize: 14,
+    marginBottom: 8,
   },
-  buyButton: {
-    backgroundColor: "#8244CB",
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 10,
+  voteContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+   
   },
-  buttonText: {
-    color: "#fff",
+  likes: {
+    fontSize: 16,
+    marginHorizontal: 6,
+  },
+  deleteText: {
+    color: "white",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 8,
   },
 });
 
-export default Basket;
-
+export default AllServices;

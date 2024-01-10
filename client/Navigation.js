@@ -14,6 +14,7 @@ import { ProfileProvider } from "./App/Context/ProfileContext";
 import ForumCategories from "./App/component/Posts/ForumCategories";
 import UserProfile from "./App/Screens/UserProfile/UserProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
+import ServiceDetaite from "./App/component/sreviceDetait";
 
 const Stack = createStackNavigator();
 
@@ -84,6 +85,11 @@ export const Navigation = () => {
             component={CreatePost}
             options={{headerTitle : "" , headerShown: false}}
             />
+          <Stack.Screen
+            
+            name="serviceDetails"
+            component={ServiceDetaite}
+          />
           </Stack.Navigator>
         </ProfileProvider>
       ) : (

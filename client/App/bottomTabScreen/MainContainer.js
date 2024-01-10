@@ -4,6 +4,7 @@ import AboutScreen from "./About/AboutScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
 import code from "../component/QR_code";
 import basket from "../component/basket";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -27,9 +28,9 @@ export const MainContainer = () => {
           paddingBottom: 5,
           backfaceVisibility: "hidden",
           display: activeMiddleTab == "Edit" ? "none" : "flex",
-          position: 'absolute',
+          position: "absolute",
         },
-    
+
         tabBarIcon: ({ focused, size }) => {
           let iconName;
           let iconColor;
