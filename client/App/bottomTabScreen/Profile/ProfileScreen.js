@@ -1,12 +1,21 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useFonts } from "expo-font";
-import { SafeAreaView, StyleSheet, View, Text, Image } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  RefreshControl,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import HeaderPhoto from "./Componants/HeaderPhoto";
 import Bio from "./Componants/Bio";
 import MiddelTab from "./Componants/MiddelTab";
 import { ProfileContext } from "../../Context/ProfileContext";
 import AboutProfile from "./AboutProfile/AboutProfile";
-import EditProfile from "./EditProfile/EditProfile";
+import { STYLES } from "../../../GlobalCss";
+import Activity from "./ActivityProfile/Activity";
 
 function ProfileScreen() {
   const [fontsLoaded] = useFonts({
@@ -16,41 +25,44 @@ function ProfileScreen() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const { data, isLoading, isError, activeMiddleTab } =
+  const { activeMiddleTab, LoadingProfile, refetchProfile, refetchPosts } =
     useContext(ProfileContext);
 
-  if (!fontsLoaded || isLoading) {
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetchProfile();
+    if (activeMiddleTab === "Activity") {
+      refetchPosts();
+    }
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  if (!fontsLoaded || LoadingProfile) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </SafeAreaView>
-    );
-  }
-
-  if (isError) {
-    return (
-      <SafeAreaView style={styles.errorContainer}>
-        <Image
-          source={{
-            uri: "https://img.freepik.com/premium-vector/error-404-concept-app-ui-page_637684-11.jpg?w=360",
-            width: "100%",
-            height: "100%",
-          }}
-          resizeMode="cover"
-        />
+        <ActivityIndicator size="large" color={STYLES.COLORS.Priamary} />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {activeMiddleTab === "Edit" && <EditProfile profileData={data} />}
-      <View style={styles.profileContainer}>
-        <HeaderPhoto profileData={data} />
-        <Bio profileData={data} />
-      </View>
-      <MiddelTab />
-      {activeMiddleTab === "About" && <AboutProfile />}
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View style={styles.profileContainer}>
+          <HeaderPhoto />
+          <Bio />
+        </View>
+        <MiddelTab />
+        {activeMiddleTab === "Activity" && <Activity />}
+        {activeMiddleTab === "About" && <AboutProfile />}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -59,6 +71,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    height: "100%",
   },
   profileContainer: {
     position: "relative",

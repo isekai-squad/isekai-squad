@@ -1,45 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect,useContext } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Animated, FlatList, useWindowDimensions } from 'react-native';
 import Step1 from './steps/step1';
 import Step2 from './steps/step2';
 import Step3 from './steps/step3';
 import Step4 from './steps/step4';
 import Step5 from './steps/step5';
+import Step6 from './steps/step6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import { Navigation } from '../../../../Navigation';
+import { AuthContext } from '../../../Context/AuthContext';
+import {  createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../../../../FirebaseConfig';
 
-// const Signup = () => {
-//   const steps = [Step1, Step2, Step3, Step4, Step5];
-//   const [currentStep, setCurrentStep] = useState(0);
-
-//   const renderItem = ({ item }) => {
-//     const StepComponent = item;
-//     return <StepComponent setStep={setCurrentStep} />;
-//   };
-
-//   return (
-//     <View>
-//       <FlatList
-//         data={steps}
-//         renderItem={renderItem}
-//         keyExtractor={(item, index) => index.toString()}
-//         horizontal
-//         pagingEnabled
-//         showsHorizontalScrollIndicator={false}
-//         initialNumToRender={1}
-//         getItemLayout={(data, index) => ({ length: 360, offset: 360 * index, index })}
-//         onViewableItemsChanged={({ viewableItems }) => {
-//           if (viewableItems.length > 0) {
-//             setCurrentStep(viewableItems[0].index);
-//           }
-//         }}
-//       />
-//     </View>
-//   );
-// };
-
-// export default Signup;
-
-  const Signup = () => {
+  const Signup = ({navigation}) => {
     const [step, setStep] = useState(1);
     const [email,setEmail]=useState()
     const [name,setName]=useState()
@@ -49,8 +23,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
     const [role,setRole]=useState()
     const [pdp,setPdp]=useState()
     const slideAnim = useRef(new Animated.Value(0)).current;
+    const {token,setToken} = useContext(AuthContext)
 
-  
+  console.log(setToken,token);
     const switchToStep2 = () => {
       Animated.timing(slideAnim, {
         toValue: 1,
@@ -71,8 +46,33 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
       slideAnim.setValue(0);
     }, [step]);
 
+    const createCompanyAcc = async()=>{
+      const companyData = {
+        name,
+        userName,
+        email,
+        password,
+        pdp,
+        role,
+        confirmed:false
+      };
+      try{
+         const emailSent= await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/company/create`,{email,name,pdp,userName})
+         const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/create`,companyData)
+         await createUserWithEmailAndPassword(auth,email,password)
 
-    const createAccount =  async()=>{
+        await setToken(response.data)
+         navigation.navigate('Home')
+      }catch(err){
+          console.log(err);
+      }
+  }
+
+  const createAccount =  async()=>{
+    if (role === 'COMPANY'){
+      createCompanyAcc()
+    } else {
+
       const userData = {
         name,
         userName,
@@ -82,23 +82,26 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
         role,
       };
       try {
-
         const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/create`,userData)
-        console.log(response);
+        await  createUserWithEmailAndPassword(auth,email,password)
+        await setToken(response.data)
+        navigation.navigate('Home')
+        
       }catch(err){
-        console.log(err);
+
       }
     }
     const renderItem = ({ item }) => {
       const StepComponent = item.component;
       return <StepComponent {...item.props} />;
+    }
     };
     return (
-     
+      
       <SafeAreaView style={{ marginTop: 40 }}>
         <View>
         {step !==1 && (
-            <TouchableOpacity style={{top:20,}} onPress={switchToStep2}>
+          <TouchableOpacity style={{top:20,}} onPress={switchToStep2}>
               <Ionicons size={50} name='arrow-back'/>
             </TouchableOpacity>
           )}
@@ -115,15 +118,18 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
               ],
             }}
           >
-            {step === 1 && <Step1 setName={setName} name={name} userName={userName} setUserName={setUserName} role={role} setRole={setRole} setStep={setStep} />}
+             { step === 1 && <Step1 setName={setName} name={name} userName={userName} setUserName={setUserName} role={role} setRole={setRole} setStep={setStep} />}
             {step === 2 && <Step2 password={password}  setPassword={setPassword}  setEmail={setEmail} email={email}
           setConPassword={setConPassword} conPassword={conPassword}   setStep={setStep} />}
             {step === 3 && <Step3 setStep={setStep} />}
-            {step===4 && <Step4 setStep={setStep} />}
-          {step=== 5 &&  <Step5 createAccount={createAccount} pdp={pdp} setPdp={setPdp}/>}
+            { step === 4 &&<Step4 setStep={setStep} />}
+          { step === 5 && <Step5 createAccount={createAccount} pdp={pdp} setPdp={setPdp} setStep={setStep}/>}
+          
+{ step===6 &&<Step6 createAccount={createAccount} role={role}/>
+}           
+</Animated.View>
 
-        
-          </Animated.View>
+
 
       
          </View>

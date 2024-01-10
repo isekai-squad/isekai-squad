@@ -4,7 +4,7 @@ import { Response , Request} from "express"
 const prisma = new PrismaClient();
 
 export const addreport = async (req: Request, res: Response) => {
-    let {userId} = req.params
+    let {userId, projectId} = req.params
     let {category , evidence} = req.body
     try {
         const result = await prisma.report.create({

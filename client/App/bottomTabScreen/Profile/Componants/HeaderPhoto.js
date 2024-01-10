@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
+import { ProfileContext } from "../../../Context/ProfileContext";
+import { STYLES } from "../../../../GlobalCss";
 
-const HeaderPhoto = ({ profileData }) => {
+const HeaderPhoto = () => {
+  const { ProfileData } = useContext(ProfileContext);
+
   return (
     <View>
       <ImageBackground
-        resizeMode="cover"
         source={{
-          uri: profileData.cover,
+          uri: ProfileData.cover,
         }}
         style={styles.backgroundImage}
       >
@@ -15,16 +18,16 @@ const HeaderPhoto = ({ profileData }) => {
       </ImageBackground>
 
       <View style={styles.profileContainer}>
-          <Image
-            source={{
-              uri: profileData.pdp,
-            }}
-            style={styles.profileImage}
-          />
+        <Image
+          source={{
+            uri: ProfileData.pdp,
+          }}
+          style={styles.profileImage}
+        />
 
         <View style={styles.descriptionContainer}>
           <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>{profileData.project.length}</Text>
+            <Text style={styles.detailText}>{ProfileData.project?.length}</Text>
             <Text style={styles.detailLabel}>Projects</Text>
           </View>
 
@@ -44,15 +47,13 @@ const HeaderPhoto = ({ profileData }) => {
 };
 
 const styles = StyleSheet.create({
-
-
   backgroundImage: {
     width: "100%",
-    height: 130,
+    height: 180,
   },
   darkOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: STYLES.COLORS.ShadowColor,
   },
   profileContainer: {
     flexDirection: "row",
@@ -60,7 +61,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    top: 25,
+    top: "70%",
+    transform: [{ translateY: -70 }],
     width: "100%",
   },
   profileImage: {

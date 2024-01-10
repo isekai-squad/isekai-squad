@@ -24,7 +24,7 @@ const Step4 = ({setStep}) => {
 
   return (
    <View style={{width}}>
-     <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40,gap:40,top:20}}>
+     <View style={{ justifyContent: 'center', alignItems: 'center',gap:40}}>
       <View>
         <Text style={Styles.SignUp}>Expertise</Text>
         <Text style={{ fontFamily: 'Roboto-Light', fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>

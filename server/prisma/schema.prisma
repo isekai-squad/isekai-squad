@@ -27,7 +27,7 @@ model User {
   bio             String?
   dateOfBirth     String?
   password        String?
-  pdp             String
+  pdp             String       @default("https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg")
   number          Int?
   cover           String?
   socials         String[]
@@ -50,6 +50,7 @@ model User {
   replies         Replies[]
   likes           Likes[]
   userTechnology  userTechnology[]
+  confirmed       Boolean @default(true)
 }
 
 model Project {
@@ -111,7 +112,7 @@ model Service {
   id          String    @id @default(uuid())
   title       String
   description String    @db.Text
-  image       String
+  image       String    @db.Text
   Price       Int
   created_at  DateTime  @default(now())
   User        User?     @relation(fields: [userId], references: [id])
@@ -176,15 +177,17 @@ model Basket {
 }
 
 model Forum_Posts {
-  id         String           @id @default(uuid())
-  title      String
-  content    String           @db.Text
-  images     String[]         @db.Text
-  created_at DateTime         @default(now())
-  User       User?            @relation(fields: [userId], references: [id])
-  userId     String?
-  comments   FPost_comments[]
-  likes      Likes[]
+  id               String           @id @default(uuid())
+  title            String
+  content          String           @db.Text
+  images           String[]         @db.Text
+  created_at       DateTime         @default(now())
+  User             User?            @relation(fields: [userId], references: [id])
+  userId           String?
+  comments         FPost_comments[]
+  likes            Likes[]
+  Forum_Category   Forum_Category?  @relation(fields: [forum_CategoryId], references: [id])
+  forum_CategoryId String?
 }
 
 model FPost_comments {
@@ -257,4 +260,11 @@ model Specialty {
 
   User   User?   @relation(fields: [userId], references: [id])
   userId String?
+}
+
+model Forum_Category {
+  id          String        @id @default(uuid())
+  name        String
+  image       String        @db.Text
+  Forum_Posts Forum_Posts[]
 }

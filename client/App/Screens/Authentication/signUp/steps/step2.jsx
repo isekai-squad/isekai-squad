@@ -16,7 +16,9 @@ import {
     ScrollView,
     TextInput,
     Vibration,
-    useWindowDimensions
+    useWindowDimensions,
+    KeyboardAvoidingView,
+    Platform,
 
 } from 'react-native'
 import { useFonts } from 'expo-font'
@@ -53,10 +55,15 @@ const nextStep = async()=>{
     setStep(3)
    }
 }
-const {width} = useWindowDimensions()
+const {width,height} = useWindowDimensions()
 
   return (
-    <View style={{width}}>
+    <KeyboardAvoidingView
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Use 'padding' for iOS, undefined for Android
+    style={{ flex: 1 }}
+    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -200} // Adjust as needed
+  >
+    <View style={{width,height}}>
            <View style={{marginLeft:40, marginTop:100}} >
                         <Text style={Styles.SignUp}>SignUp</Text>
                         <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>SignUp And Join Us</Text>
@@ -138,6 +145,7 @@ const {width} = useWindowDimensions()
 
                         </View>
     </View>
+    </KeyboardAvoidingView>
   )
 }
 const Styles = StyleSheet.create({

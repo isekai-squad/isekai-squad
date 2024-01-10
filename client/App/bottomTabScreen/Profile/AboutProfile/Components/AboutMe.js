@@ -5,29 +5,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { ProfileContext } from "../../../../Context/ProfileContext";
 
 const AboutMe = () => {
-  const { data: profileData, isLoading, isError } = useContext(ProfileContext);
+  const { ProfileData } = useContext(ProfileContext);
 
-  if (isLoading) {
-    return (
-      <SafeAreaView style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </SafeAreaView>
-    );
-  }
 
-  // if (isError) {
-  // return (
-  //   <SafeAreaView style={styles.errorContainer}>
-  //     <Image
-  //       source={{
-  //         uri: "https://img.freepik.com/premium-vector/error-404-concept-app-ui-page_637684-11.jpg?w=360",
-  //         width: "100%",
-  //         height: "100%",
-  //       }}
-  //       resizeMode="cover"
-  //     />
-  //   </SafeAreaView>
-  // )}
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -41,19 +21,19 @@ const AboutMe = () => {
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Name:</Text>
-        <Text style={styles.value}>{profileData.name}</Text>
+        <Text style={styles.value}>{ProfileData.name}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Phone:</Text>
-        <Text style={styles.value}>(+216) {profileData.number}</Text>
+        <Text style={styles.value}>(+216) {ProfileData.number}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{profileData.email}</Text>
+        <Text style={styles.value}>{ProfileData.email}</Text>
       </View>
       <View style={styles.bioContainer}>
         <Text style={styles.label}>Bio:</Text>
-        <Text style={styles.bioText}>{profileData.bio}</Text>
+        <Text style={styles.bioText}>{ProfileData.bio}</Text>
       </View>
     </ScrollView>
   );
@@ -87,7 +67,7 @@ const styles = StyleSheet.create({
     fontSize: STYLES.SIZES.sizeM,
     fontWeight: STYLES.FONTS.bold,
     marginRight: 10,
-    color: "rgba(0,0,0,0.5)",
+    color: STYLES.COLORS.ShadowColor,
   },
   value: {
     fontSize: STYLES.SIZES.sizeM,

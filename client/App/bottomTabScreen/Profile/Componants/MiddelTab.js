@@ -5,8 +5,10 @@ import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { STYLES } from "../../../../GlobalCss";
 import { ProfileContext } from "../../../Context/ProfileContext";
+import { useNavigation } from "@react-navigation/native";
 
 function MiddelTab() {
+  const navigation = useNavigation();
   const { activeMiddleTab, setActiveMiddleTab } = useContext(ProfileContext);
 
   const renderTabButton = (tabName, iconComponent) => (
@@ -15,7 +17,11 @@ function MiddelTab() {
       onPress={() => setActiveMiddleTab(tabName)}
     >
       {iconComponent}
-      <Text style={activeMiddleTab === tabName ? styles.activeText : styles.inactiveText}>
+      <Text
+        style={
+          activeMiddleTab === tabName ? styles.activeText : styles.inactiveText
+        }
+      >
         {tabName}
       </Text>
     </TouchableOpacity>
@@ -24,30 +30,40 @@ function MiddelTab() {
   return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
-        {renderTabButton("Activity", (
+        {renderTabButton(
+          "Activity",
           <AntDesign
             name="appstore-o"
             size={20}
-            color={activeMiddleTab === "Activity" ? STYLES.COLORS.Priamary : "#ab71ef"}
+            color={
+              activeMiddleTab === "Activity"
+                ? STYLES.COLORS.Priamary
+                : "#ab71ef"
+            }
           />
-        ))}
+        )}
 
-        {renderTabButton("About", (
+        {renderTabButton(
+          "About",
           <MaterialCommunityIcons
             name="newspaper"
             size={20}
-            color={activeMiddleTab === "About" ? STYLES.COLORS.Priamary : "#ab71ef"}
+            color={
+              activeMiddleTab === "About" ? STYLES.COLORS.Priamary : "#ab71ef"
+            }
           />
-        ))}
+        )}
       </View>
-      
-      {renderTabButton("Edit", (
-        <Entypo
-          name="sound-mix"
-          size={20}
-          color={activeMiddleTab === "Edit" ? STYLES.COLORS.Priamary : "#ab71ef"}
-        />
-      ))}
+
+      <TouchableOpacity
+        style={styles.tabButton}
+        onPress={() => {
+          setActiveMiddleTab("Activity"), navigation.navigate("EditProfile");
+        }}
+      >
+        <Entypo name="sound-mix" size={20} color={"#ab71ef"} />
+        <Text style={styles.inactiveText}>Edit Profile</Text>
+      </TouchableOpacity>
     </View>
   );
 }
