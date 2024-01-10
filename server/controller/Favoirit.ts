@@ -25,9 +25,6 @@ export const getFavorite = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
 export const addFav = async (req: Request, res: Response) => {
   const { userId, projectId, postId, serviceId } = req.params;
   try {
@@ -45,28 +42,20 @@ export const addFav = async (req: Request, res: Response) => {
   }
 };
 
-
-
-
-
 export const removeFav = async (req: Request, res: Response): Promise<void> => {
-  const userid: number = +req.params.userid;
-  const projectid: number = +req.params.projectid;
-  const postid: number = +req.params.postid;
-  const serviceid: number = +req.params.serviceid;
+  const serviceid: string = req.params.serviceid;
 
   try {
     const deleted = await prisma.favList.deleteMany({
       where: {
-        userId: String( userid),
-        projectId: String (projectid),
-        postId: String ( postid),
-        serviceId: String ( serviceid),
+        serviceId: serviceid,
       },
     });
 
-    res.status(200).send("Favorite item removed successfully");
-  } catch (err) {
-    res.status(400).send({ error: err as Error });
+    // Add response handling if needed
+    res.status(200).json({ success: true, deleted });
+  } catch (error) {
+    console.error("Error deleting from basket:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };

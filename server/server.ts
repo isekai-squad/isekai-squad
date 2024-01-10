@@ -38,6 +38,8 @@ app.use("/favorit", favotitRouter);
 app.use("/baskets", basket);
 // app.use("/api", router);
 // app.use("/stripe",stripe)
+app.use("/", router);
+
 
 
 
