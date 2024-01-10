@@ -26,9 +26,9 @@ model User {
   bio             String?
   dateOfBirth     String?
   password        String?
-  pdp             String
+  pdp             String       @default("https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg")
   number          Int?
-  cover           String
+  cover           String?
   socials         String[]
   active          Boolean            @default(false)
   premuim         Boolean            @default(false)
@@ -50,6 +50,7 @@ model User {
   userTechnology  userTechnology[]
   Specialty       Specialty?         @relation(fields: [specialtyId], references: [id])
   specialtyId     String?
+  confirmed       Boolean @default(true)
 }
 
 model Project {

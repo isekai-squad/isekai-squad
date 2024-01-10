@@ -14,6 +14,7 @@ import { ProfileProvider } from "./App/Context/ProfileContext";
 import ForumCategories from "./App/component/Posts/ForumCategories";
 import UserProfile from "./App/Screens/UserProfile/UserProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
+import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
 
 const Stack = createStackNavigator();
 
@@ -101,13 +102,18 @@ export const Navigation = () => {
             options={{
               headerShown: false,
             }}
-            name="signIn"
-            component={SignIn}
+            name="signup"
+            component={Signup}
           />
-          
-        </Stack.Navigator>
-        
-      )}
-    </NavigationContainer>
-  );
+        <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+
+       
+      
+       
+        </Stack.Navigator>)}
+
+
+          </NavigationContainer>
+    
+    );
 };

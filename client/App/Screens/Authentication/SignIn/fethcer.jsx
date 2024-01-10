@@ -1,10 +1,14 @@
 import { useContext } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
 import axios from "axios";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../../FirebaseConfig";
+
 
 export const SignInFetch =  async (data,navigation,setToken,pre)=>{
+  const {email,password}=data
     try {
-  
+     await signInWithEmailAndPassword(auth,email, password)
       var response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/signin/`,data)
        await setToken(response.data)
         navigation.navigate('Home')

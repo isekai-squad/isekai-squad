@@ -13,7 +13,7 @@ CREATE TABLE "User" (
     "password" TEXT,
     "pdp" TEXT NOT NULL,
     "number" INTEGER,
-    "cover" TEXT NOT NULL,
+    "cover" TEXT,
     "socials" TEXT[],
     "active" BOOLEAN NOT NULL DEFAULT false,
     "premuim" BOOLEAN NOT NULL DEFAULT false,

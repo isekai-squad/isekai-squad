@@ -15,12 +15,14 @@ import {
     TouchableOpacity,
     ScrollView,
     TextInput,
-    Vibration
+    Vibration,
+    useWindowDimensions
 
 } from 'react-native'
  import { AuthContext } from '../../../Context/AuthContext';
 import { STYLES } from '../../../../GlobalCss'
 import { useFonts } from 'expo-font'
+
 
 export default function SignIn({navigation}) {
     const {token,setToken} = useContext(AuthContext)
@@ -47,13 +49,16 @@ export default function SignIn({navigation}) {
 
 }
 
-
+const {width,height} =useWindowDimensions()
      
     return (
-        <ScrollView style={{ flex: 1 }}>
-            <SafeAreaView style={{ justifyContent: 'center',
-                    alignItems: 'center',}}>
+        <ScrollView style={{ flex: 1,width,height }}>
+            <TouchableOpacity onPress={()=>navigation.navigate('signup')}>
 
+            <Text style={{position:'absolute',top:0,marginTop:50,marginLeft:10,fontSize:20,color:STYLES.COLORS.Priamary}}>Create Account?</Text>
+            </TouchableOpacity>
+            <SafeAreaView style={{ justifyContent: 'center',
+                    alignItems: 'center',marginTop:15}}>
 
                 <View style={{
                     justifyContent: 'center',
@@ -128,6 +133,7 @@ export default function SignIn({navigation}) {
                                 <Feather size={20} name="eye-off" />}
                                 </TouchableOpacity>
                         </View>
+                        <Text onPress={()=>navigation.navigate('forgotPassword')} style={{bottom:80,alignSelf: 'flex-end',color:'blue',fontFamily:'Roboto-bold'}}>Forgot Password?</Text>
                                 {error === "Invalid Credentials" && <Text style={{bottom:80,alignSelf: 'flex-end',color:'red',fontFamily:'Roboto-bold'}} >  Invalid Credentials X</Text> }
                                 {error === "User not found" && <Text style={{bottom:80,alignSelf: 'flex-end',color:'red'}}>x User not found</Text>}
                     </View>
