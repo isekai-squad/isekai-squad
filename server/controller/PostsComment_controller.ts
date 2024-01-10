@@ -45,7 +45,7 @@ export const getAllCommentsProject = async (req:Request , res:Response) => {
     let {projectId} = req.params;
     try {
         const result = await prisma.project_comments.findMany({
-            where: {projectId}
+            where: {projectId},
         })
         res.status(200).json(result)
     }catch (err) {
