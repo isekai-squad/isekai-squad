@@ -23,35 +23,88 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer>
-      <ProfileProvider>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-     
-            <>
-              <Stack.Screen name="tabs" component={MainContainer} />
-              <Stack.Screen name="aboutScreen" component={FlexDimensionsBasics} />
-              <Stack.Screen
-                name="EditProfile"
-                component={EditProfile}
-                options={{
-                  headerTitle: "",
-                  headerLeft: null,
-                  headerStyle: { height: 50 },
-                }}
-              />
-              <Stack.Screen name="ScanCode" component={QR_code} />
-              <Stack.Screen name="Posts" component={Posts} />
-              <Stack.Screen name="PostDetails" component={PostDetails} />
-              <Stack.Screen name="Forum" component={ForumCategories} />
-              <Stack.Screen name="UserProfile" component={UserProfile} />
-              <Stack.Screen name="Post" component={CreatePost} />
-            </>
+      {auth ? (
+        <ProfileProvider>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="tabs"
+              component={MainContainer}
+            //   options={({ navigation }) => ({
+            //     headerTitle: () => (
+            //       <SearchHeader
+            //         onChangeText={(text) => console.log("Search:", text)}
+                    
+            //       />
+            //     ),
+            //     headerTitleContainerStyle: { width: "100%" },
+            //   })
           
-            <>
-              <Stack.Screen name="signIn" component={SignIn} />
-              <Stack.Screen name="signup" component={Signup} />
-              <Stack.Screen name="forgotPassword" component={ForgotPassword} />
-            </>
-     
+            // }
+            options={{headerShown:false}}
+              
+            />
+            <Stack.Screen
+              name="aboutScreen"
+              component={FlexDimensionsBasics}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="EditProfile"
+              component={EditProfile}
+              options={{
+                headerTitle: "",
+                headerLeft: null,
+                headerStyle: { height: 50 },
+              }}
+            />
+
+            <Stack.Screen
+              name="ScanCode"
+              component={QR_code}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen name="Posts" component={Posts} options={{headerShown : false}} />
+            <Stack.Screen
+              name="PostDetails"
+              component={PostDetails}
+              options={{ headerShown: false }}
+              
+            />
+            <Stack.Screen
+              name="Forum"
+              component={ForumCategories}
+              options={{ headerShown: false}}
+            />
+            <Stack.Screen
+            name='UserProfile'
+            component={UserProfile}
+            options={{ headerShown: false }}
+            />
+            <Stack.Screen
+            name='Post'
+            component={CreatePost}
+            options={{headerTitle : "" , headerShown: false}}
+            />
+          </Stack.Navigator>
+        </ProfileProvider>
+      ) : (
+        <Stack.Navigator>
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="signIn"
+            component={SignIn}
+          />
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="signUp"
+            component={Signup}
+          />
+          
         </Stack.Navigator>
       </ProfileProvider>
     </NavigationContainer>
