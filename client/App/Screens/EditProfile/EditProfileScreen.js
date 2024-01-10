@@ -41,12 +41,12 @@ function EditProfile() {
     <View>
       <ScrollView>
         {loading && (
-            <ActivityIndicator
-              size="large"
-              color={STYLES.COLORS.Priamary}
-              style={styles.loadingIndicator}
-            />
-          )}
+          <ActivityIndicator
+            size="large"
+            color={STYLES.COLORS.Priamary}
+            style={styles.loadingIndicator}
+          />
+        )}
         <SafeAreaView style={styles.container}>
           <TouchableOpacity
             style={{ width: "20%" }}
@@ -63,7 +63,11 @@ function EditProfile() {
           <ChangeImages />
           <ChangeInfo />
           <MainSkills />
-          <TouchableOpacity disabled={loading} style={styles.saveButton} onPress={handleSubmit}>
+          <TouchableOpacity
+            disabled={loading}
+            style={styles.saveButton}
+            onPress={handleSubmit}
+          >
             <Text style={styles.saveButtonText}>Save Changes</Text>
           </TouchableOpacity>
           <AwesomeAlert
@@ -112,10 +116,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height:"100%",
-    width:"100%",
+    height: "100%",
+    width: "100%",
     backgroundColor: "rgba(255, 255, 255, 0.7)",
-    zIndex: 1000
+    zIndex: 1000,
   },
 });
 

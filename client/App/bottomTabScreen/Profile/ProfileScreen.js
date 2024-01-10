@@ -25,16 +25,14 @@ function ProfileScreen() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const { activeMiddleTab, LoadingProfile, refetchProfile, refetchPosts } =
+  const { activeMiddleTab, LoadingProfile, refetchProfile } =
     useContext(ProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetchProfile();
-    if (activeMiddleTab === "Activity") {
-      refetchPosts();
-    }
+
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
