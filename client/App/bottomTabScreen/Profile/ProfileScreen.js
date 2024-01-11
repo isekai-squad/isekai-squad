@@ -1,13 +1,13 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useFonts } from "expo-font";
+import { ScrollView } from 'react-native-virtualized-view'
+
 import {
   SafeAreaView,
   StyleSheet,
   View,
-  Text,
   RefreshControl,
   ActivityIndicator,
-  ScrollView,
 } from "react-native";
 import HeaderPhoto from "./Componants/HeaderPhoto";
 import Bio from "./Componants/Bio";
@@ -58,8 +58,8 @@ function ProfileScreen() {
           <Bio />
         </View>
         <MiddelTab />
-        {activeMiddleTab === "Activity" && <Activity />}
         {activeMiddleTab === "About" && <AboutProfile />}
+        {activeMiddleTab === "Activity" && <Activity />}
       </ScrollView>
     </SafeAreaView>
   );

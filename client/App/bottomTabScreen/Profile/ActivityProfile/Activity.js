@@ -1,14 +1,16 @@
-import React, { useContext } from "react";
-import { StyleSheet, ScrollView } from "react-native";
-import { FlashList } from "@shopify/flash-list";
-import { ProfileContext, useFetchStudentProjects } from "../../../Context/ProfileContext";
-import Post from "./components/Post";
+import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import {
+  ProfileContext,
+  useFetchStudentProjects,
+} from "../../../Context/ProfileContext";
+
+import { STYLES } from "../../../../GlobalCss";
+import RenderPost from "./components/RenderPost";
 
 const Activity = () => {
-  const { data, isLoading, isError, hasNextPage, fetchNextPage ,refetch} = useFetchStudentProjects();
-  const projects = data?.pages.flatMap((page) => page.data)
-
-
+  const { data, isLoading, hasNextPage, fetchNextPage } =
+    useFetchStudentProjects(1);
+  const projects = data?.pages?.map((page) => page).flat();
 
   const loadNextPageData = () => {
     if (hasNextPage) {
@@ -16,24 +18,44 @@ const Activity = () => {
     }
   };
 
+  // render componants
+
+  const keyExtractor = (_, index) => index.toString();
+
+  //map into data
   return (
-    <ScrollView style={styles.container}>
-      <FlashList
-        keyExtractor={(item) => item.id}
+    <View style={styles.container}>
+      <FlatList
+        keyExtractor={keyExtractor}
         data={projects}
-        renderItem={({ item }) => <Post sortedProjects={item} />}
         onEndReached={loadNextPageData}
-      
-        estimatedItemSize={100}
+        renderItem={({ item }) => <RenderPost item={item} />}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          hasNextPage && (
+            <ActivityIndicator
+              size="large"
+              color={STYLES.COLORS.Priamary}
+              style={styles.loadingIndicator}
+            />
+          )
+        }
       />
-    </ScrollView>
+      {isLoading && (
+        <ActivityIndicator
+          size="large"
+          color={STYLES.COLORS.Priamary}
+          style={styles.loadingIndicator}
+        />
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    overflow: "hidden",
+    // overflow: "hidden",
     backgroundColor: "#fff",
     paddingBottom: 100,
   },

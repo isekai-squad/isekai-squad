@@ -123,10 +123,22 @@ export const getAllProject = async (req: Request, res: Response) => {
 };
 
 export const getAllProjectOneUser = async (req: Request, res: Response) => {
-  let { userId } = req.params;
-  const {limit}=req.query
-
   try {
+    const { userId } = req.params;
+    const { limit = 10, page = 1 } = req.query;
+
+    const parsedLimit = Number(limit);
+    const parsedPage = Number(page);
+
+    if (
+      isNaN(parsedLimit) ||
+      parsedLimit <= 0 ||
+      isNaN(parsedPage) ||
+      parsedPage <= 0
+    ) {
+      return res.status(400).json({ error: "Invalid limit or page parameter" });
+    }
+
     const result = await prisma.project.findMany({
       where: { userId },
       include: {
@@ -139,14 +151,20 @@ export const getAllProjectOneUser = async (req: Request, res: Response) => {
         },
         projectTechnology: true,
       },
-      take: Number(limit) ,
+      skip: (parsedPage - 1) * parsedLimit,
+      take: parsedLimit,
+      orderBy: {
+        created_at: "desc",
+      },
     });
     res.status(200).json(result);
   } catch (err) {
-    console.log(err);
-    res.status(400).send(err);
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 export const getAllPosts = async (req: Request, res: Response) => {
   try {

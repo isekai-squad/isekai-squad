@@ -1,14 +1,10 @@
 import { createContext, useEffect, useRef, useState } from "react";
-import {
-  useQuery,
-  useInfiniteQuery,
-  useMutation,
-  UseInfiniteQueryOptions,
-} from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { storage } from "../../FirebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 
 export const ProfileContext = createContext();
 export const ProfileProvider = ({ children }) => {
@@ -37,15 +33,6 @@ export const ProfileProvider = ({ children }) => {
     queryKey: ["profile", userId],
     queryFn: () => fetchProfile(userId),
   });
-
-  // const {
-  //   data: studentsProjects,
-  //   isLoading,
-  //   refetch: fetchNextPage,
-  // } = useInfiniteQuery({
-  //   queryKey: ["projects", userId],
-  //   queryFn: () => fetchStudentProjects(userId),
-  // });
 
   const { mutateAsync: mutateAsyncInfo } = useMutation({
     mutationFn: async (data) => {
@@ -177,6 +164,24 @@ export const ProfileProvider = ({ children }) => {
     </ProfileContext.Provider>
   );
 };
+//convert time
+export const formatTimeDifference = (createdAt) => {
+  const now = moment();
+  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
+  const duration = moment.duration(now.diff(postTime));
+  if (duration.asMinutes() < 60) {
+    // Less than 60 minutes
+    return moment.duration(duration).humanize(true);
+  } else if (duration.asHours() < 24) {
+    // Less than 24 hours
+    const hours = Math.floor(duration.asHours());
+    return `${hours}h`;
+  } else {
+    // More than 24 hours
+    const days = Math.floor(duration.asDays());
+    return days === 1 ? "one day" : `${days} days`;
+  }
+};
 
 async function fetchProfile(userId) {
   try {
@@ -234,44 +239,20 @@ export async function updateProfileTechnologie(data, userId) {
   }
 }
 
-// export async function fetchStudentProjects(userId) {
-//   try {
-//     const response = await fetch(
-//       `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/${userId}?limit=4`
-//     );
-//     console.log("yeeee2222");
-//     const data = await response.json();
-//     return data;
-//   } catch (error) {
-//     console.error("Error updating technologie:", error);
-//     throw error;
-//   }
-// }
-
-
-export const useFetchStudentProjects = () => {
-  const userProjects = async ({ pageParam = 0 }) => {
-    const res = await (
-      await fetch(
-        `http://${
-          process.env.EXPO_PUBLIC_IP_KEY
-        }:4070/Posts/Projects/1?limit=4&page=${pageParam}`
-      )
-    ).json();
-    return {
-      data: res,
-      nextPage: pageParam + 1,
-    };
+export const useFetchStudentProjects = (userId) => {
+  const userProjects = async ({ pageParam = 1 }) => {
+    const { data } = await axios.get(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/${userId}?limit=6&page=${pageParam}`
+    );
+    return data;
   };
   return useInfiniteQuery({
     queryKey: ["projects"],
     queryFn: userProjects,
 
-    getNextPageParam: (lastPage) => {
-      const { data } = lastPage;
-      const limit = 8; 
-      if (data.length < limit) return undefined;
-      return lastPage.nextPage;
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length === 0) return undefined;
+      return allPages.length + 1;
     },
   });
 };
@@ -286,6 +267,7 @@ export async function getAllLikesProject(projectId) {
     throw new err();
   }
 }
+
 export async function getUserLikes(userId) {
   try {
     const response = await fetch(
@@ -316,3 +298,16 @@ export async function downVoteProject(userId, projectId) {
     throw new err();
   }
 }
+
+export async function getAllProjectsComments(project_commentsId) {
+  try {
+    const response = await fetch(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/projects/${project_commentsId}`
+    );
+
+    return response.json();
+  } catch (err) {
+    throw new err();
+  }
+}
+

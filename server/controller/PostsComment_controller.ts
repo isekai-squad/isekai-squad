@@ -46,6 +46,10 @@ export const getAllCommentsProject = async (req:Request , res:Response) => {
     try {
         const result = await prisma.project_comments.findMany({
             where: {projectId},
+            include: {
+                User:{select:{name:true,pdp:true}},
+                likes:true
+            }
         })
         res.status(200).json(result)
     }catch (err) {

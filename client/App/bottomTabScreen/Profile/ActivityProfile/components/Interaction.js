@@ -1,22 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import {
   ProfileContext,
   downVoteProject,
   getAllLikesProject,
+  getAllProjectsComments,
   getUserLikes,
   upVoteProject,
 } from "../../../../Context/ProfileContext";
+
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { STYLES } from "../../../../../GlobalCss";
+import CommentsInputs from "./CommentsInputs";
+import AllComments from "./AllComments";
 
 const Interaction = ({ projectId }) => {
   const { userId } = useContext(ProfileContext);
@@ -35,6 +32,11 @@ const Interaction = ({ projectId }) => {
   const { data: UserProjectsLikes } = useQuery({
     queryKey: ["userLikes", userId],
     queryFn: () => getUserLikes(userId),
+  });
+
+  const { data: projectsComments, refetch: refetchComments } = useQuery({
+    queryKey: ["projectComments", projectId],
+    queryFn: () => getAllProjectsComments(projectId),
   });
 
   useEffect(() => {
@@ -78,42 +80,41 @@ const Interaction = ({ projectId }) => {
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 5,
-        marginTop: 10,
-      }}
-    >
-      <View style={styles.voteButtons}>
-        <TouchableOpacity
-          style={{ alignItems: "center" }}
-          onPress={upVoteHandle}
-        >
-          <Entypo
-            name={"arrow-bold-up"}
-            color={upvoted ? "#00f" : "#e5e4e4"}
-            size={STYLES.SIZES.sizeXL}
-          />
-          <Text style={{ fontWeight: STYLES.FONTS.bold }}>{projectLikes}</Text>
-        </TouchableOpacity>
+    <View style={{alignItems:"center"}}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 5,
+          marginTop: 10,
+        }}
+      >
+        <View style={styles.voteButtons}>
+          <TouchableOpacity
+            style={{ alignItems: "center" }}
+            onPress={upVoteHandle}
+          >
+            <Entypo
+              name={"arrow-bold-up"}
+              color={upvoted ? STYLES.COLORS.Priamary : "#e5e4e4"}
+              size={STYLES.SIZES.sizeXL}
+            />
+            <Text style={{ fontWeight: STYLES.FONTS.bold }}>
+              {projectLikes}
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={downVoteHandle}>
-          <Entypo
-            name={"arrow-bold-down"}
-            color={downvoted ? "#f00" : "#e5e4e4"}
-            size={STYLES.SIZES.sizeXL}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={downVoteHandle}>
+            <Entypo
+              name={"arrow-bold-down"}
+              color={downvoted ? "tomato" : "#e5e4e4"}
+              size={STYLES.SIZES.sizeXL}
+            />
+          </TouchableOpacity>
+        </View>
+        <CommentsInputs projectsComments={projectsComments} />
       </View>
-
-      <View style={styles.commentContainer}>
-        <TextInput placeholder="Add a comment..." style={styles.commentInput} />
-        <TouchableOpacity style={styles.commentButton}>
-          <AntDesign name={"arrowright"} size={STYLES.SIZES.sizeL} />
-        </TouchableOpacity>
-      </View>
+      <AllComments projectsComments={projectsComments} />
     </View>
   );
 };
@@ -127,24 +128,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     gap: 5,
-  },
-  commentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
-  },
-  commentInput: {
-    width: "100%",
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 10,
-  },
-  commentButton: {
-    borderRadius: 20,
-    padding: 10,
-    position: "absolute",
-    right: 0,
   },
 });
