@@ -15,15 +15,14 @@ import ForumCategories from "./App/component/Posts/ForumCategories";
 import UserProfile from "./App/Screens/UserProfile/UserProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
-
+import { AuthContext } from "./App/Context/AuthContext";
 const Stack = createStackNavigator();
-
 export const Navigation = () => {
-  const [auth, setAuth] = useState(true);
-  
+  const { token } = useContext(AuthContext);
+
   return (
     <NavigationContainer>
-      {auth ? (
+      {true ? (
         <ProfileProvider>
           <Stack.Navigator>
             <Stack.Screen
@@ -105,15 +104,9 @@ export const Navigation = () => {
             name="signup"
             component={Signup}
           />
-        <Stack.Screen name="forgotPassword" component={ForgotPassword} />
-
-       
-      
-       
-        </Stack.Navigator>)}
-
-
-          </NavigationContainer>
-    
-    );
+          <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
+  );
 };

@@ -21,9 +21,9 @@ export const MainContainer = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          height: 60,
-          borderTopLeftRadius: 50,
-          borderTopRightRadius: 50,
+          height: 70,
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
           paddingBottom: 5,
           backfaceVisibility: "hidden",
           display: activeMiddleTab == "Edit" ? "none" : "flex",
