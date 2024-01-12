@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,17 +11,43 @@ import { STYLES } from "../../../../../GlobalCss";
 import Swiper from "react-native-swiper";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Interaction from "./Interaction";
+import AwesomeAlert from "react-native-awesome-alerts";
+
 import {
   ProfileContext,
+  deleteProject,
   formatTimeDifference,
 } from "../../../../Context/ProfileContext";
+import { useMutation } from "@tanstack/react-query";
 
-const RenderPost = React.memo(({ item, handleDelete }) => {
-  const { profileImage, ProfileData } = useContext(ProfileContext);
+const RenderPost = ({ item, refetchProject }) => {
+  const { profileImage, ProfileData, refetchProfile, setRefetchProject } =
+    useContext(ProfileContext);
+  const [confirmAlert, setConfirmAlert] = useState(false);
+
+  const { mutateAsync: deleteProjectMutate } = useMutation({
+    mutationFn: (projectId) => deleteProject(ProfileData.id, projectId),
+  });
 
   const openFileUrl = useCallback((fileUrl) => {
     Linking.openURL(fileUrl);
+    setRefetchProject(refetchProject);
   }, []);
+
+  const showConfirmAlert = () => setConfirmAlert(true);
+  const hideConfirmAlert = () => setConfirmAlert(false);
+
+  const confirmDelete = async (projectId) => {
+    try {
+      await deleteProjectMutate(projectId);
+      refetchProject();
+      refetchProfile();
+      hideConfirmAlert();
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      hideConfirmAlert();
+    }
+  };
 
   return (
     <View key={item.id} style={styles.postContainer}>
@@ -35,8 +61,9 @@ const RenderPost = React.memo(({ item, handleDelete }) => {
             {formatTimeDifference(item.created_at)}
           </Text>
         </View>
+
         <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={() => handleDelete(item.id)}>
+          <TouchableOpacity onPress={showConfirmAlert}>
             <AntDesign name={"delete"} size={STYLES.SIZES.sizeL} />
           </TouchableOpacity>
         </View>
@@ -73,10 +100,26 @@ const RenderPost = React.memo(({ item, handleDelete }) => {
           />
         ))}
       </Swiper>
-      <Interaction projectId={item.id} comments={item.comment} />
+      <Interaction projectId={item.id} />
+
+      <AwesomeAlert
+        show={confirmAlert}
+        showProgress={false}
+        title="Confirm Delete"
+        message="Are you sure you want to delete this project?"
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelText="Cancel"
+        confirmText="Delete"
+        confirmButtonColor="#DD6B55"
+        onCancelPressed={hideConfirmAlert}
+        onConfirmPressed={() => confirmDelete(item.id)}
+      />
     </View>
   );
-});
+};
 
 export default RenderPost;
 

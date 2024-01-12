@@ -11,14 +11,16 @@ CREATE TABLE "User" (
     "bio" TEXT,
     "dateOfBirth" TEXT,
     "password" TEXT,
-    "pdp" TEXT NOT NULL,
+    "pdp" TEXT NOT NULL DEFAULT 'https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg',
     "number" INTEGER,
-    "cover" TEXT NOT NULL,
+    "cover" TEXT DEFAULT 'https://images.unsplash.com/photo-1535911062114-764574491173?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dW1icmVsbGF8ZW58MHx8MHx8fDA%3D',
     "socials" TEXT[],
     "active" BOOLEAN NOT NULL DEFAULT false,
     "premuim" BOOLEAN NOT NULL DEFAULT false,
     "forgotPassword" TEXT,
     "role" "Role" NOT NULL,
+    "specialtyId" TEXT,
+    "confirmed" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -53,7 +55,7 @@ CREATE TABLE "Project_comments" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "userId" TEXT,
-    "images" TEXT NOT NULL,
+    "images" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "projectId" TEXT,
 
@@ -64,7 +66,7 @@ CREATE TABLE "Project_comments" (
 CREATE TABLE "Post_comments" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "images" TEXT NOT NULL,
+    "images" TEXT,
     "userId" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "postId" TEXT,
@@ -92,6 +94,7 @@ CREATE TABLE "Replies" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "post_commentsId" TEXT,
     "project_commentsId" TEXT,
+    "image" TEXT,
     "fPost_commentsId" TEXT,
     "userId" TEXT,
 
@@ -169,8 +172,8 @@ CREATE TABLE "Technologies" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "userId" TEXT,
     "projectId" TEXT,
+    "specialtyId" TEXT,
 
     CONSTRAINT "Technologies_pkey" PRIMARY KEY ("id")
 );
@@ -179,7 +182,7 @@ CREATE TABLE "Technologies" (
 CREATE TABLE "userTechnology" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
-    "technologyId" TEXT,
+    "technologiesId" TEXT,
 
     CONSTRAINT "userTechnology_pkey" PRIMARY KEY ("id")
 );
@@ -214,7 +217,6 @@ CREATE TABLE "Likes" (
 CREATE TABLE "Specialty" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "userId" TEXT,
 
     CONSTRAINT "Specialty_pkey" PRIMARY KEY ("id")
 );
@@ -230,6 +232,9 @@ CREATE TABLE "Forum_Category" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "Specialty"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Project" ADD CONSTRAINT "Project_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -301,16 +306,16 @@ ALTER TABLE "FPost_comments" ADD CONSTRAINT "FPost_comments_userId_fkey" FOREIGN
 ALTER TABLE "FPost_comments" ADD CONSTRAINT "FPost_comments_forum_PostsId_fkey" FOREIGN KEY ("forum_PostsId") REFERENCES "Forum_Posts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "Specialty"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "userTechnology" ADD CONSTRAINT "userTechnology_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userTechnology" ADD CONSTRAINT "userTechnology_technologyId_fkey" FOREIGN KEY ("technologyId") REFERENCES "Technologies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "userTechnology" ADD CONSTRAINT "userTechnology_technologiesId_fkey" FOREIGN KEY ("technologiesId") REFERENCES "Technologies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "projectTechnology" ADD CONSTRAINT "projectTechnology_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -344,6 +349,3 @@ ALTER TABLE "Likes" ADD CONSTRAINT "Likes_fPost_commentsId_fkey" FOREIGN KEY ("f
 
 -- AddForeignKey
 ALTER TABLE "Likes" ADD CONSTRAINT "Likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Specialty" ADD CONSTRAINT "Specialty_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -1,4 +1,10 @@
-import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  ActivityIndicator,
+  VirtualizedList,
+} from "react-native";
 import {
   ProfileContext,
   useFetchStudentProjects,
@@ -6,10 +12,18 @@ import {
 
 import { STYLES } from "../../../../GlobalCss";
 import RenderPost from "./components/RenderPost";
+import { useContext, useEffect } from "react";
 
 const Activity = () => {
-  const { data, isLoading, hasNextPage, fetchNextPage } =
-    useFetchStudentProjects(1);
+  const { userId } = useContext(ProfileContext);
+  const {
+    data,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    refetch: refetchProject,
+  } = useFetchStudentProjects(userId);
+
   const projects = data?.pages?.map((page) => page).flat();
 
   const loadNextPageData = () => {
@@ -29,7 +43,9 @@ const Activity = () => {
         keyExtractor={keyExtractor}
         data={projects}
         onEndReached={loadNextPageData}
-        renderItem={({ item }) => <RenderPost item={item} />}
+        renderItem={({ item }) => (
+          <RenderPost refetchProject={refetchProject} item={item} />
+        )}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           hasNextPage && (
@@ -55,7 +71,6 @@ const Activity = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // overflow: "hidden",
     backgroundColor: "#fff",
     paddingBottom: 100,
   },

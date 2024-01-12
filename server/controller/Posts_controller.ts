@@ -164,8 +164,6 @@ export const getAllProjectOneUser = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const result = await prisma.project.findMany();

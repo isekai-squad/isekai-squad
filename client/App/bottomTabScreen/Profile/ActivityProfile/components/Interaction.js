@@ -18,6 +18,16 @@ import AllComments from "./AllComments";
 const Interaction = ({ projectId }) => {
   const { userId } = useContext(ProfileContext);
 
+  const [upvoted, setUpvoted] = useState(false);
+  const [downvoted, setDownvoted] = useState(false);
+
+  const { mutateAsync: upVote } = useMutation({
+    mutationFn: () => upVoteProject(userId, projectId),
+  });
+  const { mutateAsync: downVote } = useMutation({
+    mutationFn: () => downVoteProject(userId, projectId),
+  });
+
   const { data: projectLikes, refetch: refetchLikes } = useQuery({
     queryKey: ["projectLikes", projectId],
     queryFn: () => getAllLikesProject(projectId),
@@ -29,7 +39,7 @@ const Interaction = ({ projectId }) => {
     },
   });
 
-  const { data: UserProjectsLikes } = useQuery({
+  const { data: UserProjectsLikes,refetch: refetchUserLikes } = useQuery({
     queryKey: ["userLikes", userId],
     queryFn: () => getUserLikes(userId),
   });
@@ -39,6 +49,30 @@ const Interaction = ({ projectId }) => {
     queryFn: () => getAllProjectsComments(projectId),
   });
 
+  const upVoteHandle = async () => {
+    await upVote();
+    refetchLikes();
+    refetchUserLikes()
+    if (!upvoted) {
+      setUpvoted(true);
+      setDownvoted(false);
+    } else {
+      setUpvoted(false);
+    }
+  };
+
+  const downVoteHandle = async () => {
+    await downVote();
+    refetchLikes();
+    refetchUserLikes()
+    if (!downvoted) {
+      setUpvoted(false);
+      setDownvoted(true);
+    } else {
+      setDownvoted(false);
+    }
+  };
+
   useEffect(() => {
     const likedProject = UserProjectsLikes?.find(
       (item) => item.projectId === projectId
@@ -47,40 +81,8 @@ const Interaction = ({ projectId }) => {
     setDownvoted(likedProject?.like === 0);
   }, [UserProjectsLikes, projectId]);
 
-  const [upvoted, setUpvoted] = useState(false);
-  const [downvoted, setDownvoted] = useState(false);
-
-  const { mutateAsync: upVote } = useMutation({
-    mutationFn: () => upVoteProject(userId, projectId),
-  });
-  const { mutateAsync: downVote } = useMutation({
-    mutationFn: () => downVoteProject(userId, projectId),
-  });
-
-  const upVoteHandle = async () => {
-    if (!upvoted) {
-      await upVote();
-      setUpvoted(true);
-      setDownvoted(false);
-      refetchLikes();
-    } else {
-      setUpvoted(false);
-    }
-  };
-
-  const downVoteHandle = async () => {
-    if (!downvoted) {
-      await downVote();
-      setUpvoted(false);
-      setDownvoted(true);
-      refetchLikes();
-    } else {
-      setDownvoted(false);
-    }
-  };
-
   return (
-    <View style={{alignItems:"center"}}>
+    <View style={{ alignItems: "center" }}>
       <View
         style={{
           flexDirection: "row",
@@ -90,6 +92,7 @@ const Interaction = ({ projectId }) => {
         }}
       >
         <View style={styles.voteButtons}>
+          
           <TouchableOpacity
             style={{ alignItems: "center" }}
             onPress={upVoteHandle}
@@ -112,9 +115,10 @@ const Interaction = ({ projectId }) => {
             />
           </TouchableOpacity>
         </View>
-        <CommentsInputs projectsComments={projectsComments} />
+
+        <CommentsInputs projectsComments={{ projectId, refetchComments }} />
       </View>
-      <AllComments projectsComments={projectsComments} />
+      <AllComments projectsComments={projectsComments} refetchComments={refetchComments}/>
     </View>
   );
 };

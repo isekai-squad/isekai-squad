@@ -8,7 +8,7 @@ function HomeScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate("signIn")}>
         <Text>go to signIn</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("signUp")}>
+      <TouchableOpacity onPress={() => navigation.navigate("signup")}>
         <Text>go to signUp</Text>
       </TouchableOpacity>
     </View>

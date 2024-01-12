@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useFonts } from "expo-font";
-import { ScrollView } from 'react-native-virtualized-view'
+import { ScrollView } from "react-native-virtualized-view";
 
 import {
   SafeAreaView,
@@ -25,14 +25,14 @@ function ProfileScreen() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const { activeMiddleTab, LoadingProfile, refetchProfile } =
+  const { activeMiddleTab, LoadingProfile, refetchProfile, refetchProject } =
     useContext(ProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     refetchProfile();
-
+    refetchProject && refetchProject();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);

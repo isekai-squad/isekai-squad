@@ -1,15 +1,18 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useQuery, useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { storage } from "../../FirebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
+import { AuthContext } from "./AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 export const ProfileContext = createContext();
 export const ProfileProvider = ({ children }) => {
   const navigation = useNavigation();
-
+  const { token } = useContext(AuthContext);
+  // const decoded = jwtDecode(token);
   const [loading, setLoading] = useState(false);
   const [showSelectTech, setShowSelectTech] = useState(false);
   const [ProfileData, setProfileData] = useState({});
@@ -22,8 +25,12 @@ export const ProfileProvider = ({ children }) => {
   const usernameRef = useRef("");
   const bioRef = useRef("");
   const phoneRef = useRef("");
+  const userId = "87d9f122-3de6-43ea-8548-714d9a124b39";
 
-  const userId = 1;
+  // ===========================REFETCH PART===========================
+  const [refetchProject, setRefetchProject] = useState("");
+  const [refetchReplyComment, setRefetchReplyComment] = useState(false);
+  // ================================REFETCH PART======================
 
   const {
     data: UserData,
@@ -125,7 +132,6 @@ export const ProfileProvider = ({ children }) => {
       usernameRef.current = UserData.username;
       bioRef.current = UserData.bio;
       phoneRef.current = UserData.number;
-
       setProfileImage(UserData.pdp);
       setCoverImage(UserData.cover);
       setMainSkills(UserData.userTechnology);
@@ -158,6 +164,10 @@ export const ProfileProvider = ({ children }) => {
         setShowSelectTech,
         handleSubmit,
         userId,
+        refetchProject,
+        setRefetchProject,
+        refetchReplyComment,
+        setRefetchReplyComment,
       }}
     >
       {children}
@@ -279,6 +289,15 @@ export async function getUserLikes(userId) {
   }
 }
 
+export async function deleteProject(userId, projectId) {
+  try {
+    const response = await axios.delete(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/posts/Projects/${userId}/${projectId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
 export async function upVoteProject(userId, projectId) {
   try {
     const response = await axios.post(
@@ -299,6 +318,28 @@ export async function downVoteProject(userId, projectId) {
   }
 }
 
+export async function addLikeCommentProject(userId, projectCommentId) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Projects/Like/${userId}/${projectCommentId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+export async function addLikeReplyCommentProject(
+  userId,
+  projectReplyCommentId
+) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Projects/Like/${userId}/Reply/${projectReplyCommentId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+
 export async function getAllProjectsComments(project_commentsId) {
   try {
     const response = await fetch(
@@ -310,4 +351,34 @@ export async function getAllProjectsComments(project_commentsId) {
     throw new err();
   }
 }
+export async function getAllProjectsReplyComments(project_commentsId) {
+  try {
+    const response = await fetch(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/projects/${project_commentsId}/replyComment`
+    );
+    return response.json();
+  } catch (err) {
+    throw new err();
+  }
+}
 
+export async function PostProjectComment(userId, projectId, data) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Projects/${projectId}/${userId}`,
+      data
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+export async function PostProjectReplyComment(userId, projectId, data) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Projects/reply/${projectId}/${userId}/comment`,
+      data
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
