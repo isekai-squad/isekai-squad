@@ -32,7 +32,7 @@ const Bio = () => {
           <Text style={styles.detailText}>|</Text>
           <Text style={styles.detailText}>{specialtyName}</Text>
         </View>
-        {role == "STUDENTS" && (
+        {role == "STUDENT" && (
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}

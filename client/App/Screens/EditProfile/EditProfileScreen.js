@@ -61,7 +61,7 @@ function EditProfile() {
           </TouchableOpacity>
           <ChangeImages />
           <ChangeInfo />
-          {role == "STUDENTS" && <MainSkills />}
+          {role == "STUDENT" && <MainSkills />}
           <TouchableOpacity
             disabled={loading}
             style={styles.saveButton}
