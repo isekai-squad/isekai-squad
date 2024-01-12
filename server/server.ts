@@ -1,7 +1,11 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
- config();
+import http from 'http';
+import { Server } from 'socket.io';
+import { PrismaClient } from '@prisma/client';
+config();
+
 import { userRoutes } from "./router/user_router";
 import postsRoute from "./router/Posts_route";
 import servicesRoute from "./router/Services_route";
@@ -24,8 +28,10 @@ app.use("/notification", notification);
 // // ===================================Ahmed==============================
 
 // //===============================Adam====================================
+import { chatRoutes } from "./router/chat_route";
 app.use("/api", userRoutes);
 app.use("/technologie", technoRoute);
+app.use("/chat",chatRoutes)
 // //===============================Adam=====================================
 // //===============================Ameur====================================
 
@@ -40,17 +46,6 @@ app.use("/baskets", basket);
 // app.use("/stripe",stripe)
 app.use("/", router);
 
-
-
-
-
-
-
-
-
-
-
-
 //===============================Ameur=====================================
 //===============================Hasan====================================
 app.use('/Posts' , postsRoute);
@@ -63,14 +58,43 @@ app.use('/Comments', postsCommentsRoute);
 import CategoryRoute from './router/Category_route'
 app.use('/Category', CategoryRoute)
 
-
-
-
-
-
 //===============================Hasan=====================================
-app.listen(process.env.PORT, () => {
-  console.log(
-    `Neverr GIVEEEE upppppppppppppppp http://localhost:${process.env.PORT}`
-  );
+
+// Create an HTTP server and integrate Socket.IO
+const server = http.createServer(app);
+const io = new Server(server);
+const prisma = new PrismaClient();
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+
+  socket.on('message', async (data) => {
+    const { roomId, text, userId } = data;
+    const message = await prisma.messages.create({
+      data: {
+        text,
+        userId,
+        roomId,
+      },
+    });
+
+    // Emit the new message to the room
+    io.to(roomId).emit('newMessage', message);
+  });
+
+  socket.on('joinRoom', (roomId) => {
+    socket.join(roomId);
+    console.log(`User joined room: ${roomId}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+  socket.on('newMessage',()=> socket.emit('newMessage')
+  )
+});
+
+
+server.listen(process.env.PORT, () => {
+  console.log(`Server listening on http://localhost:${process.env.PORT}`);
 });

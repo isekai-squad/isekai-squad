@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,7 +23,7 @@ model User {
   bio             String?
   dateOfBirth     String?
   password        String?
-  pdp             String       @default("https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg")
+  pdp             String             @default("https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg")
   number          Int?
   cover           String?
   socials         String[]
@@ -50,7 +47,9 @@ model User {
   userTechnology  userTechnology[]
   Specialty       Specialty?         @relation(fields: [specialtyId], references: [id])
   specialtyId     String?
-  confirmed       Boolean @default(true)
+  confirmed       Boolean            @default(true)
+  userRoom        userRooms[]
+  Messages        Messages[]
 }
 
 model Project {
@@ -267,4 +266,32 @@ model Forum_Category {
   name        String
   image       String        @db.Text
   Forum_Posts Forum_Posts[]
+}
+
+model Room {
+  roomId      String      @id @default(uuid())
+  createdAt   DateTime    @default(now())
+  userRoomsId String?
+  Messages    Messages[]
+  userRoom    userRooms[]
+}
+
+model userRooms {
+  id    String @id @default(uuid())
+  users User[]
+  rooms Room[]
+
+  roomRoomId String?
+}
+
+model Messages {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  text        String
+  image       String?  @db.Text
+  userId      String
+  sender      User     @relation(fields: [userId], references: [id])
+  roomId      String
+  Room        Room?    @relation(fields: [roomId], references: [roomId])
+  userRoomsId String?
 }

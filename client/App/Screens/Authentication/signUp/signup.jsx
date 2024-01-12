@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect,useContext } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Animated, FlatList, useWindowDimensions } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 import Step1 from './steps/step1';
 import Step2 from './steps/step2';
 import Step3 from './steps/step3';
@@ -8,10 +11,10 @@ import Step5 from './steps/step5';
 import Step6 from './steps/step6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import { Navigation } from '../../../../Navigation';
 import { AuthContext } from '../../../Context/AuthContext';
 import {  createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../../../FirebaseConfig';
+import { useRoute } from '@react-navigation/native';
 
   const Signup = ({navigation}) => {
     const [step, setStep] = useState(1);
@@ -23,9 +26,16 @@ import { auth } from '../../../../FirebaseConfig';
     const [role,setRole]=useState()
     const [pdp,setPdp]=useState()
     const slideAnim = useRef(new Animated.Value(0)).current;
-    const {token,setToken} = useContext(AuthContext)
-
-  console.log(setToken,token);
+    // const {token,setToken} = useContext(AuthContext)
+    const route = useRoute()
+    const {setToken}=route.params
+useEffect( ()=>{
+  const tst = async ()=>{
+  
+  }
+  tst()
+},[])
+  // console.log(setToken,token);
     const switchToStep2 = () => {
       Animated.timing(slideAnim, {
         toValue: 1,
@@ -60,9 +70,12 @@ import { auth } from '../../../../FirebaseConfig';
          const emailSent= await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/company/create`,{email,name,pdp,userName})
          const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/create`,companyData)
          await createUserWithEmailAndPassword(auth,email,password)
+         await AsyncStorage.setItem("Token",response.data)
 
         await setToken(response.data)
-         navigation.navigate('Home')
+        await AsyncStorage.setItem('Token',response.data).then(()=>{
+          navigation.navigate('Home')
+         })
       }catch(err){
           console.log(err);
       }
@@ -76,7 +89,7 @@ import { auth } from '../../../../FirebaseConfig';
       const userData = {
         name,
         userName,
-        email,
+        email :email+"qsdqsd",
         password,
         pdp,
         role,
@@ -85,10 +98,12 @@ import { auth } from '../../../../FirebaseConfig';
         const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/create`,userData)
         await  createUserWithEmailAndPassword(auth,email,password)
         await setToken(response.data)
+       await AsyncStorage.setItem('Token',response.data).then(()=>{
         navigation.navigate('Home')
-        
+       })
       }catch(err){
-
+console.log(err);
+      }finally{
       }
     }
     const renderItem = ({ item }) => {
@@ -118,7 +133,7 @@ import { auth } from '../../../../FirebaseConfig';
               ],
             }}
           >
-             { step === 1 && <Step1 setName={setName} name={name} userName={userName} setUserName={setUserName} role={role} setRole={setRole} setStep={setStep} />}
+             { step === 1 && <Step1 navigation={navigation} setName={setName} name={name} userName={userName} setUserName={setUserName} role={role} setRole={setRole} setStep={setStep} />}
             {step === 2 && <Step2 password={password}  setPassword={setPassword}  setEmail={setEmail} email={email}
           setConPassword={setConPassword} conPassword={conPassword}   setStep={setStep} />}
             {step === 3 && <Step3 setStep={setStep} />}

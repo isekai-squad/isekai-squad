@@ -13,7 +13,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default Step5 = ({ setPdp, pdp, createAccount,setStep,navigation }) => {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
-    console.log(pdp);
   }, [pdp]);
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
