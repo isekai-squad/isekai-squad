@@ -28,16 +28,18 @@ const HeaderPhoto = () => {
         <View style={styles.descriptionContainer}>
           <View style={styles.descriptionDetails}>
             <Text style={styles.detailText}>{ProfileData.project?.length}</Text>
-            <Text style={styles.detailLabel}>Projects</Text>
+            <Text style={styles.detailLabel}>
+              {role == "STUDENTS" ? "Projects" : "Posts"}
+            </Text>
           </View>
 
           <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>50</Text>
+            <Text style={styles.detailText}>62</Text>
             <Text style={styles.detailLabel}>Followers</Text>
           </View>
 
           <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>50</Text>
+            <Text style={styles.detailText}>23</Text>
             <Text style={styles.detailLabel}>Following</Text>
           </View>
         </View>

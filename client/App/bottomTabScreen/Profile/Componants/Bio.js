@@ -27,35 +27,35 @@ const Bio = () => {
 
           <Text style={styles.username}>@ {userName}</Text>
         </View>
-
         <View style={styles.detailsContainer}>
           <Text style={styles.detailText}>{location}</Text>
           <Text style={styles.detailText}>|</Text>
           <Text style={styles.detailText}>{specialtyName}</Text>
         </View>
+        {role == "STUDENTS" && (
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollViewContent}
+          >
+            <View style={styles.interestingContainer}>
+              {userTechnology.map((technologie, i) => {
+                return (
+                  <TouchableOpacity key={i} style={styles.interestingTag}>
+                    <Image
+                      source={{ uri: technologie.Technologies.image }}
+                      style={styles.tagImage}
+                    />
 
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.scrollViewContent}
-        >
-          <View style={styles.interestingContainer}>
-            {userTechnology.map((technologie, i) => {
-              return (
-                <TouchableOpacity key={i} style={styles.interestingTag}>
-                  <Image
-                    source={{ uri: technologie.Technologies.image }}
-                    style={styles.tagImage}
-                  />
-
-                  <Text style={styles.tagText}>
-                    {technologie.Technologies.name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </ScrollView>
+                    <Text style={styles.tagText}>
+                      {technologie.Technologies.name}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </ScrollView>
+        )}
       </View>
     )
   );
