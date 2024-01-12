@@ -44,17 +44,17 @@ useEffect( ()=>{
       }).start(() => setStep(step-1));
     };
 
-    const switchToStep1 = () => {
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: false,
-      }).start(() => setStep(step +1));
-    };
+  const switchToStep1 = () => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 400,
+      useNativeDriver: false,
+    }).start(() => setStep(step + 1));
+  };
 
-    useEffect(() => {
-      slideAnim.setValue(0);
-    }, [step]);
+  useEffect(() => {
+    slideAnim.setValue(0);
+  }, [step]);
 
     const createCompanyAcc = async()=>{
       const companyData = {
@@ -67,8 +67,8 @@ useEffect( ()=>{
         confirmed:false
       };
       try{
-         const emailSent= await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/company/create`,{email,name,pdp,userName})
-         const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/create`,companyData)
+         const emailSent= await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/company/create`,{email,name,pdp,userName})
+         const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/create`,companyData)
          await createUserWithEmailAndPassword(auth,email,password)
          await AsyncStorage.setItem("Token",response.data)
 
@@ -81,11 +81,10 @@ useEffect( ()=>{
       }
   }
 
-  const createAccount =  async()=>{
-    if (role === 'COMPANY'){
-      createCompanyAcc()
+  const createAccount = async () => {
+    if (role === "COMPANY") {
+      createCompanyAcc();
     } else {
-
       const userData = {
         name,
         userName,
@@ -95,7 +94,7 @@ useEffect( ()=>{
         role,
       };
       try {
-        const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/create`,userData)
+        const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/create`,userData)
         await  createUserWithEmailAndPassword(auth,email,password)
         await setToken(response.data)
        await AsyncStorage.setItem('Token',response.data).then(()=>{
@@ -109,17 +108,16 @@ console.log(err);
     const renderItem = ({ item }) => {
       const StepComponent = item.component;
       return <StepComponent {...item.props} />;
-    }
     };
-    return (
-      
-      <SafeAreaView style={{ marginTop: 40 }}>
-        <View>
-        {step !==1 && (
-          <TouchableOpacity style={{top:20,}} onPress={switchToStep2}>
-              <Ionicons size={50} name='arrow-back'/>
-            </TouchableOpacity>
-          )}
+  };
+  return (
+    <SafeAreaView style={{ marginTop: 40 }}>
+      <View>
+        {step !== 1 && (
+          <TouchableOpacity style={{ top: 20 }} onPress={switchToStep2}>
+            <Ionicons size={50} name="arrow-back" />
+          </TouchableOpacity>
+        )}
 
           <Animated.View
             style={{

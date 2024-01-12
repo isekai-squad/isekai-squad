@@ -15,14 +15,16 @@ import ForumCategories from "./App/component/Posts/ForumCategories";
 import UserProfile from "./App/Screens/UserProfile/UserProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
-import ChatScreen from "./App/Screens/Chat/ChatScreen";
+import { AuthContext } from "./App/Context/AuthContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChatScreen from "./App/Screens/Chat/ChatScreen";
 
 const Stack = createStackNavigator();
 export const Navigation = () => {
   const [auth, setAuth] = useState(true);
   const [Token,setToken]=useState()
   const getCurrentUser = async()=>{
+    AsyncStorage.clear()
    await setToken(  (await AsyncStorage.getItem('Token')).valueOf() )
   }
   useEffect(()=>{
@@ -121,15 +123,9 @@ export const Navigation = () => {
             component={Signup}
            initialParams={{setToken:setToken}}
           />
-        <Stack.Screen name="forgotPassword" initialParams={{}} component={ForgotPassword} />
-
-       
-      
-       
-        </Stack.Navigator>)}
-
-
-          </NavigationContainer>
-    
-    );
+          <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
+  );
 };

@@ -53,7 +53,7 @@ export default function SignIn({ navigation }) {
     const SignInFetch = async (data, navigation, setToken, pre) => {
         const { email, password } = data
         try {
-            var response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/signin/`, data)
+            var response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/signin/`, data)
             await setToken(response.data.token)
             console.log(response.data.token);
             await AsyncStorage.setItem('Token', response.data.token).then(() => {
@@ -211,18 +211,17 @@ export default function SignIn({ navigation }) {
 }
 
 const Styles = StyleSheet.create({
-
-    Icon: {
-        color: 'white'
-    },
-    IconView: {
-        backgroundColor: STYLES.COLORS.Priamary,
-        width: 60,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-    },
+  Icon: {
+    color: "white",
+  },
+  IconView: {
+    backgroundColor: STYLES.COLORS.Priamary,
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
 
     PressedIcon: {
         color: STYLES.COLORS.Priamary

@@ -13,7 +13,7 @@ CREATE TABLE "User" (
     "password" TEXT,
     "pdp" TEXT NOT NULL DEFAULT 'https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg',
     "number" INTEGER,
-    "cover" TEXT,
+    "cover" TEXT DEFAULT 'https://images.unsplash.com/photo-1535911062114-764574491173?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dW1icmVsbGF8ZW58MHx8MHx8fDA%3D',
     "socials" TEXT[],
     "active" BOOLEAN NOT NULL DEFAULT false,
     "premuim" BOOLEAN NOT NULL DEFAULT false,
@@ -66,7 +66,7 @@ CREATE TABLE "Project_comments" (
 CREATE TABLE "Post_comments" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "images" TEXT NOT NULL,
+    "images" TEXT,
     "userId" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "postId" TEXT,
@@ -94,6 +94,7 @@ CREATE TABLE "Replies" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "post_commentsId" TEXT,
     "project_commentsId" TEXT,
+    "image" TEXT,
     "fPost_commentsId" TEXT,
     "userId" TEXT,
 
