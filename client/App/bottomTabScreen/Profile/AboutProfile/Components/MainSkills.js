@@ -18,20 +18,24 @@ const MainSkills = () => {
         <Text style={styles.headerText}>Main Skills</Text>
       </View>
       <View style={styles.interestingContainer}>
-        {userTechnology.map((technologie, i) => {
-          return (
-            <TouchableOpacity key={i} style={styles.interestingTag}>
-              <Image
-                source={{ uri: technologie.Technologies.image }}
-                style={styles.tagImage}
-              />
+        {userTechnology ? (
+          userTechnology?.map((technologie, i) => {
+            return (
+              <TouchableOpacity key={i} style={styles.interestingTag}>
+                <Image
+                  source={{ uri: technologie.Technologies.image }}
+                  style={styles.tagImage}
+                />
 
-              <Text style={styles.tagText}>
-                {technologie.Technologies.name}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+                <Text style={styles.tagText}>
+                  {technologie.Technologies.name}
+                </Text>
+              </TouchableOpacity>
+            );
+          })
+        ) : (
+          <Text> "nothing"</Text>
+        )}
       </View>
     </View>
   );

@@ -138,6 +138,7 @@ CREATE TABLE "Basket" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
     "serviceId" TEXT,
+    "payed" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Basket_pkey" PRIMARY KEY ("id")
 );
@@ -230,8 +231,73 @@ CREATE TABLE "Forum_Category" (
     CONSTRAINT "Forum_Category_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT,
+    "basketId" TEXT,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Room" (
+    "roomId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userRoomsId" TEXT,
+
+    CONSTRAINT "Room_pkey" PRIMARY KEY ("roomId")
+);
+
+-- CreateTable
+CREATE TABLE "userRooms" (
+    "id" TEXT NOT NULL,
+    "roomRoomId" TEXT,
+
+    CONSTRAINT "userRooms_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Messages" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "text" TEXT NOT NULL,
+    "image" TEXT,
+    "userId" TEXT NOT NULL,
+    "roomId" TEXT NOT NULL,
+    "userRoomsId" TEXT,
+
+    CONSTRAINT "Messages_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_UserTouserRooms" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_RoomTouserRooms" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_UserTouserRooms_AB_unique" ON "_UserTouserRooms"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_UserTouserRooms_B_index" ON "_UserTouserRooms"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_RoomTouserRooms_AB_unique" ON "_RoomTouserRooms"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_RoomTouserRooms_B_index" ON "_RoomTouserRooms"("B");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "Specialty"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -349,3 +415,27 @@ ALTER TABLE "Likes" ADD CONSTRAINT "Likes_fPost_commentsId_fkey" FOREIGN KEY ("f
 
 -- AddForeignKey
 ALTER TABLE "Likes" ADD CONSTRAINT "Likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_basketId_fkey" FOREIGN KEY ("basketId") REFERENCES "Basket"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Messages" ADD CONSTRAINT "Messages_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Messages" ADD CONSTRAINT "Messages_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("roomId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UserTouserRooms" ADD CONSTRAINT "_UserTouserRooms_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UserTouserRooms" ADD CONSTRAINT "_UserTouserRooms_B_fkey" FOREIGN KEY ("B") REFERENCES "userRooms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RoomTouserRooms" ADD CONSTRAINT "_RoomTouserRooms_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("roomId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RoomTouserRooms" ADD CONSTRAINT "_RoomTouserRooms_B_fkey" FOREIGN KEY ("B") REFERENCES "userRooms"("id") ON DELETE CASCADE ON UPDATE CASCADE;

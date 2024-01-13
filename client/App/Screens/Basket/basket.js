@@ -1,4 +1,10 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, {
+  useContext,
+  useCallback,
+  useRef,
+  useEffect,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -7,6 +13,7 @@ import {
   ScrollView,
   Animated,
   Easing,
+  RefreshControl,
 } from "react-native";
 import axios from "axios";
 import { ProfileContext } from "../../Context/ProfileContext";
@@ -67,6 +74,15 @@ const Basket = () => {
     basketItems,
   };
 
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetchBasket();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   // Animation
 
   const bounceValue = useRef(new Animated.Value(0)).current;
@@ -102,7 +118,7 @@ const Basket = () => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {checkOurServices && (
         <Animated.View
           style={{
@@ -126,31 +142,37 @@ const Basket = () => {
         <ActivityIndicator size="large" color={STYLES.COLORS.Priamary} />
       ) : (
         <View style={{ flex: 1 }}>
-          <ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <>
               {basketItems?.length === 0 ? (
-                <View style={{ height: 200 }}>
-                  {checkOurServices && (
-                    <Text
-                      style={{
-                        color: STYLES.COLORS.Priamary,
-                        fontWeight: STYLES.FONTS.bold,
-                        letterSpacing: 2,
-                        fontSize: 18,
-                        top: 100,
-                        textAlign: "center",
-                      }}
-                    >
-                      Check Your Services
-                    </Text>
-                  )}
-                  {!checkOurServices && (
-                    <Text style={styles.emptyBasketText}>
-                      Your CART is currently empty. Please visit our Services
-                      section to explore and improve yourself.
-                    </Text>
-                  )}
-                </View>
+                <ScrollView>
+                  <View style={{ height: 200 }}>
+                    {checkOurServices && (
+                      <Text
+                        style={{
+                          color: STYLES.COLORS.Priamary,
+                          fontWeight: STYLES.FONTS.bold,
+                          letterSpacing: 2,
+                          fontSize: 18,
+                          top: 100,
+                          textAlign: "center",
+                        }}
+                      >
+                        Check Your Services
+                      </Text>
+                    )}
+                    {!checkOurServices && (
+                      <Text style={styles.emptyBasketText}>
+                        Your CART is currently empty. Please visit our Services
+                        section to explore and improve yourself.
+                      </Text>
+                    )}
+                  </View>
+                </ScrollView>
               ) : (
                 <>
                   <View style={styles.itemsContainer}>
@@ -211,7 +233,7 @@ const Basket = () => {
           )}
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

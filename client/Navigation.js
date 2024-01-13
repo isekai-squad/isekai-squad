@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Posts from "./App/component/Posts/Posts";
@@ -15,14 +15,24 @@ import ForumCategories from "./App/component/Posts/ForumCategories";
 import UserProfile from "./App/Screens/UserProfile/UserProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
+import { AuthContext } from "./App/Context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import ChatScreen from "./App/Screens/Chat/ChatScreen";
 import Basket from "./App/Screens/Basket/basket";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-const Drawer = createDrawerNavigator();
+
 const Stack = createStackNavigator();
 export const Navigation = () => {
+  const [Token, setToken] = useState();
+  const getCurrentUser = async () => {
+    AsyncStorage.clear();
+    await setToken((await AsyncStorage.getItem("Token")).valueOf());
+  };
+  useEffect(() => {
+    getCurrentUser();
+  }, [Token]);
   return (
     <NavigationContainer>
-      {true ? (
+      {Token ? (
         <ProfileProvider>
           <Stack.Navigator>
             <Stack.Screen
@@ -89,6 +99,13 @@ export const Navigation = () => {
                 headerTitleContainerStyle: { width: "100%" },
               })}
             />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="chat"
+              component={ChatScreen}
+            />
           </Stack.Navigator>
         </ProfileProvider>
       ) : (
@@ -97,16 +114,18 @@ export const Navigation = () => {
             options={{
               headerShown: false,
             }}
-            name="signUp"
-            component={Signup}
+            name="signIn"
+            component={SignIn}
+            initialParams={{ setToken: setToken }}
           />
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="signup"
-            component={Signup}
-          />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="signup"
+              component={Signup}
+              initialParams={{ setToken: setToken }}
+            />
           <Stack.Screen name="forgotPassword" component={ForgotPassword} />
         </Stack.Navigator>
       )}

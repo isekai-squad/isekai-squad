@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -52,6 +49,8 @@ model User {
   specialtyId     String?
   confirmed       Boolean            @default(true)
   Payment         Payment[]
+  userRoom        userRooms[]
+  Messages        Messages[]
 }
 
 model Project {
@@ -280,4 +279,32 @@ model Payment {
   userId     String?
   Basket     Basket?  @relation(fields: [basketId], references: [id])
   basketId   String?
+}
+
+model Room {
+  roomId      String      @id @default(uuid())
+  createdAt   DateTime    @default(now())
+  userRoomsId String?
+  Messages    Messages[]
+  userRoom    userRooms[]
+}
+
+model userRooms {
+  id    String @id @default(uuid())
+  users User[]
+  rooms Room[]
+
+  roomRoomId String?
+}
+
+model Messages {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  text        String
+  image       String?  @db.Text
+  userId      String
+  sender      User     @relation(fields: [userId], references: [id])
+  roomId      String
+  Room        Room?    @relation(fields: [roomId], references: [roomId])
+  userRoomsId String?
 }
