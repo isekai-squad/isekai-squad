@@ -87,11 +87,7 @@ export const MainContainer = () => {
         component={ForumCategories}
         options={{ headerShown: false }}
       />
-      {/* <Tab.Screen
-        name="basket"
-        component={basket}
-        options={{ headerShown: false }}
-      /> */}
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
