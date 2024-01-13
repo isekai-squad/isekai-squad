@@ -46,10 +46,13 @@ const SearchHeader = ({ value, onChangeText }) => {
     inputRange: [0, 1],
     outputRange: [1, 1.5],
   });
+  const handleMenuPress = () => {
+    navigation.openDrawer();
+  };
 
   return (
     <View style={styles.searchContainer}>
-      <TouchableOpacity style={styles.iconContainer}>
+    <TouchableOpacity style={styles.iconContainer} onPress={handleMenuPress}>
         {checkOurServices ? (
           <Animated.View style={{ transform: [{ scale: spin }] }}>
             <Ionicons name="menu" size={25} color={STYLES.COLORS.Priamary} />
@@ -74,7 +77,7 @@ const SearchHeader = ({ value, onChangeText }) => {
       </View>
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={() => navigation.navigate("aboutScreen")}
+        onPress={() => navigation.navigate("AboutScreen")}
       >
         <Ionicons name="qr-code" size={25} color={STYLES.COLORS.Priamary} />
       </TouchableOpacity>
