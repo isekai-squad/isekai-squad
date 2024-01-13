@@ -13,6 +13,7 @@ export const ProfileProvider = ({ children }) => {
   const navigation = useNavigation();
   const { token } = useContext(AuthContext);
   // const decoded = jwtDecode(token);
+  const [checkOurServices, setCheckOurServices] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSelectTech, setShowSelectTech] = useState(false);
   const [ProfileData, setProfileData] = useState({});
@@ -167,7 +168,7 @@ export const ProfileProvider = ({ children }) => {
         refetchProject,
         setRefetchProject,
         refetchReplyComment,
-        setRefetchReplyComment,
+        setRefetchReplyComment,checkOurServices, setCheckOurServices
       }}
     >
       {children}
@@ -177,8 +178,9 @@ export const ProfileProvider = ({ children }) => {
 //convert time
 export const formatTimeDifference = (createdAt) => {
   const now = moment();
-  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
+  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm:ss.SSS");
   const duration = moment.duration(now.diff(postTime));
+
   if (duration.asMinutes() < 60) {
     // Less than 60 minutes
     return moment.duration(duration).humanize(true);

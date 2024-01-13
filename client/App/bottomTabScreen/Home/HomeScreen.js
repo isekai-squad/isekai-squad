@@ -11,6 +11,10 @@ function HomeScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate("signup")}>
         <Text>go to signUp</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("basket")}>
+        <Text>go to basket</Text>
+      </TouchableOpacity>
+
     </View>
   );
 }

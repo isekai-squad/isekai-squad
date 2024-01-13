@@ -29,7 +29,7 @@ const HeaderPhoto = () => {
           <View style={styles.descriptionDetails}>
             <Text style={styles.detailText}>{ProfileData.project?.length}</Text>
             <Text style={styles.detailLabel}>
-              {role == "STUDENT" ? "Projects" : "Posts"}
+              {ProfileData.role == "STUDENT" ? "Projects" : "Posts"}
             </Text>
           </View>
 

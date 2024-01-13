@@ -51,6 +51,7 @@ model User {
   Specialty       Specialty?         @relation(fields: [specialtyId], references: [id])
   specialtyId     String?
   confirmed       Boolean            @default(true)
+  Payment         Payment[]
 }
 
 model Project {
@@ -169,12 +170,13 @@ model FavList {
 }
 
 model Basket {
-  id String @id @default(uuid())
-
-  User      User?    @relation(fields: [userId], references: [id])
+  id        String    @id @default(uuid())
+  User      User?     @relation(fields: [userId], references: [id])
   userId    String?
-  Service   Service? @relation(fields: [serviceId], references: [id])
+  Service   Service?  @relation(fields: [serviceId], references: [id])
   serviceId String?
+  payed     Boolean   @default(false)
+  paymentId Payment[]
 }
 
 model Forum_Posts {
@@ -268,4 +270,14 @@ model Forum_Category {
   name        String
   image       String        @db.Text
   Forum_Posts Forum_Posts[]
+}
+
+model Payment {
+  id         String   @id @default(uuid())
+  amount     Int
+  created_at DateTime @default(now())
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+  Basket     Basket?  @relation(fields: [basketId], references: [id])
+  basketId   String?
 }

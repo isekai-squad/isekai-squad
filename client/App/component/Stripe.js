@@ -1,99 +1,154 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Alert,
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import axios from "axios";
+import { useStripe } from "@stripe/stripe-react-native";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { STYLES } from "../../GlobalCss";
+// STEP 1
+const checkout = async (data) => {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/payment/intents`,
+      data
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err, "eeee");
+  }
+};
+// STEP 2
 
+const validPayment = async (data) => {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/payment/validPayment`,
+      data
+    );
 
-import React, { useEffect, useState } from 'react';
-import { View, Button, Text,Alert } from 'react-native'; // Make sure to import Alert
-import {useStripe} from '@stripe/stripe-react-native'
-import { StripeProvider } from '@stripe/stripe-react-native';
-const CheckoutScreen = () => {
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+// STEP 3
+
+const payedBasket = async (data) => {
+  try {
+    const response = await axios.patch(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/payedBasket`,
+      data
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const CheckoutScreen = ({ ORDER, refetchBasket, setCheckOurServices }) => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
-    const [check,setCheck]=useState(true)
-    const [loading, setLoading] = useState(false);
-    const fetchPaymentSheetParams = async () => {
-          const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/payment-sheet`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          const { paymentIntent, ephemeralKey, customer } = await response.json();
-      console.log(await response.json());
-          return {
-            paymentIntent,
-            ephemeralKey,
-            customer,
-          };
-        };
-        
 
-        const initializePaymentSheet = async () => {
-          const { paymentIntent, ephemeralKey, customer, publishableKey } = 
-          await fetchPaymentSheetParams();
-          console.log({ paymentIntent, ephemeralKey, customer, publishableKey });
-          
-          const { error } = await initPaymentSheet({
-            merchantDisplayName: "Example, Inc.",
-            customerId: customer,
-            customerEphemeralKeySecret: ephemeralKey,
-            paymentIntentClientSecret: paymentIntent,
-            // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
-            //methods that complete payment after a delay, like SEPA Debit and Sofort.
-            allowsDelayedPaymentMethods: true,
-            defaultBillingDetails: {
-              name: "Jane Doe",
-            },
-          });
-          console.log(error)
-          if (!error) {
-            setLoading(true);
-          }
-        };
-      
+  const basketData = ORDER.basketItems.map((entry) => ({
+    basketId: entry.id,
+    userId: entry.userId,
+    serviceId: entry.serviceId,
+  }));
+  const paymentData = ORDER.basketItems.map((entry) => ({
+    basketId: entry.id,
+    userId: entry.userId,
+    amount: ORDER.amount,
+  }));
 
-  const openPaymentSheet = async () => {
-    const { error } = await presentPaymentSheet();
+  const { mutateAsync: Payment } = useMutation({
+    mutationFn: (data) => validPayment(data),
+  });
+  const { mutateAsync: updateBasket } = useMutation({
+    mutationFn: (data) => payedBasket(data),
+  });
 
-    if (error) {
-      console.log(error);
-      Alert.alert(`Error code: ${error.code}`, error.message);
-    } else {
-      Alert.alert('Success', 'Your order is confirmed!');
+  const { mutateAsync: byNow } = useMutation({
+    mutationFn: (total) => checkout({ amount: Math.floor(total * 100) }),
+
+    onSuccess: async (response) => {
+      try {
+        // Access the data property from the mutation result
+        const paymentIntent = response;
+        // 2. Initialize the Payment sheet
+        const { error: paymentSheetError } = await initPaymentSheet({
+          merchantDisplayName: "Ahmed Haddada",
+          paymentIntentClientSecret: paymentIntent.paymentIntent,
+          allowsDelayedPaymentMethods: true,
+          defaultBillingDetails: {
+            name: "Ahmed Haddada",
+            items: ORDER.serviceId,
+          },
+        });
+        const { error: paymentError } = await presentPaymentSheet();
+
+        if (!paymentError) {
+          await Payment(paymentData);
+          await updateBasket(basketData);
+          refetchBasket();
+          setCheckOurServices(true);
+          setTimeout(() => {
+            setCheckOurServices(false);
+          }, 5000);
+        }
+
+        if (paymentSheetError) {
+          Alert.alert("Something went wrong", paymentSheetError.message);
+          return;
+        }
+      } catch (error) {
+        console.error("Error during initPaymentSheet:", error);
+      }
+    },
+    onError: (error) => {
+      console.error("Error during checkout:", error);
+    },
+  });
+
+  const onCheckout = async () => {
+    try {
+      // 1 - create payment intent
+      const response = await byNow(ORDER.amount);
+    } catch (error) {
+      console.error("Error during checkout:", error);
     }
   };
 
-  useEffect( () => {
-     (async()=>{
-      await initializePaymentSheet();
-     })()
-  }, []);
-
-
   return (
-    <View > 
-      {/* <Button
-        title="Checkout"
-        onPress={async ()=>{
-          console.log("chekck");
-          await openPaymentSheet()
-        }}
-        disabled={!loading}
-      /> */}
-       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_PUBLISH_KEY}>
-      <Text onPress={async ()=>{
-        console.log("chekck");
-        await openPaymentSheet()
-      }}
-      disabled={loading}
-      style={{paddingBottom:30}}
-      >test</Text>
-      </StripeProvider>
-      <Text onPress={async ()=>{
-       
-        setCheck(!check)
-      }}
-      // disabled={loading}
-      >check</Text>
-    </View>
+    <TouchableOpacity style={styles.button} onPress={onCheckout}>
+      <Text style={styles.buttonText}>by now</Text>
+    </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: STYLES.COLORS.Priamary,
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 5,
+    alignSelf: "center",
+
+    borderRadius: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    letterSpacing: 3,
+    textTransform: "uppercase",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+});
 
 export default CheckoutScreen;

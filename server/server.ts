@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
- config();
+config();
 import { userRoutes } from "./router/user_router";
 import postsRoute from "./router/Posts_route";
 import servicesRoute from "./router/Services_route";
@@ -17,10 +17,12 @@ app.use(express.json());
 import forumPost from "./router/forum_post_route";
 import forumComment from "./router/forum_comment_route";
 import notification from "./router/notification_route";
+import payment from "./router/Payment_route";
 
 app.use("/forumPost", forumPost);
 app.use("/forumComment", forumComment);
 app.use("/notification", notification);
+app.use("/payment", payment);
 // // ===================================Ahmed==============================
 
 // //===============================Adam====================================
@@ -31,42 +33,22 @@ app.use("/technologie", technoRoute);
 
 import favotitRouter from "./router/favorite_route";
 import basket from "./router/basket_route";
-import { router } from "./controller/stripe";
-// import stripe from "./router/stripe_route"
 
 app.use("/favorit", favotitRouter);
 app.use("/baskets", basket);
 // app.use("/api", router);
-// app.use("/stripe",stripe)
-app.use("/", router);
-
-
-
-
-
-
-
-
-
-
-
 
 //===============================Ameur=====================================
 //===============================Hasan====================================
-app.use('/Posts' , postsRoute);
-app.use('/Services', servicesRoute);
-app.use('/Reports' , reportsRoute)
-import technologiesRoute from "./router/Technologies_route"
-import postsCommentsRoute from "./router/PostsComment_route"
-app.use('/Expertise', technologiesRoute);
-app.use('/Comments', postsCommentsRoute);
-import CategoryRoute from './router/Category_route'
-app.use('/Category', CategoryRoute)
-
-
-
-
-
+app.use("/Posts", postsRoute);
+app.use("/Services", servicesRoute);
+app.use("/Reports", reportsRoute);
+import technologiesRoute from "./router/Technologies_route";
+import postsCommentsRoute from "./router/PostsComment_route";
+app.use("/Expertise", technologiesRoute);
+app.use("/Comments", postsCommentsRoute);
+import CategoryRoute from "./router/Category_route";
+app.use("/Category", CategoryRoute);
 
 //===============================Hasan=====================================
 app.listen(process.env.PORT, () => {
