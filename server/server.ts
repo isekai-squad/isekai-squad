@@ -21,10 +21,12 @@ app.use(express.json());
 import forumPost from "./router/forum_post_route";
 import forumComment from "./router/forum_comment_route";
 import notification from "./router/notification_route";
+import payment from "./router/Payment_route";
 
 app.use("/forumPost", forumPost);
 app.use("/forumComment", forumComment);
 app.use("/notification", notification);
+app.use("/payment", payment);
 // // ===================================Ahmed==============================
 
 // //===============================Adam====================================
@@ -37,14 +39,10 @@ app.use("/chat",chatRoutes)
 
 import favotitRouter from "./router/favorite_route";
 import basket from "./router/basket_route";
-import { router } from "./controller/stripe";
-// import stripe from "./router/stripe_route"
 
 app.use("/favorit", favotitRouter);
 app.use("/baskets", basket);
 // app.use("/api", router);
-// app.use("/stripe",stripe)
-app.use("/", router);
 
 //===============================Ameur=====================================
 //===============================Hasan====================================

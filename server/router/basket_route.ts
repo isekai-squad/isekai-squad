@@ -4,6 +4,7 @@ const router = Router();
 
 router.post("/:userId/:itemId", basketController.addToBasket)
 router.get("/:id", basketController.getBasket)
+router.patch("/payedBasket", basketController.payedBasket)
 router.delete("/:idUser/:idItem", basketController.deleteBasket)
 
 export default router

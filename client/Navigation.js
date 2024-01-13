@@ -16,20 +16,20 @@ import UserProfile from "./App/Screens/UserProfile/UserProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
 import { AuthContext } from "./App/Context/AuthContext";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ChatScreen from "./App/Screens/Chat/ChatScreen";
+import Basket from "./App/Screens/Basket/basket";
 
 const Stack = createStackNavigator();
 export const Navigation = () => {
-  const [auth, setAuth] = useState(true);
-  const [Token,setToken]=useState()
-  const getCurrentUser = async()=>{
-    AsyncStorage.clear()
-   await setToken(  (await AsyncStorage.getItem('Token')).valueOf() )
-  }
-  useEffect(()=>{
-    getCurrentUser()
-  },[Token])
+  const [Token, setToken] = useState();
+  const getCurrentUser = async () => {
+    AsyncStorage.clear();
+    await setToken((await AsyncStorage.getItem("Token")).valueOf());
+  };
+  useEffect(() => {
+    getCurrentUser();
+  }, [Token]);
   return (
     <NavigationContainer>
       {Token ? (
@@ -38,16 +38,6 @@ export const Navigation = () => {
             <Stack.Screen
               name="tabs"
               component={MainContainer}
-              //   options={({ navigation }) => ({
-              //     headerTitle: () => (
-              //       <SearchHeader
-              //         onChangeText={(text) => console.log("Search:", text)}
-              //       />
-              //     ),
-              //     headerTitleContainerStyle: { width: "100%" },
-              //   })
-
-              // }
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -96,13 +86,26 @@ export const Navigation = () => {
               component={CreatePost}
               options={{ headerTitle: "", headerShown: false }}
             />
-               <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="chat"
-            component={ChatScreen}
-          />
+            <Stack.Screen
+              name="basket"
+              component={Basket}
+              options={({ navigation }) => ({
+                headerLeft: false,
+                headerTitle: () => (
+                  <SearchHeader
+                    onChangeText={(text) => console.log("Search:", text)}
+                  />
+                ),
+                headerTitleContainerStyle: { width: "100%" },
+              })}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="chat"
+              component={ChatScreen}
+            />
           </Stack.Navigator>
         </ProfileProvider>
       ) : (
@@ -113,16 +116,16 @@ export const Navigation = () => {
             }}
             name="signIn"
             component={SignIn}
-            initialParams={{setToken:setToken}}
+            initialParams={{ setToken: setToken }}
           />
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="signup"
-            component={Signup}
-           initialParams={{setToken:setToken}}
-          />
+            <Stack.Screen
+              options={{
+                headerShown: false,
+              }}
+              name="signup"
+              component={Signup}
+              initialParams={{ setToken: setToken }}
+            />
           <Stack.Screen name="forgotPassword" component={ForgotPassword} />
         </Stack.Navigator>
       )}

@@ -33,7 +33,7 @@ useEffect( ()=>{
   const tst = async ()=>{
   
   }
-  tst()
+  // tst()
 },[])
   // console.log(setToken,token);
     const switchToStep2 = () => {

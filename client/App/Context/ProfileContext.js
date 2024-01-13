@@ -7,12 +7,15 @@ import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import { AuthContext } from "./AuthContext";
 import { jwtDecode } from "jwt-decode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const ProfileContext = createContext();
 export const ProfileProvider = ({ children }) => {
   const navigation = useNavigation();
-  const { token } = useContext(AuthContext);
+  const token = AsyncStorage.getItem("Token").valueOf();
   // const decoded = jwtDecode(token);
+  console.log(token);
+  const [checkOurServices, setCheckOurServices] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSelectTech, setShowSelectTech] = useState(false);
   const [ProfileData, setProfileData] = useState({});
@@ -25,7 +28,7 @@ export const ProfileProvider = ({ children }) => {
   const usernameRef = useRef("");
   const bioRef = useRef("");
   const phoneRef = useRef("");
-  const userId = "87d9f122-3de6-43ea-8548-714d9a124b39";
+  const userId = "841963bf-58ce-4f4a-8fab-31795e5bb9fb";
 
   // ===========================REFETCH PART===========================
   const [refetchProject, setRefetchProject] = useState("");
@@ -168,6 +171,8 @@ export const ProfileProvider = ({ children }) => {
         setRefetchProject,
         refetchReplyComment,
         setRefetchReplyComment,
+        checkOurServices,
+        setCheckOurServices,
       }}
     >
       {children}
@@ -177,8 +182,9 @@ export const ProfileProvider = ({ children }) => {
 //convert time
 export const formatTimeDifference = (createdAt) => {
   const now = moment();
-  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
+  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm:ss.SSS");
   const duration = moment.duration(now.diff(postTime));
+
   if (duration.asMinutes() < 60) {
     // Less than 60 minutes
     return moment.duration(duration).humanize(true);

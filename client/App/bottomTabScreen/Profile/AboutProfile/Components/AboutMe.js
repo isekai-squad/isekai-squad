@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
     color: STYLES.COLORS.MediumText,
   },
   bioContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
   },
   bioText: {

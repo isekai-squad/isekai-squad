@@ -17,6 +17,10 @@ function HomeScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate("chat")}>
         <Text>go to chat</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("basket")}>
+        <Text>go to basket</Text>
+      </TouchableOpacity>
+
     </View>
   );
 }
