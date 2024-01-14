@@ -19,7 +19,6 @@ export const ProfileProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [showSelectTech, setShowSelectTech] = useState(false);
   const [ProfileData, setProfileData] = useState({});
-  const [reportPop, setReportPop] = useState(false);
   const [activeMiddleTab, setActiveMiddleTab] = useState("Activity");
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
@@ -28,7 +27,7 @@ export const ProfileProvider = ({ children }) => {
   const usernameRef = useRef("");
   const bioRef = useRef("");
   const phoneRef = useRef("");
-  const userId = "841963bf-58ce-4f4a-8fab-31795e5bb9fb";
+  const userId = "1";
 
   // ===========================REFETCH PART===========================
   const [refetchProject, setRefetchProject] = useState("");
@@ -151,8 +150,7 @@ export const ProfileProvider = ({ children }) => {
         setProfileData,
         activeMiddleTab,
         setActiveMiddleTab,
-        reportPop,
-        setReportPop,
+
         profileImage,
         setProfileImage,
         coverImage,
@@ -182,7 +180,7 @@ export const ProfileProvider = ({ children }) => {
 //convert time
 export const formatTimeDifference = (createdAt) => {
   const now = moment();
-  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm:ss.SSS");
+  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm:ss");
   const duration = moment.duration(now.diff(postTime));
 
   if (duration.asMinutes() < 60) {
@@ -287,7 +285,7 @@ export async function getAllLikesProject(projectId) {
 export async function getUserLikes(userId) {
   try {
     const response = await fetch(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/${userId}/Likes`
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/${userId}/Likes`
     );
     return response.json();
   } catch (err) {
@@ -382,6 +380,128 @@ export async function PostProjectReplyComment(userId, projectId, data) {
   try {
     const response = await axios.post(
       `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Projects/reply/${projectId}/${userId}/comment`,
+      data
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+// -------------------------COMPANY && ADVISOR------------
+
+export function useFetchUserPosts(userId) {
+  console.log('====================================');
+  console.log(userId,"iii");
+  console.log('====================================');
+  const userPosts = async ({ pageParam = 1 }) => {
+    try {
+      const { data } = await axios.get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Post/${userId}?limit=6&page=${pageParam}`
+      );
+   
+      return data;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+
+  return useInfiniteQuery({
+    queryKey: ["posts"],
+    queryFn: userPosts,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage?.length === 0) return undefined;
+      return allPages.length + 1;
+    },
+  });
+}
+
+export async function getAllLikesPosts(postId) {
+  try {
+    const response = await fetch(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Posts/Likes/${postId}`
+    );
+    return response.json();
+  } catch (err) {
+    throw new err();
+  }
+}
+
+export async function upVotePost(userId, postId) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/posts/Posts/UpVote/${userId}/${postId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+export async function downVotePost(userId, postId) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/posts/Posts/DownVote/${userId}/${postId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+
+export async function addLikeCommentPost(userId, postCommentId) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Posts/Like/${userId}/${postCommentId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+export async function addLikeReplyCommentPost(userId, postReplyCommentId) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Posts/Like/${userId}/Reply/${postReplyCommentId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+
+export async function getAllPostsComments(postId) {
+  try {
+    const response = await fetch(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Posts/${postId}`
+    );
+
+    return response.json();
+  } catch (err) {
+    throw new err();
+  }
+}
+
+export async function getAllPostsReplyComments(post_commentsId) {
+  try {
+    const response = await fetch(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Posts/${post_commentsId}/replyComment`
+    );
+    return response.json();
+  } catch (err) {
+    throw new err();
+  }
+}
+
+export async function PostPostsComment(userId, postId, data) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Posts/${postId}/${userId}`,
+      data
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
+
+export async function PostPostsReplyComment(userId, post_commentsId, data) {
+  try {
+    const response = await axios.post(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Comments/Posts/reply/${post_commentsId}/${userId}/comment`,
       data
     );
   } catch (err) {

@@ -6,30 +6,26 @@ import Posts from "./App/component/Posts/Posts";
 import { MainContainer } from "./App/bottomTabScreen/MainContainer";
 import SearchHeader from "./App/component/SearchHeader";
 import PostDetails from "./App/component/Posts/PostDetails";
+import EditProfile from "./App/Screens/EditProfile/EditProfileScreen";
 import SignIn from "./App/Screens/Authentication/SignIn/SignIn";
 import Signup from "./App/Screens/Authentication/signUp/signup";
 import QR_code from "./App/component/QR_code";
 import AboutScreen from "./App/bottomTabScreen/About/AboutScreen";
 import { ProfileProvider } from "./App/Context/ProfileContext";
+import { VisitProfileProvider } from "./App/Context/VisitProfileContext";
 import ForumCategories from "./App/component/Posts/ForumCategories";
-import UserProfile from "./App/Screens/UserProfile/UserProfile";
+import UserProfile from "./App/Screens/UserProfile/ProfileUser";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
 import ChatScreen from "./App/Screens/Chat/ChatScreen";
 import Basket from "./App/Screens/Basket/basket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { ScrollView, Text } from "react-native";
 import { STYLES } from "./GlobalCss";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const CustomDrawerContent = (props) => {
-  return (
-    <ScrollView style={{ paddingTop: 20, paddingHorizontal: 10 }}></ScrollView>
-  );
-};
 const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
@@ -54,7 +50,7 @@ const DrawerNavigator = () => {
         }}
       />
       <Drawer.Screen
-        name="Profile"
+        name="VisitedProfile"
         component={UserProfile}
         options={{
           headerShown: false,
@@ -146,38 +142,50 @@ export const Navigation = () => {
     <NavigationContainer>
       {!Token ? (
         <ProfileProvider>
-          <Drawer.Navigator>
-            <Drawer.Screen
-              name="Home"
-              component={DrawerNavigator}
-              options={{ headerShown: false }}
-            />
-            <Drawer.Screen
-              name="QRCode"
-              component={QR_code}
-              options={{ headerShown: false }}
-            />
-            <Drawer.Screen
-              name="Posts"
-              component={Posts}
-              options={{ headerShown: false }}
-            />
-            <Drawer.Screen
-              name="PostDetails"
-              component={PostDetails}
-              options={{ headerShown: false }}
-            />
-            <Drawer.Screen
-              name="Forum"
-              component={ForumCategories}
-              options={{ headerShown: false }}
-            />
-            <Drawer.Screen
-              name="Post"
-              component={CreatePost}
-              options={{ headerShown: false }}
-            />
-          </Drawer.Navigator>
+          <VisitProfileProvider>
+            <Drawer.Navigator>
+              <Drawer.Screen
+                name="Home"
+                component={DrawerNavigator}
+                options={{ headerShown: false }}
+              />
+              <Drawer.Screen
+                name="QRCode"
+                component={QR_code}
+                options={{ headerShown: false }}
+              />
+              <Drawer.Screen
+                name="Posts"
+                component={Posts}
+                options={{ headerShown: false }}
+              />
+              <Drawer.Screen
+                name="PostDetails"
+                component={PostDetails}
+                options={{ headerShown: false }}
+              />
+              <Drawer.Screen
+                name="Forum"
+                component={ForumCategories}
+                options={{ headerShown: false }}
+              />
+              <Drawer.Screen
+                name="Post"
+                component={CreatePost}
+                options={{ headerShown: false }}
+              />
+              <Drawer.Screen
+                name="EditProfile"
+                component={EditProfile}
+                options={{
+                  drawerItemStyle: {
+                    height: 0,
+                  },
+                  headerShown: false,
+                }}
+              />
+            </Drawer.Navigator>
+          </VisitProfileProvider>
         </ProfileProvider>
       ) : (
         <Stack.Navigator>

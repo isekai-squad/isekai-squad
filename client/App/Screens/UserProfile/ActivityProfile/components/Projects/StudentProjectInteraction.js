@@ -8,14 +8,14 @@ import {
   getAllProjectsComments,
   getUserLikes,
   upVoteProject,
-} from "../../../../Context/ProfileContext";
+} from "../../../../../Context/ProfileContext";
 
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { STYLES } from "../../../../../GlobalCss";
-import CommentsInputs from "./CommentsInputs";
-import AllComments from "./AllComments";
+import { STYLES } from "../../../../../../GlobalCss";
+import CommentsInputs from "./CommentsProjectInputs";
+import AllComments from "./AllProjectsComments";
 
-const Interaction = ({ projectId }) => {
+const StudentPostsInteraction = ({ projectId }) => {
   const { userId } = useContext(ProfileContext);
 
   const [upvoted, setUpvoted] = useState(false);
@@ -24,6 +24,7 @@ const Interaction = ({ projectId }) => {
   const { mutateAsync: upVote } = useMutation({
     mutationFn: () => upVoteProject(userId, projectId),
   });
+
   const { mutateAsync: downVote } = useMutation({
     mutationFn: () => downVoteProject(userId, projectId),
   });
@@ -39,12 +40,12 @@ const Interaction = ({ projectId }) => {
     },
   });
 
-  const { data: UserProjectsLikes,refetch: refetchUserLikes } = useQuery({
+  const { data: UserProjectsLikes, refetch: refetchUserLikes } = useQuery({
     queryKey: ["userLikes", userId],
     queryFn: () => getUserLikes(userId),
   });
 
-  const { data: projectsComments, refetch: refetchComments } = useQuery({
+  const { data: projectsComments, refetch: refetchProjectComments } = useQuery({
     queryKey: ["projectComments", projectId],
     queryFn: () => getAllProjectsComments(projectId),
   });
@@ -52,7 +53,7 @@ const Interaction = ({ projectId }) => {
   const upVoteHandle = async () => {
     await upVote();
     refetchLikes();
-    refetchUserLikes()
+    refetchUserLikes();
     if (!upvoted) {
       setUpvoted(true);
       setDownvoted(false);
@@ -64,7 +65,7 @@ const Interaction = ({ projectId }) => {
   const downVoteHandle = async () => {
     await downVote();
     refetchLikes();
-    refetchUserLikes()
+    refetchUserLikes();
     if (!downvoted) {
       setUpvoted(false);
       setDownvoted(true);
@@ -92,7 +93,6 @@ const Interaction = ({ projectId }) => {
         }}
       >
         <View style={styles.voteButtons}>
-          
           <TouchableOpacity
             style={{ alignItems: "center" }}
             onPress={upVoteHandle}
@@ -116,14 +116,20 @@ const Interaction = ({ projectId }) => {
           </TouchableOpacity>
         </View>
 
-        <CommentsInputs projectsComments={{ projectId, refetchComments }} />
+        <CommentsInputs
+          projectId={projectId}
+          refetchProjectComments={refetchProjectComments}
+        />
       </View>
-      <AllComments projectsComments={projectsComments} refetchComments={refetchComments}/>
+      <AllComments
+        projectsComments={projectsComments}
+        refetchProjectComments={refetchProjectComments}
+      />
     </View>
   );
 };
 
-export default Interaction;
+export default StudentPostsInteraction;
 
 const styles = StyleSheet.create({
   voteButtons: {

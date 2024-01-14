@@ -5,14 +5,14 @@ import {
   addLikeCommentProject,
   formatTimeDifference,
   getAllProjectsReplyComments,
-} from "../../../../Context/ProfileContext";
-import CommentsInputs from "./CommentsInputs";
+} from "../../../../../Context/ProfileContext";
+import CommentsInputs from "./CommentsProjectInputs";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { STYLES } from "../../../../../GlobalCss";
-import AllReplyComments from "./AllReplyComments";
+import { STYLES } from "../../../../../../GlobalCss";
+import AllReplyComments from "./AllReplyProjectComments";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-const AllComments = ({ projectsComments, refetchComments }) => {
+const AllComments = ({ projectsComments, refetchProjectComments }) => {
   const [showAllComments, setShowAllComments] = useState(false);
 
   const visibleComments = showAllComments
@@ -30,7 +30,7 @@ const AllComments = ({ projectsComments, refetchComments }) => {
           <CommentItem
             key={index}
             comment={comment}
-            refetchComments={refetchComments}
+            refetchProjectComments={refetchProjectComments}
           />
         ))}
         {projectsComments.length > 2 && !showAllComments && (
@@ -47,7 +47,7 @@ const AllComments = ({ projectsComments, refetchComments }) => {
   }
 };
 
-const CommentItem = ({ comment, refetchComments }) => {
+const CommentItem = ({ comment, refetchProjectComments }) => {
   const { id, content, created_at, likes, User, images } = comment;
   const [replyInput, setReplyInput] = useState(false);
   const [showAllReplies, setShowAllReplies] = useState(false);
@@ -73,7 +73,7 @@ const CommentItem = ({ comment, refetchComments }) => {
   const likeComment = async () => {
     await upLikeComment(id);
     setActiveLikeComment((prev) => !prev);
-    refetchComments();
+    refetchProjectComments();
   };
 
   useEffect(() => {
@@ -81,8 +81,7 @@ const CommentItem = ({ comment, refetchComments }) => {
   }, [likes, userId]);
 
   // =================LIKE COMMENT===================
-  
-  
+
   // =================SHOW MORE COMMENTS===================
   if (refetchReplyComment) {
     refetchReplyComments();
@@ -98,7 +97,7 @@ const CommentItem = ({ comment, refetchComments }) => {
     setReplyInput(!replyInput);
     refetchReplyComments();
   });
-  
+
   const handleShowMoreReplies = () => {
     setShowAllReplies(true);
     refetchReplyComments();
