@@ -4,32 +4,38 @@ import { VisitProfileContext } from "../../../Context/VisitProfileContext";
 import { STYLES } from "../../../../GlobalCss";
 import RenderPost from "./components/RenderPost";
 import { useContext } from "react";
+import { useRoute } from "@react-navigation/native";
+
 import {
+  ProfileContext,
   useFetchStudentProjects,
   useFetchUserPosts,
 } from "../../../Context/ProfileContext";
 
 const Activity = () => {
+  const route = useRoute();
+  const { userId, ProfileData } = useContext(ProfileContext);
   const { visitedProfileId, visitedProfileData } =
     useContext(VisitProfileContext);
 
   let data, isLoading, hasNextPage, fetchNextPage, refetchPosts;
-  if (visitedProfileData.role!=="STUDENT") {
+
+  if (visitedProfileData.role !== "STUDENT" || ProfileData.role !== "STUDENT") {
     const {
       data: posts,
       isLoading: userPostsLoading,
       hasNextPage: userPostsHasNextPage,
       fetchNextPage: userPostsFetchNextPage,
       refetch: userPostsRefetch,
-    } = useFetchUserPosts(2);
+    } = useFetchUserPosts(
+      route.name === "VisitedProfile" ? visitedProfileId : userId
+    );
 
     data = posts;
     isLoading = userPostsLoading;
     hasNextPage = userPostsHasNextPage;
     fetchNextPage = userPostsFetchNextPage;
     refetchPosts = userPostsRefetch;
-
-  
   } else {
     const {
       data: projects,
@@ -37,7 +43,9 @@ const Activity = () => {
       hasNextPage: projectsHasNextPage,
       fetchNextPage: projectsFetchNextPage,
       refetch: projectsRefetch,
-    } = useFetchStudentProjects(visitedProfileId);
+    } = useFetchStudentProjects(
+      route.name === "VisitedProfile" ? visitedProfileId : userId
+    );
 
     data = projects;
     isLoading = projectsLoading;
@@ -46,7 +54,6 @@ const Activity = () => {
     refetchPosts = projectsRefetch;
   }
   const posts = data?.pages?.map((page) => page).flat();
-
   const loadNextPageData = () => {
     if (hasNextPage) {
       fetchNextPage();

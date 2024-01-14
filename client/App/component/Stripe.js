@@ -20,7 +20,7 @@ const checkout = async (data) => {
     );
     return response.data;
   } catch (err) {
-    console.log(err, "eeee");
+    console.log(err);
   }
 };
 // STEP 2

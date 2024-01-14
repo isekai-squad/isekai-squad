@@ -36,6 +36,7 @@ export const VisitProfileProvider = ({ children }) => {
   return (
     <VisitProfileContext.Provider
       value={{
+        visitedProfileId,
         LoadingVisitedProfile,
         refetchVisitedProfile,
         visitedProfileData,

@@ -63,21 +63,22 @@ const RenderPost = ({ item, refetchPosts }) => {
           ))}
         </View>
       )}
-
-      {/* <Swiper
-        style={styles.swiperContainer}
-        showsButtons={false}
-        autoplayTimeout={3}
-        autoplay
-      >
-        {item.images.map((imageUrl, index) => (
-          <Image
-            key={index}
-            source={{ uri: imageUrl }}
-            style={styles.postImage}
-          />
-        ))}
-      </Swiper> */}
+      {item.images.length > 0 && (
+        <Swiper
+          style={styles.swiperContainer}
+          showsButtons={false}
+          autoplayTimeout={3}
+          autoplay
+        >
+          {item.images.map((imageUrl, index) => (
+            <Image
+              key={index}
+              source={{ uri: imageUrl }}
+              style={styles.postImage}
+            />
+          ))}
+        </Swiper>
+      )}
 
       <Interaction postId={item.id} />
     </View>

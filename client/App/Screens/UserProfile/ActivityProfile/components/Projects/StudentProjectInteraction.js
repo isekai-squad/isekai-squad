@@ -14,11 +14,9 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { STYLES } from "../../../../../../GlobalCss";
 import CommentsInputs from "./CommentsProjectInputs";
 import AllComments from "./AllProjectsComments";
-import { VisitProfileContext } from "../../../../../Context/VisitProfileContext";
 
 const StudentPostsInteraction = ({ projectId }) => {
   const { userId } = useContext(ProfileContext);
-  const { visitedProfileData } = useContext(VisitProfileContext);
 
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
@@ -118,7 +116,10 @@ const StudentPostsInteraction = ({ projectId }) => {
           </TouchableOpacity>
         </View>
 
-        <CommentsInputs projectsId={ projectId}refetchProjectComments={refetchProjectComments} />
+        <CommentsInputs
+          projectId={projectId}
+          refetchProjectComments={refetchProjectComments}
+        />
       </View>
       <AllComments
         projectsComments={projectsComments}

@@ -6,9 +6,7 @@ import { STYLES } from "../../../../GlobalCss";
 const HeaderPhoto = () => {
   const { visitedProfileData } = useContext(VisitProfileContext);
   const { role, active, project, posts, cover, pdp } = visitedProfileData;
-  console.log("====================================");
-  console.log(visitedProfileData);
-  console.log("====================================");
+  
 
   return (
     <View>

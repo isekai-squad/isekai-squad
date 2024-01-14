@@ -197,7 +197,6 @@ export const formatTimeDifference = (createdAt) => {
   }
 };
 
-
 async function fetchProfile(userId) {
   try {
     const response = await fetch(
@@ -390,14 +389,15 @@ export async function PostProjectReplyComment(userId, projectId, data) {
 // -------------------------COMPANY && ADVISOR------------
 
 export function useFetchUserPosts(userId) {
+  console.log('====================================');
+  console.log(userId,"iii");
+  console.log('====================================');
   const userPosts = async ({ pageParam = 1 }) => {
     try {
       const { data } = await axios.get(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Post/${userId}?limit=6&page=${pageParam}`
       );
-      console.log('====================================');
-      console.log(data);
-      console.log('====================================');
+   
       return data;
     } catch (err) {
       console.error(err);
