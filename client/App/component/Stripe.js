@@ -9,7 +9,7 @@ const CheckoutScreen = () => {
     const [check,setCheck]=useState(true)
     const [loading, setLoading] = useState(false);
     const fetchPaymentSheetParams = async () => {
-          const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/payment-sheet`, {
+          const response = await fetch(`${process.env.EXPO_PUBLIC_IP_KEY}/api/payment-sheet`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

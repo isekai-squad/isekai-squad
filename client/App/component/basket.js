@@ -8,84 +8,98 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import { Box, Button, ButtonText, Center } from "@gluestack-ui/themed";
 import axios from "axios";
-import Foundation from "react-native-vector-icons/Foundation";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const AllServices = ({ navigation }) => {
   const [services, setServices] = useState([]);
-  const [Detail, setdetail] = useState([]);
+  const [likes, setLikes] = useState({});
+
   useEffect(() => {
     fetchServices();
   }, []);
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get("http://172.29.0.73:4070/Services/");
-      setServices(response.data.map((service) => ({ ...service, likes:0  })));
+      const response = await axios.get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Services/`
+      );
+      const initialLikes = response.data.reduce((acc, service) => {
+        acc[service.serviceId] = service.like;
+        return acc;
+      }, {});
+      setServices(response.data);
+      setLikes(initialLikes);
     } catch (error) {
       console.error("Error fetching services:", error);
     }
   };
 
-  const handleUpVote = async () => {
-    try {
-      const response = await axios.post('http://172.29.0.73:4070/Services/UpVote/1/2');
-      
-      console.log('UpVote successful:', response.data);
-    } catch (error) {
-      console.error('Error during UpVote:', error.message);
-    }
-  };
-
-  const handleDownVote = async () => {
-    try {
-      const response = await axios.post('http://172.29.0.73:4070/Services/DownVote/1/2');
-    
-      console.log('DownVote successful:', response.data);
-    } catch (error) {
-      console.error('Error during DownVote:', error.message);
-    }
-  };
-
   const renderItem = ({ item }) => (
     <View style={styles.gridItem}>
+      <Text style={styles.title} numberOfLines={2}>
+        {item.title}
+      </Text>
+      <Image style={styles.image} source={{ uri: item.image }} />
+      <Text style={styles.price}> {item.Price} DT</Text>
       <Text
-        style={styles.title}
+        numberOfLines={3}
+        style={styles.descriptionText}
         onPress={() =>
           navigation.navigate("serviceDetails", {
             item: item,
           })
         }
       >
-        {item.title}
+        {item.description}
       </Text>
-      <Image style={styles.image} source={{ uri: item.image }} />
-      <Text style={styles.price}>Price: {item.Price}</Text>
-      <View style={styles.voteContainer}>
-        <TouchableOpacity onPress={() => handleUpVote(item.serviceId)}>
-          <Foundation name="like" size={30} color="#8244CB" />
-        </TouchableOpacity>
-        
-        <Text style={styles.likes}>{item.likes}</Text>
-
-        <TouchableOpacity onPress={() => handleDownVote(item.serviceId)}>
-          <Foundation name="dislike" size={30} color="#8244CB" />
-        </TouchableOpacity>
-      </View>
     </View>
   );
+  <View style={styles.voteContainer}></View>;
 
   if (services.length === 0) {
     return <ActivityIndicator size="large" color="#8244CB" />;
   }
 
   return (
-    <FlatList
-      data={services}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={renderItem}
-      numColumns={2}
-    />
+    <View>
+      <View style={{ paddingVertical: 20, backgroundColor: "white" }}>
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <TouchableOpacity>
+            <AntDesign name="leftcircleo" size={20} />
+          </TouchableOpacity>
+
+          <Button borderRadius={50} bgColor="#674188">
+            <ButtonText onPress={() => navigation.navigate("PostService", {})}>
+              Create Post
+            </ButtonText>
+          </Button>
+        </Box>
+      </View>
+      <FlatList
+        data={services}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        numColumns={2}
+      />
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("PostService", {})}
+        style={styles.addButton}
+      >
+        <MaterialIcons name="add-box" size={100} color="#525252" />
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -93,49 +107,50 @@ const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
     margin: 4,
-    padding:56 ,
     borderRadius: 8,
     backgroundColor: "#f0f0f0",
     alignItems: "center",
     elevation: 8,
-
+    padding: 40,
   },
   image: {
     width: 150,
     height: 150,
-    borderRadius: 8,
+    borderRadius: 15,
+    resizeMode: "cover",
   },
-  description: {
+  descriptionText: {
     fontSize: 16,
     marginBottom: 8,
   },
   price: {
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  createdAt: {
-    fontSize: 14,
+    color: "#4D4D4D",
+    fontSize: 20,
     marginBottom: 8,
   },
   voteContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
-   
+    marginVertical: 10,
   },
-  likes: {
-    fontSize: 16,
-    marginHorizontal: 6,
-  },
-  deleteText: {
-    color: "white",
-    textAlign: "center",
-  },
+
   title: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 2,
+  },
+  detailsContainer: {
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+  },
+
+  addButton: {
+    position: "absolute",
+    right: 16,
+    bottom: 16,
   },
 });
 

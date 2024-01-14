@@ -16,7 +16,7 @@ import UserProfile from "./App/Screens/UserProfile/UserProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
 import ServiceDetaite from "./App/component/sreviceDetait";
-
+import PostServices from "./App/component/PostServices";
 const Stack = createStackNavigator();
 
 export const Navigation = () => {
@@ -93,7 +93,14 @@ export const Navigation = () => {
             name="serviceDetails"
             component={ServiceDetaite}
           />
+           <Stack.Screen
+            
+            name="PostService"
+            component={PostServices}
+          />
           </Stack.Navigator>
+
+          
         </ProfileProvider>
       ) : (
         <Stack.Navigator>

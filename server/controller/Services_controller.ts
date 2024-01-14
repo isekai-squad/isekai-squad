@@ -14,6 +14,7 @@ export const addService = async (req : Request , res : Response) => {
                 image,
                 Price,
                 userId
+                
             }
         })
         res.status(201).json(result)
