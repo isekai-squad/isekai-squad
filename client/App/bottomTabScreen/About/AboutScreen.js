@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 
-const FlexDimensionsBasics = () => {
+const AboutScreen = () => {
   const navigation = useNavigation();
 
   const [user, setUser] = useState({
@@ -41,7 +41,7 @@ const FlexDimensionsBasics = () => {
 
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text style={styles.code}>My code</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("ScanCode")}>
+        <TouchableOpacity onPress={() => navigation.navigate("QRCode")}>
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>Scan</Text>
         </TouchableOpacity>
       </View>
@@ -179,4 +179,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FlexDimensionsBasics;
+export default AboutScreen;

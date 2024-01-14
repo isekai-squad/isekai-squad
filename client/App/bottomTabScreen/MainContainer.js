@@ -3,7 +3,7 @@ import HomeScreen from "./Home/HomeScreen";
 import AboutScreen from "./About/AboutScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
 import code from "../component/QR_code";
-import basket from "../component/basket";
+import basket from "../Screens/Basket/basket";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -23,15 +23,15 @@ export const MainContainer = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          height: 60,
-          borderTopLeftRadius: 50,
-          borderTopRightRadius: 50,
+          height: 70,
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
           paddingBottom: 5,
           backfaceVisibility: "hidden",
           display: activeMiddleTab == "Edit" ? "none" : "flex",
-          position: 'absolute',
+          position: "absolute",
         },
-    
+
         tabBarIcon: ({ focused, size }) => {
           let iconName;
           let iconColor;
@@ -91,11 +91,7 @@ export const MainContainer = () => {
         component={ForumCategories}
         options={{ headerShown: false }}
       />
-      <Tab.Screen
-        name="basket"
-        component={basket}
-        options={{ headerShown: false }}
-      />
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}

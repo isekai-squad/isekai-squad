@@ -2,9 +2,9 @@ import React from "react";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GluestackUIProvider } from "@gluestack-ui/themed"
+import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { Navigation } from "./Navigation";
-import { config } from "@gluestack-ui/config"
+import { config } from "@gluestack-ui/config";
 import { AuthProvider } from "./App/Context/AuthContext";
 import { ForumContext, ForumProvider } from "./App/Context/ForumContext";
 
@@ -26,11 +26,11 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_PUBLISH_KEY}>
         <AuthProvider>
-          <ForumProvider>
+              <ForumProvider>
       <GluestackUIProvider config={config}>
-      <Navigation />
-        </GluestackUIProvider>
-          </ForumProvider>
+            <Navigation />
+          </GluestackUIProvider>
+              </ForumProvider>
     </AuthProvider>
       </StripeProvider>
     </QueryClientProvider>
