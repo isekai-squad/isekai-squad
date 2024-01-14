@@ -13,10 +13,17 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import NormalNotif from "./NormalNotif";
 import InterviewNotif from "./InterviewNotif";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const Notification = () => {
   const [focused, setFocused] = useState("General");
   const [data, setData] = useState([1, 1, 1, 1, 1, 1, 1, 1]);
+
+  const query = useQuery({
+    queryKey : ["notifications"] , 
+    queryFn : () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/`).then(res => res.data).catch(err => console.log(er))
+  })
   return (
     <ScrollView style={{ backgroundColor: "white", marginBottom: 40 }}>
       <View
