@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { STYLES } from "../../../../../GlobalCss";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { ProfileContext } from "../../../../Context/ProfileContext";
+import { VisitProfileContext } from "../../../../Context/VisitProfileContext";
 const MainSkills = () => {
-  const { ProfileData } = useContext(ProfileContext);
-  const { userTechnology } = ProfileData;
+  const { visitedProfileData } = useContext(VisitProfileContext);
+  const { userTechnology } = visitedProfileData;
 
   return (
     <View style={styles.container}>
@@ -34,10 +34,8 @@ const MainSkills = () => {
             );
           })
         ) : (
-          <Text style={{ color: "gray", fontWeight: STYLES.FONTS.Medium }}>
-            Enhance your profile by customizing and adding your latest
-            technologies. Showcase your expertise and make your profile stand
-            out.
+          <Text>
+            This student has not added any technologies to their profile yet.
           </Text>
         )}
       </View>

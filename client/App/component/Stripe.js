@@ -62,7 +62,7 @@ const CheckoutScreen = ({ ORDER, refetchBasket, setCheckOurServices }) => {
   const paymentData = ORDER.basketItems.map((entry) => ({
     basketId: entry.id,
     userId: entry.userId,
-    amount: ORDER.amount,
+    amount: entry.Service.Price,
   }));
 
   const { mutateAsync: Payment } = useMutation({
@@ -71,7 +71,6 @@ const CheckoutScreen = ({ ORDER, refetchBasket, setCheckOurServices }) => {
   const { mutateAsync: updateBasket } = useMutation({
     mutationFn: (data) => payedBasket(data),
   });
-
   const { mutateAsync: byNow } = useMutation({
     mutationFn: (total) => checkout({ amount: Math.floor(total * 100) }),
 

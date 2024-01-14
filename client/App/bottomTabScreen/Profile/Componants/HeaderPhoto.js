@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     height: 90,
     width: 90,
     borderColor: "white",
-    borderWidth: 3,
+    borderWidth: 1,
     borderRadius: 100,
   },
   descriptionContainer: {

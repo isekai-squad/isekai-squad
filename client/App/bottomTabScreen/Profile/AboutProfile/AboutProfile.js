@@ -4,7 +4,7 @@ import MainSkills from "./Components/MainSkills";
 import AboutMe from "./Components/AboutMe";
 function AboutProfile() {
   return (
-    <ScrollView style={{paddingBottom:100}} >
+    <ScrollView style={{paddingBottom:80}} >
       <MainSkills  />
       <AboutMe />
     </ScrollView>

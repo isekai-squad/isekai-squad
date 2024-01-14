@@ -57,6 +57,23 @@ export const addCommentPost = async (req: Request, res: Response) => {
   }
 };
 
+export const addCommentReplyPost = async (req: Request, res: Response) => {
+  const { userId, content, image, post_commentsId } = req.body;
+  try {
+    const result = await prisma.replies.create({
+      data: {
+        userId,
+        content,
+        image,
+        post_commentsId,
+      },
+    });
+    res.status(201).json(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
 export const getAllCommentsProject = async (req: Request, res: Response) => {
   let { projectId } = req.params;
   try {
@@ -98,12 +115,41 @@ export const getAllReplyCommentsProject = async (
     res.status(500).send(err);
   }
 };
+export const getAllReplyCommentsPosts = async (req: Request, res: Response) => {
+  let { post_commentsId } = req.params;
+
+  try {
+    const result = await prisma.replies.findMany({
+      where: { post_commentsId: post_commentsId },
+      include: {
+        User: { select: { name: true, pdp: true } },
+        likes: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+    console.log(result);
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
 
 export const getAllCommentsPost = async (req: Request, res: Response) => {
   let { postId } = req.params;
   try {
     const result = await prisma.post_comments.findMany({
       where: { postId },
+      include: {
+        User: { select: { name: true, pdp: true } },
+        likes: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
     });
     res.status(200).json(result);
   } catch (err) {
@@ -169,25 +215,54 @@ export const addLikeReplyCommentProject = async (
     res.status(500).send(err);
   }
 };
-
-export const addLikeCommentPost = async (req: Request, res: Response) => {
-  let { userId, postCommentId } = req.params;
+export const addLikeReplyCommentPost = async (req: Request, res: Response) => {
+  let { userId, postReplyCommentId } = req.params;
   try {
     let user = await prisma.likes.findFirst({
-      where: { userId },
+      where: { userId, repliesId: postReplyCommentId },
     });
     if (user) {
       await prisma.likes.deleteMany({
-        where: { userId, post_commentsId: postCommentId },
+        where: { userId, repliesId: postReplyCommentId },
       });
       res.status(200).send("deleted");
     } else {
       const result = await prisma.likes.create({
         data: {
           userId: userId,
-          post_commentsId: postCommentId,
+          repliesId: postReplyCommentId,
+          like: 1,
         },
       });
+      console.log(result);
+      res.status(201).json(result);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
+
+export const addLikeCommentPost = async (req: Request, res: Response) => {
+  let { userId, post_commentsId } = req.params;
+  try {
+    let user = await prisma.likes.findFirst({
+      where: { userId, post_commentsId: post_commentsId },
+    });
+    if (user) {
+      await prisma.likes.deleteMany({
+        where: { userId, post_commentsId: post_commentsId },
+      });
+      res.status(200).send("deleted");
+    } else {
+      const result = await prisma.likes.create({
+        data: {
+          userId: userId,
+          like: 1,
+          post_commentsId: post_commentsId,
+        },
+      });
+
       res.status(201).json(result);
     }
   } catch (err) {
