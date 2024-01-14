@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
 import { ProfileContext } from "../../../Context/ProfileContext";
+import { STYLES } from "../../../../GlobalCss";
 
 const HeaderPhoto = () => {
   const { ProfileData } = useContext(ProfileContext);
@@ -26,7 +27,7 @@ const HeaderPhoto = () => {
 
         <View style={styles.descriptionContainer}>
           <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>{ProfileData.project.length}</Text>
+            <Text style={styles.detailText}>{ProfileData.project?.length}</Text>
             <Text style={styles.detailLabel}>Projects</Text>
           </View>
 
@@ -48,11 +49,11 @@ const HeaderPhoto = () => {
 const styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
-    height: 130,
+    height: 180,
   },
   darkOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: STYLES.COLORS.ShadowColor,
   },
   profileContainer: {
     flexDirection: "row",
@@ -60,7 +61,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    top: 25,
+    top: "70%",
+    transform: [{ translateY: -70 }],
     width: "100%",
   },
   profileImage: {

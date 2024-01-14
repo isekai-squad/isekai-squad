@@ -12,6 +12,8 @@ import { ProfileContext } from "../Context/ProfileContext";
 import ForumCategories from "../component/Posts/ForumCategories";
 import CreatePost from "../component/Posts/CreatePost";
 import SearchHeader from "../component/SearchHeader";
+import NotificationBell from "../component/Notifications/NotificationBell";
+import Notification from "../component/Notifications/NotificationPage";
 const Tab = createBottomTabNavigator();
 
 export const MainContainer = () => {
@@ -21,12 +23,15 @@ export const MainContainer = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          height: 50,
+          height: 60,
           borderTopLeftRadius: 50,
           borderTopRightRadius: 50,
           paddingBottom: 5,
+          backfaceVisibility: "hidden",
           display: activeMiddleTab == "Edit" ? "none" : "flex",
+          position: 'absolute',
         },
+    
         tabBarIcon: ({ focused, size }) => {
           let iconName;
           let iconColor;
@@ -45,16 +50,14 @@ export const MainContainer = () => {
             return (
               <MaterialIcons name={iconName} size={size} color={iconColor} />
             );
-          }else if (route.name === "Community"){
-            iconName = focused? "people" : "people-outline";
-            return (
-              <Ionicons name={iconName} size={size} color={iconColor} />
-            );
-          }else if (route.name === 'Post'){
-            iconName = focused? "add-circle" : "add-circle-outline";
-            return (
-              <Ionicons name={iconName} size={size} color={iconColor} />
-            )
+          } else if (route.name === "Community") {
+            iconName = focused ? "people" : "people-outline";
+            return <Ionicons name={iconName} size={size} color={iconColor} />;
+          } else if (route.name === "Post") {
+            iconName = focused ? "add-circle" : "add-circle-outline";
+            return <Ionicons name={iconName} size={size} color={iconColor} />;
+          } else if (route.name === "Notifications") {
+            return <NotificationBell focused={focused} size={size} iconColor={iconColor} />
           }
         },
       })}
@@ -68,31 +71,20 @@ export const MainContainer = () => {
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        // options={{ headerShown: false }}
-          options={({ navigation }) => ({
-                headerTitle: () => (
-                  <SearchHeader
-                    onChangeText={(text) => console.log("Search:", text)}
-                    
-                  />
-                ),
-                headerTitleContainerStyle: { width: "100%" },
-              })
-          
-            }
+        options={({ navigation }) => ({
+          headerTitle: () => (
+            <SearchHeader
+              onChangeText={(text) => console.log("Search:", text)}
+            />
+          ),
+          headerTitleContainerStyle: { width: "100%" },
+        })}
       />
 
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-           
-            options={{ headerShown: false }}
-      />
-      <Tab.Screen
-      name='Post'
-      component={CreatePost}
-      options={{headerShown:false}}
-      
+        name="Post"
+        component={CreatePost}
+        options={{ headerShown: false }}
       />
       <Tab.Screen
         name="Community"
@@ -103,6 +95,16 @@ export const MainContainer = () => {
         name="basket"
         component={basket}
         options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+      name="Notifications"
+      component={Notification}
+      options={{headerRight : ()=> <Ionicons name="settings-outline" size={26} /> , headerTitleStyle:{fontSize : 26 , fontWeight : '600'} , headerStyle : {height : 80} , headerLeft : () => <Ionicons name="arrow-back" size={40}/>}}
       />
     </Tab.Navigator>
   );

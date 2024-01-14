@@ -4,13 +4,11 @@ import { Response, Request } from "express";
 const prisma = new PrismaClient();
 
 export const getAllTechno = async (req: Request, res: Response) => {
+  const { specialtyId } = req.params;
+
   try {
     const result = await prisma.technologies.findMany({
-      where: { userId: null, projectId: null },
-      select: {
-        name: true,
-        image: true,
-      },
+      where: { specialtyId: specialtyId },
     });
     res.status(200).send(result);
   } catch (err) {
@@ -18,13 +16,15 @@ export const getAllTechno = async (req: Request, res: Response) => {
     res.status(400).send(err);
   }
 };
+
 export const addNewTechnology = async (req: Request, res: Response) => {
-  let { name, image } = req.body;
+  let { name, image, specialtyId } = req.body;
   try {
     const result = await prisma.technologies.create({
       data: {
         name,
         image,
+        specialtyId: specialtyId,
       },
     });
   } catch (err) {
@@ -33,25 +33,6 @@ export const addNewTechnology = async (req: Request, res: Response) => {
   }
 };
 
-
-export const addUserTechnology = async (req: Request, res: Response) => {
-  let { data } = req.body;
-  const { id } = req.params;
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
-  try {
-    await prisma.technologies.deleteMany({ where: { userId: id } });
-
-    const result = await prisma.technologies.createMany({
-      data,
-      skipDuplicates: true,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(400).send(err);
-  }
-};
 export const deleteTechnology = async (req: Request, res: Response) => {
   let { name } = req.body;
   try {
@@ -93,6 +74,41 @@ export const deleteSpeciality = async (req: Request, res: Response) => {
     res.status(200).send(result);
   } catch (err) {
     console.log(err);
+    res.status(400).send(err);
+  }
+};
+
+export const getUserTechno = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const result = await prisma.userTechnology.findMany({
+      where: { userId: userId },
+
+      include: {
+        // technologies: { select: { name: true, image: true } },
+        Technologies: true,
+      },
+    });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send(err);
+  }
+};
+
+export const addUserTechnology = async (req: Request, res: Response) => {
+  const { data } = req.body;
+  const { userId } = req.params;
+
+  try {
+    await prisma.userTechnology.deleteMany({ where: { userId: userId } });
+
+    const result = await prisma.userTechnology.createMany({
+      data: data,
+      skipDuplicates: true,
+    });
+    res.status(200).send("updated");
+  } catch (err) {
     res.status(400).send(err);
   }
 };

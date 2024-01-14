@@ -8,7 +8,6 @@ export const SignInFetch =  async (data,navigation,setToken,pre)=>{
       var response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/signin/`,data)
        await setToken(response.data)
         navigation.navigate('Home')
-        console.log(response.data);
         return 'success'
     }catch(err){
       if (err.response.status === 401) {

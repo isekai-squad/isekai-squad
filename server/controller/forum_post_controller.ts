@@ -51,20 +51,21 @@ export async function getAll(req: Request, res: Response): Promise<void> {
 export async function addPost(req: Request, res: Response): Promise<void> {
   const { userId } = req.params;
 
-  const { title, content, images } = req.body;
-  // try {
-  //   const newPost: ForumPost = await prisma.forum_Posts.create({
-  //     data: {
-  //       userId: userId,
-  //       title: title,
-  //       content: content,
-  //       images: images,
-  //     },
-  //   });
-  //   res.status(200).send(newPost);
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
+  const { title, content, images , category } = req.body;
+  try {
+    const newPost: ForumPost = await prisma.forum_Posts.create({
+      data: {
+        userId: userId,
+        title: title,
+        content: content,
+        images: images,
+        forum_CategoryId : category
+      },
+    });
+    res.status(200).send(newPost);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 }
 export async function updatePost(req: Request, res: Response): Promise<void> {
   const { postId } = req.params;
@@ -114,8 +115,8 @@ export async function getForumPostLikes(
 ): Promise<void> {
   const { postId } = req.params;
   try {
-    const posts = await prisma.likes.count({
-      where: { postId: postId, like: 1 },
+    const posts = await prisma.likes.findMany({
+      where: { forum_PostsId: postId, like: 1 },
     });
     res.status(200).send(posts);
   } catch (err) {
@@ -130,20 +131,20 @@ export async function incrementLike(
   const { postId, userId } = req.params;
   try {
     const findUser = await prisma.likes.findFirst({
-      where: { userId: userId, postId: postId },
+      where: { userId: userId, forum_PostsId: postId },
     });
 
     if (!findUser) {
       await prisma.likes.create({
         data: {
           like: 1,
-          postId: postId,
+          forum_PostsId: postId,
           userId: userId,
         },
       });
     } else {
       await prisma.likes.deleteMany({
-        where: { userId: userId, postId: postId },
+        where: { userId: userId, forum_PostsId: postId },
       });
     }
 

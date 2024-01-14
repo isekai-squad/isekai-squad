@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   StyleSheet,
@@ -7,6 +7,8 @@ import {
   Text,
   ScrollView,
   KeyboardAvoidingView,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {
@@ -28,20 +30,73 @@ import { Box, Divider } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import Dots from "react-native-vector-icons/Entypo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ForumContext } from "../../Context/ForumContext";
+import moment from "moment";
+import axios from "axios";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const PostDetails = ({ route }) => {
-  const flatListRef = useRef();
-  // const [post , setPost] = useState(null)
-  // const [isLoading , setIsLoading] = useState(false)
-  // const [comment , setComment] = useState('')
-  // const [isFocused , setIsFocused] = useState(null)
+ const [refreshing , setRefreshing] = useState(false)
+  // const {refetch , setRefetch} = useContext(ForumContext)
+const onRefresh = useCallback( () => {
+  setRefreshing(true);
+  refetch()
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+}, [])
+
+const formatTimeDifference = (createdAt) => {
+  const now = moment();
+  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
+  const duration = moment.duration(now.diff(postTime));
+  if (duration.asMinutes() < 60) {
+    // Less than 60 minutes
+    return moment.duration(duration).humanize(true);
+  } else if (duration.asHours() < 24) {
+    // Less than 24 hours
+    const hours = Math.floor(duration.asHours());
+    return `${hours}h`;
+  } else {
+    // More than 24 hours
+    const days = Math.floor(duration.asDays());
+    return days === 1 ? "one day" : `${days} days`;
+  }
+};
+
   const navigation = useNavigation();
-  const { post, data } = route.params;
-  const arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+  const { post, user , posts , category } = route.params;
+
+  
+  const {data , isLoading , error, refetch} = useQuery ({
+    queryKey : ['likes'],
+    queryFn :async () => await axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/likes/${post.id}`).then(res => res.data).catch(err => console.error(err)),
+    select : (data) => {
+      const Nlikes = data.filter(item => item.like === 1)
+     const Ndislikes = data.filter(item => item.like === 0)
+     return Nlikes?.length - Ndislikes?.length
+    }
+  }) 
+  
+  if(isLoading) return <Center>
+  <ActivityIndicator size="large" color='#674188' />
+</Center>
+
+
+  const mutation = useMutation({
+    mutationFn : async () => await  axios.post(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/increment/${post.id}/${user.id}`).then(res => console.log("liked")).catch(err => console.error(err)),
+    onSuccess : () => refetch()
+  }) 
+
   return (
-    <ScrollView>
+    <ScrollView
+    refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+    }
+    >
       <View as={SafeAreaView} style={styles.container}>
         <Image
+        alt="404"
           source={{ uri: post.images[0] }}
           style={{ width: "100%", height: 400 }}
           resizeMode="stretch"
@@ -56,11 +111,11 @@ const PostDetails = ({ route }) => {
           }}
         >
           <TouchableOpacity>
-            <Icon name="bookmark-minus-outline" color="#674188" size={36} />
+            <Icon name="bookmark-minus" color="#674188" size={36} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Icon
-              name="dots-horizontal-circle-outline"
+              name="dots-horizontal-circle"
               color="#674188"
               size={36}
               style={{ marginLeft: 10 }}
@@ -91,17 +146,17 @@ const PostDetails = ({ route }) => {
             <HStack>
           <Avatar size="lg">
             <AvatarFallbackText>SS</AvatarFallbackText>
-            <AvatarImage source={{ uri: data.pdp }} />
+            <AvatarImage source={{ uri: user.pdp }} alt="404" />
           </Avatar>
           <View style={{ marginLeft: 30 }}>
             <Text
               style={{ fontWeight: "bold", fontSize: 21, color: "#674188" }}
               onPress={() => navigation.navigate("UserProfile")}
               >
-              {data.name}
+              {user.name}
             </Text>
             <Text style={{ fontWeight: 200, fontSize: 19 }}>
-              @{data.userName}
+              @{user.userName}
             </Text>
           </View>
                 </HStack>
@@ -124,17 +179,17 @@ const PostDetails = ({ route }) => {
             flexDirection: "row",
             padding: 15,
             alignItems: "center",
-            gap: 20,
+            gap: 15,
           }}
         >
           <Button size="sm" variant="outline" borderColor="#674188">
-            <ButtonText color="#674188">Category</ButtonText>
+            <ButtonText color="#674188">{category.name}</ButtonText>
           </Button>
-          <Text style={{ marginLeft: 10, fontWeight: 300 }}>3 days Ago</Text>
+          <Text style={{ marginLeft: 10, fontWeight: 300 }}>{formatTimeDifference(post.created_at)}</Text>
           <TouchableOpacity>
-            <Dots name="arrow-up" color="#674188" size={36} />
+            <Dots name="arrow-up" color="#674188" size={36} onPress={() => mutation.mutate()} />
           </TouchableOpacity>
-          <Text>208</Text>
+          <Text>{data}</Text>
           <TouchableOpacity>
             <Dots name="arrow-down" color="#674188" size={36} />
           </TouchableOpacity>
@@ -149,8 +204,8 @@ const PostDetails = ({ route }) => {
           contentContainerStyle={styles.scrollViewContent}
           keyboardShouldPersistTaps="handled"
         >
-          <CommentList post={post} user={data} />
-          <CreateComment post={post} user={data} />
+          <CommentList post={post} user={user} />
+          <CreateComment post={post} user={user} onRefresh={onRefresh} />
         <Divider />
         </KeyboardAwareScrollView>
         <View
@@ -167,7 +222,7 @@ const PostDetails = ({ route }) => {
           <Icon name="arrow-right-thin" size={36} color="#674188" />
         </View>
         <ScrollView horizontal={true} style={{ padding: 10, marginTop: 10 }}>
-          {arr.map(() => (
+          {posts?.map((post) => (
             <Box style={{ padding: 10 }}>
               <HStack space="md">
                 <Center w="$64">
@@ -176,7 +231,7 @@ const PostDetails = ({ route }) => {
                       size="2xl"
                       borderRadius="$2xl"
                       source={{
-                        uri: "https://i1.sndcdn.com/artworks-abCh030JyxQIQ6i6-Jb86lg-t500x500.png",
+                        uri: post.images[0],
                       }}
                       alt="404"
                     />
@@ -188,17 +243,18 @@ const PostDetails = ({ route }) => {
                         lineHeight: 40,
                       }}
                       numberOfLines={2}
+                      onPress={() => navigation.navigate('PostDetails' , {post , user , posts})}
                     >
-                      24 h Cinderella Goro majima
+                      {post.content}
                     </Text>
                     <HStack space="sm" style={{ alignItems: "center" }}>
                       <Avatar size="sm">
                         <AvatarFallbackText>SS</AvatarFallbackText>
-                        <AvatarImage source={{ uri: data.pdp }} alt="404" />
+                        <AvatarImage source={{ uri: user.pdp }} alt="404" />
                       </Avatar>
-                      <Text style={{ color: "#674188" }}>Author name</Text>
+                      <Text style={{ color: "#674188" }}>{user.name}</Text>
                       <Text>.</Text>
-                      <Text>8 days ago</Text>
+                      <Text>{formatTimeDifference(post.created_at)}</Text>
                       <TouchableOpacity>
                         <Dots
                           name="dots-three-vertical"

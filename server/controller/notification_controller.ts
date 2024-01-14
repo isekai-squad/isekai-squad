@@ -44,3 +44,20 @@ export const updateNotificationsSeenForUser = async (
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+export const addNotification = async (req: Request, res: Response): Promise<void> => {
+  let {content} = req.body;
+  let {userId} = req.params;
+  try {
+    const result = await prisma.notifications.create({
+      data: {
+        userId: userId,
+        content: content,
+      },
+    })
+    res.status(201).send(result)
+  }catch (err) {
+    res.status(500).send("Internal Server Error");
+  }
+}

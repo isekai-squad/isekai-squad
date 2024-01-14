@@ -14,9 +14,10 @@ const Posts = ({route}) => {
   const navigation = useNavigation();
   const {category} = route.params
 console.log(category)
-  const {data , isLoading , error} = useQuery({
-    queryKey:["forumPosts"],
-    queryFn : () => axios.get(`http://172.19.0.189:4070/Category/${category.id}`).then((res) => res.data),
+  const {data , isLoading , error , refetch} = useQuery({
+    queryKey:["forumPosts" , category],
+    queryFn : () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/Category/${category.id}`).then((res) => res.data),
+    
   })
 
   if(isLoading) return <Center>
@@ -34,13 +35,17 @@ console.log(category)
           style={{ width: 400, height: 200 }}
         >
           <View style={styles.shadowOverlay}/>
-                <Icon name='arrow-left-thin' size={50} style={{position : 'absolute' , top : 30 , left : 10}} color="#674188" onPress={() => navigation.navigate('Community')}/>
+                <Icon name='arrow-left-thin' size={50} style={{position : 'absolute' , top : 30 , left : 10}} color="#674188" onPress={() => {
+                  navigation.navigate('Community')
+                  }}/>
                 <Text style={{position : 'absolute' , bottom : 30 , left : 15 , fontSize : 20 , fontWeight : 'bold' , color : 'white'}}>{category.name}</Text>
         </ImageBackground>
+        <TouchableOpacity onPress={() => navigation.navigate("CreateForumPost" , {category , refetch})}>
         <HStack space="sm" style={{alignItems : 'center'}}>
         <Text style={{fontSize : 24 , padding : 20 , fontWeight : 'bold'}}>Create Post</Text>
         <Ionicons name="add" size={24} color='#674188' />
         </HStack>
+        </TouchableOpacity>
         <Divider my='$2' w={100}/>
         <View
           style={{
@@ -60,7 +65,7 @@ console.log(category)
           </TouchableOpacity>
         </View>
         {data?.map((post) => {
-          return <Post post={post} key={post.id} />;
+          return <Post post={post} key={post.id} posts={data} category={category} />;
         })}
       </View>
     </ScrollView>

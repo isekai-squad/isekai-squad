@@ -6,6 +6,7 @@ import { GluestackUIProvider } from "@gluestack-ui/themed"
 import { Navigation } from "./Navigation";
 import { config } from "@gluestack-ui/config"
 import { AuthProvider } from "./App/Context/AuthContext";
+import { ForumContext, ForumProvider } from "./App/Context/ForumContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,9 +26,11 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_PUBLISH_KEY}>
         <AuthProvider>
+          <ForumProvider>
       <GluestackUIProvider config={config}>
       <Navigation />
         </GluestackUIProvider>
+          </ForumProvider>
     </AuthProvider>
       </StripeProvider>
     </QueryClientProvider>

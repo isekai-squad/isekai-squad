@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useTheme } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -6,28 +6,32 @@ import { Box, Center } from '@gluestack-ui/themed'
 import Comment from './Comment'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
+import { ForumContext } from '../../Context/ForumContext'
 
 
-const CommentList = ({post , user}) => {
-    const colors = useTheme()
-    const {data , isLoading , error} = useQuery({
-      queryKey : ['Comments'],
-      queryFn : async () => axios.get(`http://172.19.0.189:4070/forumComment/${post.id}`).then(res => res.data)
+const CommentList = ({post , user }) => {
+    const {setRefetch} = useContext(ForumContext)
+    const {data , isLoading , error , refetch} = useQuery({
+      queryKey : ['Comments'  , post],
+      queryFn : async () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${post.id}`).then(res => res.data)
     })
-    if(isLoading) return <Center>
+    if(isLoading){
+      // setRefetch(refetch)
+     return <Center>
     <ActivityIndicator size="large" color='#674188' />
   </Center>
-    console.log(data)
+    }
+    
     return (
         <View
         style= {styles.container}
         >
             <Box style={{padding : 10 , flexDirection : 'row' , justifyContent : 'space-between'}}>
-       <Text>Comments (120)</Text>
+       <Text>Comments ({data.length})</Text>
         <Icon name='arrow-right-thin'size={24} color='#674188' />
             </Box>
             {data.map(comment => 
-        <Comment data={comment} post={post} user={user}/>
+        <Comment comment={comment} user={user}/>
               )}
         </View>
     )

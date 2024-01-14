@@ -5,6 +5,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { ProfileContext } from "../../../../Context/ProfileContext";
 const MainSkills = () => {
   const { ProfileData } = useContext(ProfileContext);
+  const { userTechnology } = ProfileData;
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -16,16 +18,20 @@ const MainSkills = () => {
         <Text style={styles.headerText}>Main Skills</Text>
       </View>
       <View style={styles.interestingContainer}>
-        {ProfileData.Technologies.map((technologie, i) => (
-          <TouchableOpacity key={i} style={styles.interestingTag}>
-            <Image
-              source={{ uri: technologie.image }}
-              style={styles.tagImage}
-            />
+        {userTechnology.map((technologie, i) => {
+          return (
+            <TouchableOpacity key={i} style={styles.interestingTag}>
+              <Image
+                source={{ uri: technologie.Technologies.image }}
+                style={styles.tagImage}
+              />
 
-            <Text style={styles.tagText}>{technologie.name}</Text>
-          </TouchableOpacity>
-        ))}
+              <Text style={styles.tagText}>
+                {technologie.Technologies.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );

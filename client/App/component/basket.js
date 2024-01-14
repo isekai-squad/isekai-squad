@@ -1,19 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+} from "react-native";
+import CheckoutScreen from "./Stripe"
 import Swipeout from "react-native-swipeout";
 import axios from "axios";
-import { openPaymentSheet } from "./FunPayement";
+
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const Basket = () => {
+
   const [basketItems, setBasketItems] = useState([]);
+  const [swipeoutOpen, setSwipeoutOpen] = useState(false);
 
   useEffect(() => {
-    // fetchBasket();
+    fetchBasket();
   }, []);
 
   const fetchBasket = async () => {
     try {
-      const response = await axios.get(`http://172.20.0.74:4070/baskets/1`);
+      const response = await axios.get(`http://172.20.0.88:4070/baskets/1`);
       setBasketItems(response.data);
     } catch (error) {
       console.error("Error fetching basket:", error);
@@ -22,59 +33,99 @@ const Basket = () => {
 
   const deleteFromBasket = async (serviceId) => {
     try {
-      await axios.delete(`http://172.20.0.74:4070/baskets/1/${serviceId}`);
+      await axios.delete(`http://192.168.1.29:4070/baskets/1/${serviceId}`);
       fetchBasket();
     } catch (error) {
       console.error("Error deleting from basket:", error);
     }
   };
 
+  const calculateTotalPrice = () => {
+    return basketItems.reduce((total, item) => total + item.Service.Price, 0);
+  };
+
   const swipeoutBtns = (serviceId) => [
     {
-      text: "Delete",
-      backgroundColor: "#FF4F4F",
-      onPress: () => deleteFromBasket(serviceId),
+      text: (
+        <View>
+          <AntDesign name="delete" size={25} color="white" />
+        </View>
+      ),
+      backgroundColor: "#d41f35",
+      onPress: () => {
+        setSwipeoutOpen(false);
+        deleteFromBasket(serviceId);
+      },
     },
   ];
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Basket Items:</Text>
+      <Text style={styles.heading}>Basket </Text>
       <View style={styles.itemsContainer}>
         {basketItems.map((item) => (
           <Swipeout
             key={item.id}
             right={swipeoutBtns(item.Service.id)}
             autoClose={true}
+            onOpen={() => setSwipeoutOpen(true)}
+            onClose={() => setSwipeoutOpen(false)}
+            openClose={swipeoutOpen}
           >
-            <View style={styles.itemContainer}>
-              <Image style={styles.image} source={{ uri: item.Service.image }} />
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.Service.title}</Text>
-                <Text style={styles.price}>{item.Service.Price}</Text>
-                <Text style={styles.description}>{item.Service.description}</Text>
-                <Text style={styles.createdAt}>{item.Service.created_at}</Text>
+            <Animated.View style={{ opacity: swipeoutOpen ? 0.5 : 1 }}>
+              <View style={styles.itemContainer}>
+                <View style={styles.itemContainer}>
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.Service.image }}
+                  />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.title}>{item.Service.title}</Text>
+                    <Text style={styles.price}>{item.Service.Price}</Text>
+                    <Text style={styles.description}>
+                      {item.Service.description}
+                    </Text>
+                    <Text style={styles.createdAt}>
+                      {item.Service.created_at}
+                    </Text>
+                  </View>
+                  <View style={styles.container}>
+                    <TouchableOpacity
+                      style={styles.buyButton}
+                      onPress={async () => await  openPaymentSheet()}
+                    >
+                      <Text style={styles.buttonText}>Buy</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-              <TouchableOpacity
-                style={styles.buyButton}
-                onPress={() => openPaymentSheet()}
-              >
-                <Text style={styles.buttonText}>Buy</Text>
-              </TouchableOpacity>
-            </View>
+            </Animated.View>
           </Swipeout>
-        ))}
+
+          ))}
+
       </View>
+      <Text style={styles.totalPrice}>
+        Total Price: ${calculateTotalPrice()}
+      </Text>
+          {/* <CheckoutScreen/> */}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
+
+  totalPrice: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+
   heading: {
-    fontSize: 20,
+    alignItems: "ce",
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 10,
   },
@@ -85,9 +136,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
+
     backgroundColor: "#fff",
     borderRadius: 10,
-    shadowColor: "#000",
+    shadowColor: "#d41f35",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -122,7 +174,7 @@ const styles = StyleSheet.create({
     color: "#777",
   },
   buyButton: {
-    backgroundColor: "#6DBE45",
+    backgroundColor: "#8244CB",
     padding: 10,
     borderRadius: 5,
     marginLeft: 10,
@@ -134,3 +186,4 @@ const styles = StyleSheet.create({
 });
 
 export default Basket;
+

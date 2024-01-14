@@ -8,22 +8,18 @@ import { fetchTechnologie } from "../../../Context/ProfileContext";
 import { STYLES } from "../../../../GlobalCss";
 
 const SelectTech = () => {
-  const { setMainSkills, mainSkills } = useContext(ProfileContext);
-  const queryClient = useQueryClient();
+  const { setMainSkills, mainSkills, ProfileData } = useContext(ProfileContext);
+  const { specialtyId } = ProfileData;
 
   const { data: TechnoData, isLoading } = useQuery({
     queryKey: ["technologie"],
-    queryFn: () => fetchTechnologie(),
-    select: (data) => {
-      return data.map(({ name, image }) => ({ name, image }));
-    },
+    queryFn: () => fetchTechnologie(specialtyId),
   });
 
   if (isLoading) {
     return <ActivityIndicator size="large" color={STYLES.COLORS.Priamary} />;
   }
 
-  // const memoizedSelectCountry = useMemo(() => {
   return (
     <SelectCountry
       style={styles.dropdown}
@@ -40,10 +36,15 @@ const SelectTech = () => {
       placeholder="Select Technologie"
       searchPlaceholder="Search..."
       onChange={(e) => {
-        let selected = mainSkills.some((ele) => ele.name === e?.name);
+        let selected = mainSkills.some(
+          (ele) => ele.Technologies.name === e?.name
+        );
 
         if (!selected) {
-          setMainSkills((prevMainSkills) => [...prevMainSkills, e]);
+          setMainSkills((prevMainSkills) => [
+            ...prevMainSkills,
+            { Technologies: e },
+          ]);
         } else {
           ToastAndroid.showWithGravity(
             "You already possess the skill you're trying to add. No changes made.",
@@ -54,9 +55,6 @@ const SelectTech = () => {
       }}
     />
   );
-  // }, [TechnoData]);
-
-  // return <>{memoizedSelectCountry}</>;
 };
 
 export default SelectTech;

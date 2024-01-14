@@ -21,17 +21,40 @@ import Dots from "react-native-vector-icons/Entypo";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import moment from "moment";
 
-const Post = ({post}) => {
+const Post = ({post , posts , category}) => {
   const navigation = useNavigation();
   const id = post.userId
+
+  const formatTimeDifference = (createdAt) => {
+    const now = moment();
+    const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
+    const duration = moment.duration(now.diff(postTime));
+    if (duration.asMinutes() < 60) {
+      // Less than 60 minutes
+      return moment.duration(duration).humanize(true);
+    } else if (duration.asHours() < 24) {
+      // Less than 24 hours
+      const hours = Math.floor(duration.asHours());
+      return `${hours}h`;
+    } else {
+      // More than 24 hours
+      const days = Math.floor(duration.asDays());
+      return days === 1 ? "one day" : `${days} days`;
+    }
+  };
+
+
   const {data , isLoading , error} = useQuery({
     queryKey : ["forumUser", post.userId],
-    queryFn : async () => axios.get(`http://172.19.0.189:4070/api/user/${id}`).then(res => res.data),
+    queryFn : async () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/api/user/${id}`).then(res => res.data),
   })
   if(isLoading) return <Center>
   <ActivityIndicator size="large" color='#674188' />
 </Center>
+
+
 
   return (
     <Box h={200} style={Styles.container}>
@@ -57,7 +80,7 @@ const Post = ({post}) => {
               width: 200,
             }}
             numberOfLines={2}
-            onPress={() => navigation.navigate("PostDetails" , {post , data})}
+            onPress={() => navigation.navigate("PostDetails" , {post , user : data , posts , category})}
           >
             {post.content}
           </Text>
@@ -80,7 +103,7 @@ const Post = ({post}) => {
           <View
             style={{ display: "flex", flexDirection: "row", marginTop: 10 }}
           >
-            <Text style={{ marginLeft: 10, color: "#674188" }}>10 min ago</Text>
+            <Text style={{ marginLeft: 10, color: "#674188" }}>{formatTimeDifference(post.created_at)}</Text>
             <TouchableOpacity>
               <Icon name="bookmark" size={24} style={{ marginLeft: 80 }} />
             </TouchableOpacity>

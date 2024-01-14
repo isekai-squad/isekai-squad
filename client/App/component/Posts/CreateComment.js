@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   TextInput,
   TouchableOpacity,
@@ -25,51 +25,137 @@ import {
   TextareaInput,
 } from "@gluestack-ui/themed";
 //   import { Icon } from '@gluestack-ui/themed';
-import { useTheme } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import Icon from "react-native-vector-icons/Feather";
+import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
+import { storage } from "../../../FirebaseConfig";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 const CreateComment = ({ post, user }) => {
   const height = useHeaderHeight();
+  const [images, setImages] = useState([]);
+  const [content, setContent] = useState("");
+  const [percent , setPercent] = useState(0)
+  const navigation = useNavigation()
+  const queryClient = useQueryClient
+
+  const fireBaseComment = async (image) => {
+    return new Promise(async (resolve, reject) => {
+      const response = await fetch(image.uri);
+      const blob = await response.blob();
+      const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
+      const storageRef = ref(storage, `Forum/${post.id}/${user.name}`);
+      const imageRef = ref(storageRef , filename)
+      const uploadTask = uploadBytesResumable(imageRef, blob);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const percent = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setPercent(percent);
+        },
+        (err) => console.log(err),
+        async () => {
+        await  getDownloadURL(uploadTask.snapshot.ref).then((url) =>
+            setImages((prev) => [...prev, url])
+          );
+        }
+      );
+    });
+  };
+
+  const handleImageSelection = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: true,
+    });
+    if (!result.canceled) {
+      console.log(result)
+      result.assets.map( async (image) => await fireBaseComment(image));
+    }
+  };
+
+  const addComment = async () => {
+    if (images.length === 0) {
+      alert("Please select an image");
+    } else if (content.length === 0) {
+      alert("Please enter a comment");
+    } else {
+      axios
+        .post(
+          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/1/${post.id}/comments`,
+          { content, images }
+        )
+        .then((res) => console.log("comment added successfully"))
+        .catch((err) => console.log(err));
+    }
+  };
 
   return (
     <View style={styles.container}>
-        
       <Box style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+            <Avatar size="md">
+              <AvatarFallbackText>SS</AvatarFallbackText>
+              <AvatarImage
+              alt="404"
+                source={{
+                  uri: user.pdp,
+                }}
+              />
+            </Avatar>
+            <Box
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 10,
+              }}
             >
-              <Avatar size="md">
-                <AvatarFallbackText>SS</AvatarFallbackText>
-                <AvatarImage
-                  source={{
-                    uri: "https://p16-capcut-sign-va.ibyteimg.com/tos-maliva-v-be9c48-us/o8dABIU6JPBd2AJiwAAb6EZjn9NKPQ9iS3iUv~tplv-nhvfeczskr-1:250:0.webp?lk3s=44acef4b&x-expires=1735219775&x-signature=oJRko2PZ4YuOxVZy15vYlkjENcQ%3D",
+              <Textarea
+                size="xl"
+                h={70}
+                borderRadius={20}
+                style={{ width: 250 }}
+              >
+                <TextareaInput
+                  placeholder="Add a comment"
+                  fontSize={16}
+                  onChangeText={(text) => setContent(text)}
+                />
+                <Icon
+                  name="plus-circle"
+                  size={24}
+                  style={{
+                    position: "absolute",
+                    right: 10,
+                    top: 20,
+                  }}
+                  onPress={handleImageSelection}
+                />
+              </Textarea>
+              <TouchableOpacity>
+                <Icon
+                  name="send"
+                  size={24}
+                  color="#674188"
+                  onPress={() => {
+                    addComment()
+                    // onRefresh()
                   }}
                 />
-              </Avatar>
-              <Box
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-              >
-                <Textarea
-                  size="xl"
-                  h={70}
-                  borderRadius={20}
-                  style={{ width: 250 }}
-                >
-                  <TextareaInput placeholder="Add a comment" fontSize={16} />
-                </Textarea>
-                <TouchableOpacity>
-                  <Icon name="send" size={24} color="#674188" />
-                </TouchableOpacity>
-              </Box>
-            </View>
-          </TouchableWithoutFeedback>
+              </TouchableOpacity>
+            </Box>
+          </View>
+        </TouchableWithoutFeedback>
       </Box>
     </View>
   );

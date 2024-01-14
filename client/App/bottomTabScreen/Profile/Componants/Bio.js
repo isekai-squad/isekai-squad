@@ -5,25 +5,33 @@ import { ProfileContext } from "../../../Context/ProfileContext";
 
 const Bio = () => {
   const { ProfileData } = useContext(ProfileContext);
-  if (!ProfileData) {
-    return <Text>Loading...</Text>;
-  }
+  const {
+    name: profileName,
+    role,
+    userName,
+    location,
+    Specialty,
+    userTechnology,
+  } = ProfileData;
+
+  const { name: specialtyName } = Specialty;
+
   return (
     ProfileData && (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.nameContainer}>
-            <Text style={styles.name}>{ProfileData.name}</Text>
-            <Text style={styles.role}>{ProfileData.role}</Text>
+            <Text style={styles.name}>{profileName}</Text>
+            <Text style={styles.role}>{role}</Text>
           </View>
 
-          <Text style={styles.username}>@ {ProfileData.userName}</Text>
+          <Text style={styles.username}>@ {userName}</Text>
         </View>
 
         <View style={styles.detailsContainer}>
-          <Text style={styles.detailText}>{ProfileData.location}</Text>
+          <Text style={styles.detailText}>{location}</Text>
           <Text style={styles.detailText}>|</Text>
-          <Text style={styles.detailText}>{ProfileData.specialty[0].name}</Text>
+          <Text style={styles.detailText}>{specialtyName}</Text>
         </View>
 
         <ScrollView
@@ -32,16 +40,20 @@ const Bio = () => {
           contentContainerStyle={styles.scrollViewContent}
         >
           <View style={styles.interestingContainer}>
-            {ProfileData.Technologies.map((technologie, i) => (
-              <TouchableOpacity key={i} style={styles.interestingTag}>
-                <Image
-                  source={{ uri: technologie.image }}
-                  style={styles.tagImage}
-                />
+            {userTechnology.map((technologie, i) => {
+              return (
+                <TouchableOpacity key={i} style={styles.interestingTag}>
+                  <Image
+                    source={{ uri: technologie.Technologies.image }}
+                    style={styles.tagImage}
+                  />
 
-                <Text style={styles.tagText}>{technologie.name}</Text>
-              </TouchableOpacity>
-            ))}
+                  <Text style={styles.tagText}>
+                    {technologie.Technologies.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </ScrollView>
       </View>
@@ -55,10 +67,12 @@ const styles = {
     borderColor: "#eee",
   },
   headerContainer: {
+    justifyContent: "center",
     paddingTop: 10,
   },
   nameContainer: {
     flexDirection: "row",
+
     alignItems: "center",
     gap: 10,
   },
@@ -67,8 +81,9 @@ const styles = {
     fontSize: STYLES.SIZES.sizeL,
   },
   role: {
-    fontWeight: STYLES.FONTS.Light,
-    fontSize: 10,
+    fontWeight: STYLES.FONTS.Medium,
+    fontSize: 11,
+    marginTop: 6,
   },
   username: {
     fontWeight: STYLES.FONTS.Light,
@@ -108,6 +123,8 @@ const styles = {
   tagText: {
     color: "#555",
     fontSize: 13,
+
+    textTransform: "capitalize",
   },
 };
 

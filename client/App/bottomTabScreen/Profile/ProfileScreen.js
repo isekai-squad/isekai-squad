@@ -15,6 +15,7 @@ import MiddelTab from "./Componants/MiddelTab";
 import { ProfileContext } from "../../Context/ProfileContext";
 import AboutProfile from "./AboutProfile/AboutProfile";
 import { STYLES } from "../../../GlobalCss";
+import Activity from "./ActivityProfile/Activity";
 
 function ProfileScreen() {
   const [fontsLoaded] = useFonts({
@@ -23,14 +24,15 @@ function ProfileScreen() {
     "Roboto-Light": require("../../../assets/fonts/Roboto-Light.ttf"),
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
-  const [refreshing, setRefreshing] = useState(false);
 
-  const { activeMiddleTab, LoadingProfile, refetch } =
+  const { activeMiddleTab, LoadingProfile, refetchProfile } =
     useContext(ProfileContext);
 
+  const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetch();
+    refetchProfile();
+
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -47,12 +49,8 @@ function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollView}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         <View style={styles.profileContainer}>
@@ -60,6 +58,7 @@ function ProfileScreen() {
           <Bio />
         </View>
         <MiddelTab />
+        {activeMiddleTab === "Activity" && <Activity />}
         {activeMiddleTab === "About" && <AboutProfile />}
       </ScrollView>
     </SafeAreaView>

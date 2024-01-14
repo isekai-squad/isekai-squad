@@ -19,7 +19,7 @@ forumCommentRouter.delete(
   FormCommentController.deleteComment
 );
 
-forumCommentRouter.put(
+forumCommentRouter.post(
   "/:commentId/:userId/comments/increment",
   FormCommentController.incrementCommentLike
 );
@@ -47,6 +47,11 @@ forumCommentRouter.put(
 forumCommentRouter.put(
   "/:commentId/:userId/comments/replies/decrement",
   FormCommentController.CommentLikeReplies
+);
+
+forumCommentRouter.get(
+  "/:commentId/comments/likes",
+  FormCommentController.getAllLikes
 );
 
 export default forumCommentRouter;

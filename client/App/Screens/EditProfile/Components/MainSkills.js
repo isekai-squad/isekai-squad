@@ -37,27 +37,39 @@ export default function MainSkills() {
         {showSelectTech && <SelectTech />}
 
         <View style={styles.interestingContainer}>
-          {mainSkills?.map((technologie, i) => (
-            <TouchableOpacity
-              key={i}
-              style={styles.interestingTag}
-              onPress={() => {
-                const updatedSkills = mainSkills.filter(
-                  (tech) => tech.name !== technologie.name
-                );
+          {mainSkills?.map((technologie, i) => {
+            return (
+              <TouchableOpacity
+                key={i}
+                style={styles.interestingTag}
+                onPress={() => {
+                  const indexToRemove = mainSkills.findIndex(
+                    (tech) =>
+                      tech.Technologies.name === technologie.Technologies.name
+                  );
 
-                setMainSkills(updatedSkills);
-              }}
-            >
-              <Image
-                source={{ uri: technologie.image }}
-                style={styles.tagImage}
-              />
-              <Text style={styles.tagText}>{technologie.name}</Text>
+                  if (indexToRemove !== -1) {
+                    const updatedSkills = [
+                      ...mainSkills.slice(0, indexToRemove),
+                      ...mainSkills.slice(indexToRemove + 1),
+                    ];
 
-              <Ionicons name="close-circle-sharp" size={18} color={"black"} />
-            </TouchableOpacity>
-          ))}
+                    setMainSkills(updatedSkills);
+                  }
+                }}
+              >
+                <Image
+                  source={{ uri: technologie.Technologies.image }}
+                  style={styles.tagImage}
+                />
+                <Text style={styles.tagText}>
+                  {technologie.Technologies.name}
+                </Text>
+
+                <Ionicons name="close-circle-sharp" size={18} color={"black"} />
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
     </SafeAreaView>

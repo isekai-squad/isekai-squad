@@ -44,6 +44,7 @@ export async function getAllComments(
   req: Request,
   res: Response
 ): Promise<void> {
+  let {postId} = req.params
   try {
     const comments = await prisma.fPost_comments.findMany({
       include: {
@@ -55,6 +56,7 @@ export async function getAllComments(
           },
         },
       },
+      where: {forum_PostsId: postId}
     });
     res.status(200).send(comments);
   } catch (error) {
@@ -64,19 +66,19 @@ export async function getAllComments(
 export async function addComment(req: Request, res: Response): Promise<void> {
   const { userId, postId } = req.params;
   const { content, images } = req.body;
-  // try {
-  //   const newComment: ForumComment = await prisma.fPost_comments.create({
-  //     data: {
-  //       userId: userId,
-  //       forum_PostsId: postId,
-  //       content: content,
-  //       images: images,
-  //     },
-  //   });
-  //   res.status(200).send(newComment);
-  // } catch (err) {
-  //   res.status(500).send(err);
-  // }
+  try {
+    const newComment: ForumComment = await prisma.fPost_comments.create({
+      data: {
+        userId: userId,
+        forum_PostsId: postId,
+        content: content,
+        images: images,
+      },
+    });
+    res.status(200).send(newComment);
+  } catch (err) {
+    res.status(500).send(err);
+  }
 }
 export async function updateComment(
   req: Request,
@@ -222,6 +224,18 @@ export async function CommentLikeReplies(
 
     res.status(200).send("incremented");
   } catch (err) {
+    res.status(500).send(err);
+  }
+}
+
+export async function getAllLikes (req: Request , res: Response): Promise<void> {
+  const {commentId} = req.params;
+  try {
+    const likes = await prisma.likes.findMany({
+      where: { fPost_commentsId: commentId },
+    });
+    res.status(200).send(likes);
+  }catch(err) {
     res.status(500).send(err);
   }
 }

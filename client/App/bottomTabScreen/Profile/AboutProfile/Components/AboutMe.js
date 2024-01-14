@@ -44,8 +44,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 25,
     paddingVertical: 15,
-    borderBottomWidth: 5,
-    borderColor: "#eee",
   },
   headerContainer: {
     flexDirection: "row",
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
     fontSize: STYLES.SIZES.sizeM,
     fontWeight: STYLES.FONTS.bold,
     marginRight: 10,
-    color: "rgba(0,0,0,0.5)",
+    color: STYLES.COLORS.ShadowColor,
   },
   value: {
     fontSize: STYLES.SIZES.sizeM,

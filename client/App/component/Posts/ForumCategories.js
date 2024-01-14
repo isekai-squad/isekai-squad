@@ -20,9 +20,11 @@ import Arrow from "react-native-vector-icons/MaterialCommunityIcons";
 const ForumCategories = () => {
   let arr = [1, 1, 1, 1, 1, 1];
   const navigation = useNavigation();
+  const url = process.env.EXPO_PUBLIC_API_URL
+  console.log(url)
   const {data , isLoading , error} = useQuery({
     queryKey: ["Category"],
-    queryFn: async () => axios.get(`http://172.19.0.189:4070/Category/`).then((res) => res.data)
+    queryFn: async () => axios.get(`http://${url}:4070/Category/`).then((res) => res.data)
   })
 
   if(isLoading) return <Center>
