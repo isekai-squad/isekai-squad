@@ -9,57 +9,47 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import Feather from "react-native-vector-icons/Feather";
+import Entypo from "react-native-vector-icons/Entypo";
+const API = process.env.EXPO_PUBLIC_IP_KEY;
+
 const ServiceDetaite = ({ navigation, route }) => {
   const item = route.params.item;
-  
-  
+
   const handleAddToBasket = async (serviceId) => {
     const API = process.env.EXPO_PUBLIC_IP_KEY;
     try {
-      const response = await axios.post('http://172.20.0.88:4070/baskets/1/2');
-
-      console.log('UpVote successful:', response.data);
-    } catch (error) {
-      console.error('Error during UpVote:', error.message);
-    }
-  };
-
-  const handleAddToFaivert = async (serviceId) => {
-    try {
-      const response = await axios.post('http://172.20.0.88:4070/favorit',{
-        userId:'1',
-        serviceId:'5'
+      const response = await axios.post(`http://${API}:4070/baskets`, {
+        userId: "1",
+        serviceId: "1 ",
       });
-      console.log('successful:', response.data);
+
+      console.log("UpVote successful:", response.data);
     } catch (error) {
-      console.error('Error during :', error.message);
+      console.error("Error during UpVote:", error.message);
     }
   };
 
   return (
     <ScrollView style={styles.container}>
+      <TouchableOpacity 
+      onPress={() =>
+        navigation.navigate("Servicee")
+      }>
+        <Entypo name="arrow-with-circle-left" size={30} color="#8244CB" />
+      </TouchableOpacity>
       <Text style={styles.title}>{item.title}</Text>
       <Image style={styles.image} source={{ uri: item.image }} />
       <Text style={styles.description}>{item.description}</Text>
       <Text style={styles.price}>{item.Price} DT </Text>
-     <View>
-      <TouchableOpacity
-        style={styles.addToBasketButton}
-        onPress={() => handleAddToBasket(item.id)}
-      >
-        <Fontisto name="shopping-basket-add" size={25} color="#FFF" />
-        <Text style={styles.addToBasketButtonText}>Add to Basket</Text>
-      </TouchableOpacity>
       <View>
-      <TouchableOpacity
-        style={styles.addTofavorit}
-        onPress={()=>handleAddToFaivert(item.id)}
-      >
-        <Feather name="heart" size={25} color="#FFF"  />
-        <Text style={styles.addTofavoritText}>Add to Favorite</Text>
-      </TouchableOpacity>
-      </View>
+        <TouchableOpacity
+          style={styles.addToBasketButton}
+          onPress={() => handleAddToBasket(item.id)}
+        >
+          <Fontisto name="shopping-basket-add" size={25} color="#FFF" />
+          <Text style={styles.addToBasketButtonText}>Add to Basket</Text>
+        </TouchableOpacity>
+        <View></View>
       </View>
     </ScrollView>
   );
@@ -116,14 +106,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3CCF8",
     padding: 18,
     borderRadius: 8,
-
   },
 });
 
 export default ServiceDetaite;
 
-
-{/* <View style={styles.voteContainer}>
+{
+  /* <View style={styles.voteContainer}>
 <TouchableOpacity onPress={() => handleUpVote(item.serviceId)}>
   <AntDesign name="like2" size={24} color="#8244CB" />
 </TouchableOpacity>
@@ -132,4 +121,5 @@ export default ServiceDetaite;
   <AntDesign name="dislike2" size={24} color="#8244CB" />
 </TouchableOpacity>
 </View>
-</View> */}
+</View> */
+}

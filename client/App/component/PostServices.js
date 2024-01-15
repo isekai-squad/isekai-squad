@@ -27,6 +27,17 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { STYLES } from "../../GlobalCss";
 import Foundation from "react-native-vector-icons/Foundation";
+import { MultiSelect , Dropdown } from 'react-native-element-dropdown';
+const data = [
+  { label: 'AAA', value: '1' },
+  { label: 'BBB', value: '2' },
+  { label: 'CCC', value: '3' },
+
+
+];
+
+
+
 
 const CreatePost = () => {
   const [selected, setSelected] = useState([]);
@@ -182,6 +193,41 @@ const CreatePost = () => {
               value={price}
             />
           </Input>
+          <MultiSelect
+          style={styles.dropdown}
+          itemContainerStyle={{color : '#674188'}}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={data}
+          labelField="label"
+          valueField="value"
+          placeholder="Select Category"
+          value={selected}
+          search
+          searchPlaceholder="Search..."
+          onChange={item => {
+            setSelected(item);
+          }}
+          renderLeftIcon={() => (
+            <AntDesign
+              style={styles.icon}
+              color="black"
+              name="Safety"
+              size={20}
+            />
+          )}
+          renderItem={renderItem}
+          renderSelectedItem={(item, unSelect) => (
+            <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+              <View style={styles.selectedStyle}>
+                <Text style={styles.textSelectedStyle}>{item.label}</Text>
+                <AntDesign color="black" name="delete" size={17} />
+              </View>
+            </TouchableOpacity>
+          )}
+        />
           <TouchableOpacity
             style={{
               backgroundColor: "#8244CB",

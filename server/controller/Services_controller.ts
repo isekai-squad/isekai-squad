@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export const addService = async (req : Request , res : Response) => {
     let {userId} = req.params
-    let {title , description , image , Price} = req.body
+    let {title , description , image , Price ,category} = req.body
     try {
         const result = await prisma.service.create( {
             data: {
@@ -13,6 +13,7 @@ export const addService = async (req : Request , res : Response) => {
                 description,
                 image,
                 Price,
+                category,
                 userId
                 
             }

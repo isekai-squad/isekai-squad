@@ -114,6 +114,7 @@ model Service {
   description String    @db.Text
   image       String    @db.Text
   Price       Int
+  category    String
   created_at  DateTime  @default(now())
   User        User?     @relation(fields: [userId], references: [id])
   userId      String?
