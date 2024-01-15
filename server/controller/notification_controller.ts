@@ -7,12 +7,12 @@ export const getAllNotificationsForUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { userId } = req.params;
+    const { to } = req.params;
 
     const notifications = await prisma.notifications.findMany({
-      where: { userId: userId },
+      where: { to },
       include: {
-        User: {
+        sender: {
           select: {
             id: true,
             name: true,
@@ -44,3 +44,16 @@ export const updateNotificationsSeenForUser = async (
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+export const addNotification = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await prisma.notifications.create({
+      data: req.body
+       
+    })
+    res.status(201).send(result)
+  }catch (err) {
+    res.status(500).send("Internal Server Error");
+  }
+}

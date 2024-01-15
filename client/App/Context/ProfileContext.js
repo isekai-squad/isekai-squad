@@ -26,17 +26,22 @@ export const ProfileProvider = ({ children }) => {
   const phoneRef = useRef("");
   const linkedInRef = useRef("");
   const githHubRef = useRef("");
-  const [userId, setUserId] = useState();
-  const getCurrentUser = async () => {
-    const res = await SecureStore.getItemAsync("Token");
-    const decodeResult = await jwtDecode(res);
-    setUserId(decodeResult.id);
-  };
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
+  const [userId, setUserId] = useState("1");
+
+  // const getCurrentUser = async () => {
+  //   const res = await SecureStore.getItemAsync("Token");
+  //   console.log('====================================');
+  //   console.log(res);
+  //   console.log('====================================');
+  //   const decodeResult = await jwtDecode(res);
+  //   setUserId(decodeResult.id);
+  // };
+  // useEffect(() => {
+  //   getCurrentUser();
+  // }, []);
 
   // ===========================REFETCH PART===========================
+ 
   const [refetchPosts, setRefetchPosts] = useState("");
   const [refetchReplyComment, setRefetchReplyComment] = useState(false);
   // ================================REFETCH PART======================

@@ -5,35 +5,36 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
+  ScrollView, 
 } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const FavoriteList = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
+  const [loading, setLoading] = useState(false); // Add loading state
+  const API = process.env.EXPO_PUBLIC_IP_KEY;
 
   useEffect(() => {
-    fetchBasket();
+    fetchFavoriteList();
   }, []);
 
   const fetchFavoriteList = async () => {
     try {
-      const response = await axios.get(
-        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/1`
-      );
-      setBasketItems(response.data);
+      setLoading(true); // Set loading to true when fetching
+      const response = await axios.get(`http://${API}:4070/favorit/1`);
+      setFavoriteItems(response.data);
     } catch (error) {
       console.error("Error fetching favorites:", error);
+    } finally {
+      setLoading(false); // Set loading to false when fetching is done
     }
   };
 
   const deleteFromFavorites = async (itemId) => {
     try {
-      await axios.delete(
-        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/1/${serviceId}`
-      );
-      fetchBasket();
+      await axios.delete(`http://${API}:4070/favorit/1/${itemId}`);
+      fetchFavoriteList();
     } catch (error) {
       console.error("Error deleting from favorites:", error);
     }
@@ -51,50 +52,47 @@ const FavoriteList = () => {
       <TouchableOpacity onPress={() => deleteFromFavorites(item.id)}>
         <Ionicons name="heart-dislike-sharp" size={30} color="red" />
       </TouchableOpacity>
-       
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Basket Items:</Text>
-      <View style={styles.itemsContainer}>
-        {basketItems.map((item) => (
-          <Swipeout
-            key={item.id}
-            right={swipeoutBtns(item.Service.id)}
-            autoClose={true}
-          >
-            <View style={styles.itemContainer}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.Service.image }}
-              />
-              <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.Service.title}</Text>
-                <Text style={styles.price}>{item.Service.Price}</Text>
-                <Text style={styles.description}>
-                  {item.Service.description}
-                </Text>
-                <Text style={styles.createdAt}>{item.Service.created_at}</Text>
-              </View>
-              <TouchableOpacity
-                style={styles.buyButton}
-                onPress={() => openPaymentSheet()}
-              >
-                <Text style={styles.buttonText}>Buy</Text>
-              </TouchableOpacity>
-            </View>
-          </Swipeout>
-        ))}
-      </View>
-    </View>
+    <ScrollView style={styles.container}>
+      {/* Replace Button with TouchableOpacity */}
+      <TouchableOpacity
+        style={styles.refetchButton}
+        onPress={fetchFavoriteList}
+        disabled={loading}
+      >
+        <Text style={styles.refetchButtonText}>Refetch</Text>
+      </TouchableOpacity>
+      {loading ? (
+        <Text style={styles.noItemsText}>Loading...</Text>
+      ) : favoriteItems.length > 0 ? (
+        favoriteItems.map((item) => renderFavoriteItem({ item }))
+      ) : (
+        <Text style={styles.noItemsText}>No favorite items found.</Text>
+      )}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    
+    flex: 1,
+    padding: 7,
+  },
+  refetchButton: {
+    backgroundColor: "#007BFF",
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 5,
+  },
+  refetchButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    textAlign: "center",
+  },
+  container: {
     flex: 1,
     padding: 7,
   },
@@ -104,7 +102,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   itemContainer: {
-    flexDirection: "flex",
     flexDirection: "row",
     alignItems: "center",
     padding: 19,
@@ -140,7 +137,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 50,
   },
-  
+
 });
 
-export default FavoriteList
+export default FavoriteList;

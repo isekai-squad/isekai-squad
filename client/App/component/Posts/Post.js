@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
-import { Image } from "@gluestack-ui/themed";
+import { Center, Image } from "@gluestack-ui/themed";
 import {
   Avatar,
   AvatarBadge,
@@ -18,9 +19,43 @@ import { Box } from "@gluestack-ui/themed";
 import Icon from "react-native-vector-icons/Feather";
 import Dots from "react-native-vector-icons/Entypo";
 import { useNavigation, useTheme } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import moment from "moment";
 
-const Post = () => {
+const Post = ({post , posts , category}) => {
   const navigation = useNavigation();
+  const id = post.userId
+
+  const formatTimeDifference = (createdAt) => {
+    const now = moment();
+    const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
+    const duration = moment.duration(now.diff(postTime));
+    if (duration.asMinutes() < 60) {
+      // Less than 60 minutes
+      return moment.duration(duration).humanize(true);
+    } else if (duration.asHours() < 24) {
+      // Less than 24 hours
+      const hours = Math.floor(duration.asHours());
+      return `${hours}h`;
+    } else {
+      // More than 24 hours
+      const days = Math.floor(duration.asDays());
+      return days === 1 ? "one day" : `${days} days`;
+    }
+  };
+
+
+  const {data , isLoading , error} = useQuery({
+    queryKey : ["forumUser", post.userId],
+    queryFn : async () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/api/user/${id}`).then(res => res.data),
+  })
+  if(isLoading) return <Center>
+  <ActivityIndicator size="large" color='#674188' />
+</Center>
+
+
+
   return (
     <Box h={200} style={Styles.container}>
       <Image
@@ -28,7 +63,7 @@ const Post = () => {
         // style={{ marginLeft: 10 }}
         alt="404"
         source={{
-          uri: "https://img.freepik.com/premium-photo/man-woman-are-working-computer-with-laptop-computer-screen-with-word-com-it_745528-1518.jpg",
+          uri: post.images[0],
         }}
         borderRadius="$lg"
       />
@@ -44,10 +79,10 @@ const Post = () => {
               fontSize: 15,
               width: 200,
             }}
-            onPress={() => navigation.navigate("PostDetails")}
+            numberOfLines={2}
+            onPress={() => { navigation.navigate("PostDetails" , {post , user : data , posts , category})}}
           >
-            Lorem ipsum dolor sit amet. Est cupiditate aliquam id optio odio et
-            sunt rerum.
+            {post.content}
           </Text>
         </TouchableOpacity>
 
@@ -56,19 +91,19 @@ const Post = () => {
             <AvatarFallbackText>SS</AvatarFallbackText>
             <AvatarImage
               source={{
-                uri: "https://pbs.twimg.com/media/GAXaW5CWIAElaqj.jpg",
+                uri: data.pdp,
               }}
               alt="404"
             />
           </Avatar>
-          <Text style={{ marginLeft: 10, color: "#674188" }}  onPress={()=> navigation.navigate('UserProfile')}>author name</Text>
+          <Text style={{ marginLeft: 10, color: "#674188" }}  onPress={()=> navigation.navigate('UserProfile')}>{data.name}</Text>
         </View>
 
         <View>
           <View
             style={{ display: "flex", flexDirection: "row", marginTop: 10 }}
           >
-            <Text style={{ marginLeft: 10, color: "#674188" }}>10 min ago</Text>
+            <Text style={{ marginLeft: 10, color: "#674188" }}>{formatTimeDifference(post.created_at)} ago</Text>
             <TouchableOpacity>
               <Icon name="bookmark" size={24} style={{ marginLeft: 80 }} />
             </TouchableOpacity>
