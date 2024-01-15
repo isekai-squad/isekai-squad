@@ -7,41 +7,40 @@ import {
   ActivityIndicator,
   View,
   Platform,
+  ImageBackground,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
+import { STYLES } from "../../../../../GlobalCss";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../../../../../FirebaseConfig";
+import { storage } from "../../../../../FirebaseConfig";
 import { useMutation } from "@tanstack/react-query";
 import { ToastAndroid } from "react-native";
-
 import {
-  PostPostsComment,
-  PostPostsReplyComment,
+  PostProjectComment,
+  PostProjectReplyComment,
   ProfileContext,
-} from "../../../../../Context/ProfileContext";
-import { STYLES } from "../../../../../../GlobalCss";
+} from "../../../../Context/ProfileContext";
 
 const CommentsInputs = ({
-  refetchPostsComments,
-  postsCommentsId,
+  refetchProjectComments,
+  projectId,
   commentType,
   replyCommentId,
   showReplyInput,
 }) => {
   const { userId, setRefetchReplyComment } = useContext(ProfileContext);
-
   const [commentText, setCommentText] = useState("");
   const [selectedImageComment, setSelectedImageComment] = useState(null);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(false);
   // ================================================
   const { mutateAsync: PostComment } = useMutation({
-    mutationFn: (data) => PostPostsComment(userId, postsCommentsId, data),
+    mutationFn: (data) => PostProjectComment(userId, projectId, data),
   });
-  const { mutateAsync: PostReply } = useMutation({
-    mutationFn: (data) => PostPostsReplyComment(userId, replyCommentId, data),
+  const { mutateAsync: PostPostReply } = useMutation({
+    mutationFn: (data) => PostProjectReplyComment(userId, replyCommentId, data),
   });
   // ================================================
 
@@ -68,8 +67,11 @@ const CommentsInputs = ({
       const filename = imageFile.substring(imageFile.lastIndexOf("/") + 1);
       console.log("Filename:", filename);
 
-      const storageRef = ref(storage, "/PostsCommentImage");
+      const storageRef = ref(storage, "/commentImage");
       const imageRef = ref(storageRef, filename);
+
+      // Log upload start
+      console.log("Uploading image to Firebase Storage...");
 
       await uploadBytes(imageRef, blob);
 
@@ -98,6 +100,8 @@ const CommentsInputs = ({
 
         const result = await uploadImage(selectedImageComment);
 
+        console.log("Upload Result:", result);
+
         if (result) {
           postCommentImage = result;
         }
@@ -108,16 +112,16 @@ const CommentsInputs = ({
           userId: userId,
           content: commentText,
           image: postCommentImage,
-          post_commentsId: replyCommentId,
+          project_commentsId: replyCommentId,
         };
 
-        await PostReply(reply);
+        await PostPostReply(reply);
       } else {
         const comment = {
           userId: userId,
           content: commentText,
           images: postCommentImage,
-          postId: postsCommentsId,
+          projectId: projectId,
         };
 
         await PostComment(comment);
@@ -130,7 +134,7 @@ const CommentsInputs = ({
       setSelectedImageComment(null);
       setCommentText(null);
       setRefetchReplyComment(true);
-      refetchPostsComments && refetchPostsComments();
+      refetchProjectComments && refetchProjectComments();
     }
   };
 
@@ -173,20 +177,26 @@ const CommentsInputs = ({
         </View>
         {selectedImageComment && (
           <View>
-            <Image
+            <ImageBackground
               source={{ uri: selectedImageComment }}
               style={{ width: 80, height: 80, marginTop: 20 }}
-            />
-            <TouchableOpacity
-              onPress={() => setSelectedImageComment(null)}
-              style={{
-                position: "absolute",
-                top: 50,
-                left: 30,
-              }}
             >
-              <AntDesign name={"delete"} size={STYLES.SIZES.sizeL} />
-            </TouchableOpacity>
+              <View style={styles.darkOverlay} />
+              <TouchableOpacity
+                onPress={() => setSelectedImageComment(null)}
+                style={{
+                  position: "absolute",
+                  top: 30,
+                  left: 30,
+                }}
+              >
+                <AntDesign
+                  name={"delete"}
+                  color={"white"}
+                  size={STYLES.SIZES.sizeL}
+                />
+              </TouchableOpacity>
+            </ImageBackground>
           </View>
         )}
       </KeyboardAvoidingView>
@@ -197,6 +207,10 @@ const CommentsInputs = ({
 export default CommentsInputs;
 
 const styles = StyleSheet.create({
+  darkOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: STYLES.COLORS.ShadowColor,
+  },
   commentContainer: {
     flexDirection: "row",
     alignItems: "center",

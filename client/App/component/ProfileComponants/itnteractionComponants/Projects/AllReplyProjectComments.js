@@ -4,17 +4,17 @@ import {
   ProfileContext,
   addLikeReplyCommentProject,
   formatTimeDifference,
-} from "../../../../../Context/ProfileContext";
-import { STYLES } from "../../../../../../GlobalCss";
+} from "../../../../Context/ProfileContext";
+import { STYLES } from "../../../../../GlobalCss";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useMutation } from "@tanstack/react-query";
 
 const AllReplyComments = ({ comment, refetchReplyComments }) => {
   const { id, content, created_at, likes, User, image } = comment;
   const { userId } = useContext(ProfileContext);
-  
+
   // ==============================================
-  
+
   const { mutateAsync: upLikeReplyComment } = useMutation({
     mutationFn: (projectCommentId) =>
       addLikeReplyCommentProject(userId, projectCommentId),

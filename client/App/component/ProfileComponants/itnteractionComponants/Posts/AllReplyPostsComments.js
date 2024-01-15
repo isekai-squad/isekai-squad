@@ -4,8 +4,8 @@ import {
   ProfileContext,
   addLikeReplyCommentPost,
   formatTimeDifference,
-} from "../../../../../Context/ProfileContext";
-import { STYLES } from "../../../../../../GlobalCss";
+} from "../../../../Context/ProfileContext";
+import { STYLES } from "../../../../../GlobalCss";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useMutation } from "@tanstack/react-query";
 

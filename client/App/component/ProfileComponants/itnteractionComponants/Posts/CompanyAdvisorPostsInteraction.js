@@ -3,35 +3,34 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import {
   ProfileContext,
-  downVoteProject,
-  getAllLikesProject,
-  getAllProjectsComments,
+  downVotePost,
+  getAllLikesPosts,
+  getAllPostsComments,
   getUserLikes,
-  upVoteProject,
-} from "../../../../../Context/ProfileContext";
+  upVotePost,
+} from "../../../../Context/ProfileContext";
 
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { STYLES } from "../../../../../../GlobalCss";
-import CommentsInputs from "./CommentsProjectInputs";
-import AllComments from "./AllProjectsComments";
+import { STYLES } from "../../../../../GlobalCss";
+import CommentsInputs from "./CommentsPostsInputs";
+import AllComments from "./AllPostsComments";
 
-const StudentPostsInteraction = ({ projectId }) => {
+const CompanyAdvisorPostsInteraction = ({ postId }) => {
   const { userId } = useContext(ProfileContext);
 
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
 
   const { mutateAsync: upVote } = useMutation({
-    mutationFn: () => upVoteProject(userId, projectId),
+    mutationFn: () => upVotePost(userId, postId),
   });
-
   const { mutateAsync: downVote } = useMutation({
-    mutationFn: () => downVoteProject(userId, projectId),
+    mutationFn: () => downVotePost(userId, postId),
   });
 
-  const { data: projectLikes, refetch: refetchLikes } = useQuery({
-    queryKey: ["projectLikes", projectId],
-    queryFn: () => getAllLikesProject(projectId),
+  const { data: postLikes, refetch: refetchPostsLikes } = useQuery({
+    queryKey: ["postLikes", postId],
+    queryFn: () => getAllLikesPosts(postId),
     select: (data) => {
       const oneLikeArray = data.filter((item) => item.like === 1);
       const zeroLikesArray = data.filter((item) => item.like === 0);
@@ -40,20 +39,20 @@ const StudentPostsInteraction = ({ projectId }) => {
     },
   });
 
-  const { data: UserProjectsLikes, refetch: refetchUserLikes } = useQuery({
+  const { data: UserPostLikes, refetch: refetchUserPostLikes } = useQuery({
     queryKey: ["userLikes", userId],
     queryFn: () => getUserLikes(userId),
   });
 
-  const { data: projectsComments, refetch: refetchProjectComments } = useQuery({
-    queryKey: ["projectComments", projectId],
-    queryFn: () => getAllProjectsComments(projectId),
+  const { data: postsComments, refetch: refetchPostsComments } = useQuery({
+    queryKey: ["projectComments", postId],
+    queryFn: () => getAllPostsComments(postId),
   });
 
   const upVoteHandle = async () => {
     await upVote();
-    refetchLikes();
-    refetchUserLikes();
+    refetchPostsLikes();
+    refetchUserPostLikes();
     if (!upvoted) {
       setUpvoted(true);
       setDownvoted(false);
@@ -64,8 +63,8 @@ const StudentPostsInteraction = ({ projectId }) => {
 
   const downVoteHandle = async () => {
     await downVote();
-    refetchLikes();
-    refetchUserLikes();
+    refetchPostsLikes();
+    refetchUserPostLikes();
     if (!downvoted) {
       setUpvoted(false);
       setDownvoted(true);
@@ -73,14 +72,11 @@ const StudentPostsInteraction = ({ projectId }) => {
       setDownvoted(false);
     }
   };
-
   useEffect(() => {
-    const likedProject = UserProjectsLikes?.find(
-      (item) => item.projectId === projectId
-    );
-    setUpvoted(likedProject?.like === 1);
-    setDownvoted(likedProject?.like === 0);
-  }, [UserProjectsLikes, projectId]);
+    const likedPosts = UserPostLikes?.find((item) => item.postId === postId);
+    setUpvoted(likedPosts?.like === 1);
+    setDownvoted(likedPosts?.like === 0);
+  }, [UserPostLikes, postId]);
 
   return (
     <View style={{ alignItems: "center" }}>
@@ -102,9 +98,7 @@ const StudentPostsInteraction = ({ projectId }) => {
               color={upvoted ? STYLES.COLORS.Priamary : "#e5e4e4"}
               size={STYLES.SIZES.sizeXL}
             />
-            <Text style={{ fontWeight: STYLES.FONTS.bold }}>
-              {projectLikes}
-            </Text>
+            <Text style={{ fontWeight: STYLES.FONTS.bold }}>{postLikes}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={downVoteHandle}>
@@ -117,19 +111,19 @@ const StudentPostsInteraction = ({ projectId }) => {
         </View>
 
         <CommentsInputs
-          projectId={projectId}
-          refetchProjectComments={refetchProjectComments}
+          postsCommentsId={postId}
+          refetchPostsComments={refetchPostsComments}
         />
       </View>
       <AllComments
-        projectsComments={projectsComments}
-        refetchProjectComments={refetchProjectComments}
+        postComments={postsComments}
+        refetchPostsComments={refetchPostsComments}
       />
     </View>
   );
 };
 
-export default StudentPostsInteraction;
+export default CompanyAdvisorPostsInteraction;
 
 const styles = StyleSheet.create({
   voteButtons: {

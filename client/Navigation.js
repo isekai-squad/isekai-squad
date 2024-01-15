@@ -14,7 +14,7 @@ import AboutScreen from "./App/bottomTabScreen/About/AboutScreen";
 import { ProfileProvider } from "./App/Context/ProfileContext";
 import { VisitProfileProvider } from "./App/Context/VisitProfileContext";
 import ForumCategories from "./App/component/Posts/ForumCategories";
-import UserProfile from "./App/Screens/UserProfile/ProfileUser";
+import UserProfile from "./App/Screens/UserProfile/VisitedProfile";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
 import ChatScreen from "./App/Screens/Chat/ChatScreen";
@@ -178,10 +178,11 @@ export const Navigation = () => {
                 name="EditProfile"
                 component={EditProfile}
                 options={{
-                  drawerItemStyle: {
-                    height: 0,
-                  },
+                  // drawerItemStyle: {
+                  //   height: 0,
+                  // },
                   headerShown: false,
+                  drawerLockMode: "",
                 }}
               />
             </Drawer.Navigator>

@@ -10,8 +10,8 @@ import {
   formatTimeDifference,
   addLikeCommentPost,
   getAllPostsReplyComments,
-} from "../../../../../Context/ProfileContext";
-import { STYLES } from "../../../../../../GlobalCss";
+} from "../../../../Context/ProfileContext";
+import { STYLES } from "../../../../../GlobalCss";
 
 const AllComments = ({ postComments, refetchPostsComments }) => {
   const [showAllComments, setShowAllComments] = useState(false);
@@ -20,7 +20,7 @@ const AllComments = ({ postComments, refetchPostsComments }) => {
     ? postComments
     : postComments?.slice(0, 2);
 
-    const handleShowMoreComments = () => {
+  const handleShowMoreComments = () => {
     setShowAllComments(true);
   };
 

@@ -5,10 +5,10 @@ import {
   addLikeCommentProject,
   formatTimeDifference,
   getAllProjectsReplyComments,
-} from "../../../../../Context/ProfileContext";
+} from "../../../../Context/ProfileContext";
 import CommentsInputs from "./CommentsProjectInputs";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { STYLES } from "../../../../../../GlobalCss";
+import { STYLES } from "../../../../../GlobalCss";
 import AllReplyComments from "./AllReplyProjectComments";
 import AntDesign from "react-native-vector-icons/AntDesign";
 

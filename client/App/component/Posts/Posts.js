@@ -17,7 +17,7 @@ const Posts = () => {
             uri: "https://img.freepik.com/premium-photo/man-woman-are-working-computer-with-laptop-computer-screen-with-word-com-it_745528-1518.jpg",
           }}
           alt="404"
-          style={{ width: 400, height: 200 }}
+          style={{ width: 400, height: 230 }}
         >
                 <Icon name='arrow-left-thin' size={50} style={{position : 'absolute' , top : 30 , left : 10}} color="#674188" onPress={() => navigation.navigate('Community')}/>
         </ImageBackground>
