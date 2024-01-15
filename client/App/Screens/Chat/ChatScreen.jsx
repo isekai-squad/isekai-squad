@@ -11,6 +11,7 @@ import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
 import JWT from 'expo-jwt';
 import atob from 'core-js-pure/stable/atob';
+global.atob= atob
 
 const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 

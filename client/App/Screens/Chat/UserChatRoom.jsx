@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export const UserChatRoom = ({navigation}) => {
+export default UserChatRoom = ({navigation}) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [convos, setConvos] = useState([]);
 
@@ -25,7 +25,7 @@ export const UserChatRoom = ({navigation}) => {
         const response = await axios.get(
           `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/chat/room/get/${currentUser.id}`
         );
-        setConvos(response.data);
+        setConvos(response.data,);
     
       }
     } catch (err) {
