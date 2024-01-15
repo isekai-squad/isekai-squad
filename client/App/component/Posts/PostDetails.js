@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   StyleSheet,
@@ -9,6 +15,7 @@ import {
   KeyboardAvoidingView,
   RefreshControl,
   ActivityIndicator,
+  ToastAndroid,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {
@@ -23,84 +30,100 @@ import {
   Image,
   VStack,
 } from "@gluestack-ui/themed";
-import Post from "./Post";
-import CreateComment from "./CreateComment";
 import CommentList from "./CommentList";
 import { Box, Divider } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import Dots from "react-native-vector-icons/Entypo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { ForumContext } from "../../Context/ForumContext";
 import moment from "moment";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import Swiper from "react-native-swiper";
+import io from 'socket.io-client';
+
+const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`)
 
 const PostDetails = ({ route }) => {
- const [refreshing , setRefreshing] = useState(false)
-  // const {refetch , setRefetch} = useContext(ForumContext)
-const onRefresh = useCallback( () => {
-  setRefreshing(true);
-  refetch()
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-}, [])
-
-const formatTimeDifference = (createdAt) => {
-  const now = moment();
-  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
-  const duration = moment.duration(now.diff(postTime));
-  if (duration.asMinutes() < 60) {
-    // Less than 60 minutes
-    return moment.duration(duration).humanize(true);
-  } else if (duration.asHours() < 24) {
-    // Less than 24 hours
-    const hours = Math.floor(duration.asHours());
-    return `${hours}h`;
-  } else {
-    // More than 24 hours
-    const days = Math.floor(duration.asDays());
-    return days === 1 ? "one day" : `${days} days`;
-  }
-};
-
+  const [liked , setLiked] = useState(false)
+  const [disliked , setDisliked] = useState(false)
   const navigation = useNavigation();
-  const { post, user , posts , category } = route.params;
+  const { post, user, posts, category } = route.params;
 
-  
-  const {data , isLoading , error, refetch} = useQuery ({
-    queryKey : ['likes'],
-    queryFn :async () => await axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/likes/${post.id}`).then(res => res.data).catch(err => console.error(err)),
-    select : (data) => {
-      const Nlikes = data.filter(item => item.like === 1)
-     const Ndislikes = data.filter(item => item.like === 0)
-     return Nlikes?.length - Ndislikes?.length
+  const formatTimeDifference = (createdAt) => {
+    const now = moment();
+    const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
+    const duration = moment.duration(now.diff(postTime));
+    if (duration.asMinutes() < 60) {
+      // Less than 60 minutes
+      return moment.duration(duration).humanize(true);
+    } else if (duration.asHours() < 24) {
+      // Less than 24 hours
+      const hours = Math.floor(duration.asHours());
+      return `${hours}h`;
+    } else {
+      // More than 24 hours
+      const days = Math.floor(duration.asDays());
+      return days === 1 ? "one day" : `${days} days`;
     }
-  }) 
-  
-  if(isLoading) return <Center>
-  <ActivityIndicator size="large" color='#674188' />
-</Center>
+  };
 
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["likes"],
+    queryFn: async () =>
+      await axios
+        .get(
+          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/likes/${post.id}`
+        )
+        .then((res) => res.data)
+        .catch((err) => console.error(err)),
+    select: (data) => {
+      const Nlikes = data.filter((item) => item.like === 1);
+      const Ndislikes = data.filter((item) => item.like === 0);
+      return Nlikes?.length - Ndislikes?.length;
+    },
+  });
+
+  // if (isLoading){
+
+  //   return (
+  //     <Center>
+  //       <ActivityIndicator size="large" color="#674188" />
+  //     </Center>
+  //   )
+  // }
 
   const mutation = useMutation({
-    mutationFn : async () => await  axios.post(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/increment/${post.id}/${user.id}`).then(res => console.log("liked")).catch(err => console.error(err)),
-    onSuccess : () => refetch()
-  }) 
+    mutationFn: async () =>
+      await axios
+        .post(
+          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/increment/${post.id}/${user.id}`
+        )
+        .then((res) => console.log("liked"))
+        .then(() => socket.emit('') )
+        .catch((err) => console.error(err)),
+    onSuccess: () => refetch(),
+  });
 
   return (
-    <ScrollView
-    refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-    }
-    >
+    <ScrollView>
       <View as={SafeAreaView} style={styles.container}>
-        <Image
-        alt="404"
-          source={{ uri: post.images[0] }}
-          style={{ width: "100%", height: 400 }}
-          resizeMode="stretch"
-        />
+        <Swiper height={400}>
+          {post.images.map((image) => (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                alt="404"
+                source={{ uri: image }}
+                style={{ width: "100%", height: 400 }}
+                resizeMode="stretch"
+              />
+            </View>
+          ))}
+        </Swiper>
         <Box
           style={{
             flexDirection: "row",
@@ -142,24 +165,24 @@ const formatTimeDifference = (createdAt) => {
           {post.title}
         </Text>
         <Divider />
-        <HStack style={{ padding: 10}} space="4xl">
-            <HStack>
-          <Avatar size="lg">
-            <AvatarFallbackText>SS</AvatarFallbackText>
-            <AvatarImage source={{ uri: user.pdp }} alt="404" />
-          </Avatar>
-          <View style={{ marginLeft: 30 }}>
-            <Text
-              style={{ fontWeight: "bold", fontSize: 21, color: "#674188" }}
-              onPress={() => navigation.navigate("UserProfile")}
+        <HStack style={{ padding: 10 }} space="4xl">
+          <HStack>
+            <Avatar size="lg">
+              <AvatarFallbackText>SS</AvatarFallbackText>
+              <AvatarImage source={{ uri: user.pdp }} alt="404" />
+            </Avatar>
+            <View style={{ marginLeft: 30 }}>
+              <Text
+                style={{ fontWeight: "bold", fontSize: 21, color: "#674188" }}
+                onPress={() => navigation.navigate("UserProfile")}
               >
-              {user.name}
-            </Text>
-            <Text style={{ fontWeight: 200, fontSize: 19 }}>
-              @{user.userName}
-            </Text>
-          </View>
-                </HStack>
+                {user.name}
+              </Text>
+              <Text style={{ fontWeight: 200, fontSize: 19 }}>
+                @{user.userName}
+              </Text>
+            </View>
+          </HStack>
           <Center style={{ marginLeft: 40 }}>
             <Button
               // variant='outline'
@@ -168,7 +191,8 @@ const formatTimeDifference = (createdAt) => {
               borderColor="#674188"
               borderRadius="$full"
               backgroundColor="#674188"
-            >
+              onPress={() => ToastAndroid.show("followed." , ToastAndroid.SHORT)}
+            > 
               <ButtonText color="white">Follow</ButtonText>
             </Button>
           </Center>
@@ -179,20 +203,31 @@ const formatTimeDifference = (createdAt) => {
             flexDirection: "row",
             padding: 15,
             alignItems: "center",
-            gap: 15,
+            justifyContent : 'space-between'
           }}
         >
-          <Button size="sm" variant="outline" borderColor="#674188">
-            <ButtonText color="#674188">{category.name}</ButtonText>
-          </Button>
-          <Text style={{ marginLeft: 10, fontWeight: 300 }}>{formatTimeDifference(post.created_at)}</Text>
-          <TouchableOpacity>
-            <Dots name="arrow-up" color="#674188" size={36} onPress={() => mutation.mutate()} />
-          </TouchableOpacity>
-          <Text>{data}</Text>
-          <TouchableOpacity>
-            <Dots name="arrow-down" color="#674188" size={36} />
-          </TouchableOpacity>
+          <HStack flexDirection="row" alignItems="center" space="xl">
+            <Button size="sm" variant="outline" borderColor="#674188">
+              <ButtonText color="#674188">{category.name}</ButtonText>
+            </Button>
+            <Text style={{ marginLeft: 10, fontWeight: 300 }}>
+              {formatTimeDifference(post.created_at)} ago
+            </Text>
+          </HStack>
+          <Center>
+            <TouchableOpacity>
+              <Icon
+                name={liked ? 'arrow-up-bold' : 'arrow-up-bold-outline'}
+                color="#674188"
+                size={36}
+                onPress={() =>{ mutation.mutate() ; setLiked(true)}}
+              />
+            </TouchableOpacity>
+            <Text>{data}</Text>
+            <TouchableOpacity>
+              <Icon name={disliked ? 'arrow-down-bold' : 'arrow-down-bold-outline'} color="#674188" size={36} />
+            </TouchableOpacity>
+          </Center>
         </Box>
         <Text style={{ padding: 20, fontSize: 20, lineHeight: 35 }}>
           {post.content}
@@ -205,17 +240,16 @@ const formatTimeDifference = (createdAt) => {
           keyboardShouldPersistTaps="handled"
         >
           <CommentList post={post} user={user} />
-          <CreateComment post={post} user={user} onRefresh={onRefresh} />
-        <Divider />
+          <Divider />
         </KeyboardAwareScrollView>
         <View
           style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-            }}
-            >
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
           <Text style={{ fontSize: 24, fontWeight: "bold" }}>
             More Blogs like this
           </Text>
@@ -223,7 +257,7 @@ const formatTimeDifference = (createdAt) => {
         </View>
         <ScrollView horizontal={true} style={{ padding: 10, marginTop: 10 }}>
           {posts?.map((post) => (
-            <Box style={{ padding: 10 }}>
+            <Box style={{ padding: 10 }} key={post.id}>
               <HStack space="md">
                 <Center w="$64">
                   <VStack space="lg">
@@ -243,7 +277,13 @@ const formatTimeDifference = (createdAt) => {
                         lineHeight: 40,
                       }}
                       numberOfLines={2}
-                      onPress={() => navigation.navigate('PostDetails' , {post , user , posts})}
+                      onPress={() =>
+                        navigation.navigate("PostDetails", {
+                          post,
+                          user,
+                          posts,
+                        })
+                      }
                     >
                       {post.content}
                     </Text>

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import HomeScreen from "./Home/HomeScreen";
 import AboutScreen from "./About/AboutScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
@@ -14,10 +14,18 @@ import CreatePost from "../component/Posts/CreatePost";
 import SearchHeader from "../component/SearchHeader";
 import NotificationBell from "../component/Notifications/NotificationBell";
 import Notification from "../component/Notifications/NotificationPage";
+import { Badge, BadgeText, Box, VStack } from "@gluestack-ui/themed";
 const Tab = createBottomTabNavigator();
+import io from 'socket.io-client';
+
+const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`);
 
 export const MainContainer = () => {
   const { activeMiddleTab } = useContext(ProfileContext);
+
+  // useEffect(() => {
+  //   socket.on('userConnected' , useri)
+  // },[])
 
   return (
     <Tab.Navigator
@@ -57,7 +65,26 @@ export const MainContainer = () => {
             iconName = focused ? "add-circle" : "add-circle-outline";
             return <Ionicons name={iconName} size={size} color={iconColor} />;
           } else if (route.name === "Notifications") {
-            return <NotificationBell focused={focused} size={size} iconColor={iconColor} />
+            return (
+              <Box alignItems="center">
+              <VStack>
+                <Badge
+                     h={22}
+                     w={22}
+                     bg="$red600"
+                     borderRadius="$full"
+                     mb={-12}
+                     mr={-12}
+                     zIndex={1}
+                     variant="solid"
+                     alignSelf="flex-end"
+                     >
+              <BadgeText color="$white">0</BadgeText>
+                </Badge>
+            <NotificationBell focused={focused} size={size} iconColor={iconColor} />
+              </VStack>
+                  </Box>
+            )
           }
         },
       })}

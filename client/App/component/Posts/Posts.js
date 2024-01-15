@@ -10,7 +10,7 @@ import axios from "axios";
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const Posts = ({route}) => {
-  const arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+  // const arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const navigation = useNavigation();
   const {category} = route.params
 console.log(category)

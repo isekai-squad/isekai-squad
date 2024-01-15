@@ -1,24 +1,22 @@
-import { Image, StyleSheet, Text, View,TouchableOpacity } from "react-native";
-import React, { useContext,useState,useEffect } from "react";
+import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useContext, useState, useEffect } from "react";
 import {
   ProfileContext,
-  addLikeReplyCommentProject,
+  addLikeReplyCommentPost,
   formatTimeDifference,
-} from "../../../../Context/ProfileContext";
-import { STYLES } from "../../../../../GlobalCss";
+} from "../../../../../Context/ProfileContext";
+import { STYLES } from "../../../../../../GlobalCss";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useMutation } from "@tanstack/react-query";
 
-const AllReplyComments = ({ comment,refetchReplyComments }) => {
+const AllReplyComments = ({ comment, refetchReplyComments }) => {
   const { id, content, created_at, likes, User, image } = comment;
   const { userId } = useContext(ProfileContext);
   // ==============================================
-console.log('====================================');
-console.log(likes);
-console.log('====================================');
+
   const { mutateAsync: upLikeReplyComment } = useMutation({
     mutationFn: (projectCommentId) =>
-      addLikeReplyCommentProject(userId, projectCommentId),
+      addLikeReplyCommentPost(userId, projectCommentId),
   });
   const [activeReplyLikeComment, setActiveLikeReplyComment] = useState(
     likes.some((like) => like.userid === userId)

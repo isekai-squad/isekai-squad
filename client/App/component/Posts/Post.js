@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -80,7 +80,7 @@ const Post = ({post , posts , category}) => {
               width: 200,
             }}
             numberOfLines={2}
-            onPress={() => navigation.navigate("PostDetails" , {post , user : data , posts , category})}
+            onPress={() => { navigation.navigate("PostDetails" , {post , user : data , posts , category})}}
           >
             {post.content}
           </Text>
@@ -103,7 +103,7 @@ const Post = ({post , posts , category}) => {
           <View
             style={{ display: "flex", flexDirection: "row", marginTop: 10 }}
           >
-            <Text style={{ marginLeft: 10, color: "#674188" }}>{formatTimeDifference(post.created_at)}</Text>
+            <Text style={{ marginLeft: 10, color: "#674188" }}>{formatTimeDifference(post.created_at)} ago</Text>
             <TouchableOpacity>
               <Icon name="bookmark" size={24} style={{ marginLeft: 80 }} />
             </TouchableOpacity>

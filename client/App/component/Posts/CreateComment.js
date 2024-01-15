@@ -32,16 +32,14 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { storage } from "../../../FirebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
-const CreateComment = ({ post, user }) => {
-  const height = useHeaderHeight();
+const CreateComment = ({ post, user , refetch }) => {
   const [images, setImages] = useState([]);
   const [content, setContent] = useState("");
   const [percent , setPercent] = useState(0)
-  const navigation = useNavigation()
-  const queryClient = useQueryClient
+
 
   const fireBaseComment = async (image) => {
     return new Promise(async (resolve, reject) => {
@@ -82,21 +80,28 @@ const CreateComment = ({ post, user }) => {
     }
   };
 
-  const addComment = async () => {
-    if (images.length === 0) {
-      alert("Please select an image");
-    } else if (content.length === 0) {
-      alert("Please enter a comment");
-    } else {
-      axios
+  const addComment = useMutation({
+    mutationFn : async () => {
+      if (images.length === 0) {
+        alert("Please select an image");
+      } else if (content.length === 0) {
+        alert("Please enter a comment");
+      } else {
+       await axios
         .post(
           `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/1/${post.id}/comments`,
           { content, images }
-        )
-        .then((res) => console.log("comment added successfully"))
-        .catch((err) => console.log(err));
-    }
-  };
+          )
+          .then((res) => console.log("comment added successfully"))
+          .then(() => {setContent("") ; setImages([])})
+          .catch((err) => console.log(err));
+        } 
+      },
+      onSuccess : () => refetch()
+  })
+    
+    
+  
 
   return (
     <View style={styles.container}>
@@ -129,6 +134,7 @@ const CreateComment = ({ post, user }) => {
                 <TextareaInput
                   placeholder="Add a comment"
                   fontSize={16}
+                  value={content}
                   onChangeText={(text) => setContent(text)}
                 />
                 <Icon
@@ -147,9 +153,8 @@ const CreateComment = ({ post, user }) => {
                   name="send"
                   size={24}
                   color="#674188"
-                  onPress={() => {
-                    addComment()
-                    // onRefresh()
+                  onPress={ async () => {
+                   addComment.mutate()
                   }}
                 />
               </TouchableOpacity>

@@ -23,7 +23,7 @@ model User {
   bio                  String?
   dateOfBirth          String?
   password             String?
-  pdp                  String             @default("https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg")
+  pdp                  String             @default("https://cdn-icons-png.flaticon.com/512/219/219983.png")
   number               Int?
   cover                String?            @default("https://images.unsplash.com/photo-1535911062114-764574491173?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dW1icmVsbGF8ZW58MHx8MHx8fDA%3D")
   socials              String[]
@@ -53,6 +53,8 @@ model User {
   NotificationRoom     NotificationRoom[]
   sentNotification     Notifications[]    @relation("sender")
   receivedNotification Notifications[]    @relation("receiver")
+  studentInterview     InterviewRequest[] @relation("student")
+  companyInterview     InterviewRequest[] @relation("company")
 }
 
 model Project {
@@ -69,21 +71,19 @@ model Project {
   favList           FavList[]
   Technologies      Technologies[]
   projectTechnology projectTechnology[]
-  Notifications     Notifications[]
 }
 
 model Post {
-  id            String          @id @default(uuid())
-  title         String
-  content       String          @db.Text
-  images        String          @db.Text
-  created_at    DateTime        @default(now())
-  User          User?           @relation(fields: [userId], references: [id])
-  userId        String?
-  likes         Likes[]
-  comments      Post_comments[]
-  favList       FavList[]
-  Notifications Notifications[]
+  id         String          @id @default(uuid())
+  title      String
+  content    String          @db.Text
+  images     String[]
+  created_at DateTime        @default(now())
+  User       User?           @relation(fields: [userId], references: [id])
+  userId     String?
+  likes      Likes[]
+  comments   Post_comments[]
+  favList    FavList[]
 }
 
 model Project_comments {
@@ -113,18 +113,17 @@ model Post_comments {
 }
 
 model Service {
-  id            String          @id @default(uuid())
-  title         String
-  description   String          @db.Text
-  image         String          @db.Text
-  Price         Int
-  created_at    DateTime        @default(now())
-  User          User?           @relation(fields: [userId], references: [id])
-  userId        String?
-  favList       FavList[]
-  Basket        Basket[]
-  likes         Likes[]
-  Notifications Notifications[]
+  id          String    @id @default(uuid())
+  title       String
+  description String    @db.Text
+  image       String    @db.Text
+  Price       Int
+  created_at  DateTime  @default(now())
+  User        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+  favList     FavList[]
+  Basket      Basket[]
+  likes       Likes[]
 }
 
 model Replies {
@@ -152,22 +151,16 @@ model Report {
 }
 
 model Notifications {
-  id            String       @id @default(uuid())
-  content       String       @db.Text
-  seen          Boolean      @default(false)
-  created_at    DateTime     @default(now())
-  sender        User?        @relation("sender", fields: [from], references: [id])
-  from          String?
-  receiver      User?        @relation("receiver", fields: [to], references: [id])
-  to            String?
-  Project       Project?     @relation(fields: [projectId], references: [id])
-  projectId     String?
-  Post          Post?        @relation(fields: [postId], references: [id])
-  postId        String?
-  Service       Service?     @relation(fields: [serviceId], references: [id])
-  serviceId     String?
-  Forum_Posts   Forum_Posts? @relation(fields: [forum_PostsId], references: [id])
-  forum_PostsId String?
+  id         String   @id @default(uuid())
+  content    String   @db.Text
+  seen       Boolean  @default(false)
+  created_at DateTime @default(now())
+  type       String?
+  sender     User?    @relation("sender", fields: [from], references: [id])
+  from       String?
+  receiver   User?    @relation("receiver", fields: [to], references: [id])
+  to         String?
+  postId     String?
 
   NotificationRoom NotificationRoom[]
 }
@@ -207,7 +200,6 @@ model Forum_Posts {
   likes            Likes[]
   Forum_Category   Forum_Category?  @relation(fields: [forum_CategoryId], references: [id])
   forum_CategoryId String?
-  Notifications    Notifications[]
 }
 
 model FPost_comments {
@@ -333,4 +325,15 @@ model NotificationRoom {
   From         String?
   notification Notifications @relation(fields: [To], references: [id])
   To           String
+}
+
+model InterviewRequest {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+  state      String   @default("Pending")
+  message    String?
+  student    User?    @relation("student" ,fields: [studentId], references: [id])
+  studentId  String?
+  company    User?    @relation("company" ,fields: [companyId], references: [id])
+  companyId  String?
 }

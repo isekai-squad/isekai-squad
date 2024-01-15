@@ -3,7 +3,7 @@ import { Box, Center } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React from "react";
+import React, { useContext } from "react";
 import { ActivityIndicator } from "react-native";
 import {
   Text,
@@ -16,9 +16,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Feather";
 import Arrow from "react-native-vector-icons/MaterialCommunityIcons";
+import { ForumContext } from "../../Context/ForumContext";
 
 const ForumCategories = () => {
-  let arr = [1, 1, 1, 1, 1, 1];
+  let {getCategory} = useContext(ForumContext)
   const navigation = useNavigation();
   const url = process.env.EXPO_PUBLIC_API_URL
   console.log(url)
@@ -61,7 +62,7 @@ const ForumCategories = () => {
           }}
         >
           {data?.map((category) => (
-            <TouchableOpacity onPress={() => navigation.navigate("Posts", {category})}>
+            <TouchableOpacity onPress={() => navigation.navigate("Posts", {category})} key={category.id}>
               <ImageBackground
                 source={{
                   uri : category.image,

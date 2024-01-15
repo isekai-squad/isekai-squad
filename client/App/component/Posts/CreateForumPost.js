@@ -27,6 +27,7 @@ import axios from "axios";
 import { storage } from "../../../FirebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
+import { v4 as uuidv4 } from 'uuid';
 
 const CreateForumPost = ({ route }) => {
   const [value, setValue] = useState(null);
@@ -43,7 +44,7 @@ const CreateForumPost = ({ route }) => {
       const response = await fetch(image.uri);
       const blob = await response.blob();
       const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
-      const storageRef = ref(storage, `Forum/${category.name}/${post.id}`);
+      const storageRef = ref(storage, `Forum/${category.name}`);
       const imageRef = ref(storageRef , filename)
       const uploadTask = uploadBytesResumable(imageRef, blob);
       uploadTask.on(
@@ -112,7 +113,7 @@ const CreateForumPost = ({ route }) => {
             borderColor="#674188"
             onPress={() => {
               addPost()
-              navigation.navigate('Posts' , {category})
+              // navigation.navigate('Posts' , {category})
             }}
           >
             <ButtonText color="#674188">Publish</ButtonText>

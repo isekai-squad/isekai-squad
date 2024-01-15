@@ -202,9 +202,6 @@ return (
         onChange={item => {
           setValue(item.value);
         }}
-        renderLeftIcon={() => (
-          <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-          )}
           />
             </View>
             <Text style={{fontSize : 22, fontWeight : 600}}>Select Technologies</Text>
@@ -226,20 +223,11 @@ return (
           onChange={item => {
             setSelected(item);
           }}
-          renderLeftIcon={() => (
-            <AntDesign
-            style={styles.icon}
-            color="black"
-            name="Safety"
-            size={20}
-            />
-            )}
             renderItem={renderItem}
             renderSelectedItem={(item, unSelect) => (
               <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
               <View style={styles.selectedStyle}>
                 <Text style={styles.textSelectedStyle}>{item.label}</Text>
-                <AntDesign color="black" name="delete" size={17} />
               </View>
             </TouchableOpacity>
           )}

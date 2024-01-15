@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Image , Modal, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Modal,
+  ActivityIndicator,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import {
   Avatar,
@@ -14,18 +21,19 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import Dots from "react-native-vector-icons/Entypo";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import moment from "moment";
-import ImageViewer from 'react-native-image-view';
+import ImageViewer from "react-native-image-view";
 import ImageLayouts from "react-native-image-layouts";
-import Lightbox from 'react-native-lightbox-v2';
+import Lightbox from "react-native-lightbox-v2";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-const layoutPattern = [1, 2 , 3 , 2 , 1];
+const layoutPattern = [1, 2, 3, 2, 1];
 
-const Comment = ({ user , comment}) => {
-
+const Comment = ({ user, comment }) => {
+  const [liked , setLiked] = useState(false)
   const formatTimeDifference = (createdAt) => {
     const now = moment();
     const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
@@ -45,38 +53,58 @@ const Comment = ({ user , comment}) => {
   };
 
   function renderItem(uri, _index) {
-    return  <Image source={{ uri: uri }}    style={{width : '%full' , height : 200 , borderRadius : 20}} resizeMode="stretch" alt="404" />;
+    return (
+      <Image
+        source={{ uri: uri }}
+        style={{ width: "%full", height: 200, borderRadius: 20 }}
+        resizeMode="stretch"
+        alt="404"
+      />
+    );
   }
 
-  const {data , isLoading , error, refetch} = useQuery ({
-    queryKey : ['CommentLikes', comment.id],
-    queryFn :async () => await axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${comment.id}/comments/likes`).then(res => res.data).catch(err => console.error(err)),
-    select : (data) => {
-      const Nlikes = data.filter(item => item.like === 1)
-     const Ndislikes = data.filter(item => item.like === 0)
-     return Nlikes?.length - Ndislikes?.length
-    }
-  }) 
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["CommentLikes", comment.id],
+    queryFn: async () =>
+      await axios
+        .get(
+          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${comment.id}/comments/likes`
+        )
+        .then((res) => res.data)
+        .catch((err) => console.error(err)),
+    select: (data) => {
+      const Nlikes = data.filter((item) => item.like === 1);
+      const Ndislikes = data.filter((item) => item.like === 0);
+      return Nlikes?.length - Ndislikes?.length;
+    },
+  });
 
-  if(isLoading){
-   return <Center>
-  <ActivityIndicator size="large" color='#674188' />
-</Center>
+  if (isLoading) {
+    return (
+      <Center>
+        <ActivityIndicator size="large" color="#674188" />
+      </Center>
+    );
   }
 
   const addLike = async () => {
-    return await axios.post(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${comment.id}/${user.id}/comments/increment`).then(res => console.log("liked")).then(() => refetch()).catch(err => console.error(err))
-  }
-
+    return await axios
+      .post(
+        `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${comment.id}/${user.id}/comments/increment`
+      )
+      .then((res) => console.log("liked"))
+      .then(() => refetch())
+      .catch((err) => console.error(err));
+  };
 
   return (
     <View style={styles.container}>
       <Box style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <View style ={{flexDirection : 'row', alignItems:"center" ,gap:10}}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Avatar size="lg">
             <AvatarFallbackText>SS</AvatarFallbackText>
             <AvatarImage
-            alt="404"
+              alt="404"
               source={{
                 uri: user.pdp,
               }}
@@ -103,26 +131,40 @@ const Comment = ({ user , comment}) => {
           />
         </TouchableOpacity>
       </Box>
-      <VStack space="md" style={{padding : 10}}>
-        <Text style={{fontSize : 18 , lineHeight : 30}}>{comment.content}</Text>
+      <VStack space="md" style={{ padding: 10 }}>
+        <Text style={{ fontSize: 18, lineHeight: 30 }}>{comment.content}</Text>
         <Lightbox>
-        <ImageLayouts
-        data={comment.images}
-        numberOfColumns={2}
-        patterns={layoutPattern}
-        renderItem={renderItem}
-        dividerPadding={4}
-      />
+          <ImageLayouts
+            data={comment.images}
+            numberOfColumns={2}
+            patterns={layoutPattern}
+            renderItem={renderItem}
+            dividerPadding={4}
+          />
         </Lightbox>
       </VStack>
-      <Box style={{flexDirection : 'row' , padding : 10 , gap : 10 , alignItems : 'center'}}>
-      <TouchableOpacity>
-                <Dots name='arrow-up' color='#674188' size={30} onPress={() => addLike()}/>
-                </TouchableOpacity>
-            <Text>{data}</Text>
-            <Text style={{marginLeft : 50}}>{formatTimeDifference(comment.created_at)} ago</Text>
+      <Box
+        style={{
+          flexDirection: "row",
+          padding: 10,
+          gap: 10,
+          alignItems: "center",
+        }}
+      >
+        <TouchableOpacity>
+          <MaterialCommunityIcons
+            name={liked ? 'arrow-up-bold' : 'arrow-up-bold-outline'}
+            color="#674188"
+            size={30}
+            onPress={() => {addLike() ; setLiked(!liked)}}
+          />
+        </TouchableOpacity>
+        <Text>{data}</Text>
+        <Text style={{ marginLeft: 50 }}>
+          {formatTimeDifference(comment.created_at)} ago
+        </Text>
       </Box>
-      <Divider/>
+      <Divider />
     </View>
   );
 };

@@ -23,14 +23,14 @@ const Notification = () => {
   const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`)
 
   const retreiveNotifications = async () => {
-  await axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/`).then(res => [...res.data].sort((a , b) => new Date(b.created_at) - new Date(a.created_at))).then(data => setData(data)) 
+  await axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/notification/2`).then(res => [...res.data].sort((a , b) => new Date(b.created_at) - new Date(a.created_at))).then(data => setData(data)).catch(err => console.log(err)) 
   }
 
   useEffect(() => {
     retreiveNotifications();
     socket.on('newNotification' , () => {
       retreiveNotifications();
-    }, [])
+    }, [data, focused])
   })
   return (
     <ScrollView style={{ backgroundColor: "white", marginBottom: 40 }}>
@@ -98,10 +98,10 @@ const Notification = () => {
           </Center>
         ) : focused === "General" ? (
           <VStack space="4xl" paddingVertical={20}>
-            {data.map(() => {
+            {data.map((notif) => {
               return (
                 <>
-                  <NormalNotif key={1} />
+                  <NormalNotif data={notif} key={notif.id} />
                   <Divider />
                 </>
               );

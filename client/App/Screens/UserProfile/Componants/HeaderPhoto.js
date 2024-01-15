@@ -1,80 +1,67 @@
-import React from "react";
-import {
-  Image,
-  StyleSheet,
-  View,
-  Text,
-  ImageBackground,
-  TouchableOpacity,
-} from "react-native";
+import React, { useContext } from "react";
+import { Image, StyleSheet, View, Text, ImageBackground } from "react-native";
+import { VisitProfileContext } from "../../../Context/VisitProfileContext";
 import { STYLES } from "../../../../GlobalCss";
 
-function HeaderPhoto() {
+const HeaderPhoto = () => {
+  const { visitedProfileData } = useContext(VisitProfileContext);
+  const { role, active, project, posts, cover, pdp } = visitedProfileData;
+  
+
   return (
     <View>
       <ImageBackground
-        resizeMode="cover"
         source={{
-          uri: "https://t4.ftcdn.net/jpg/05/31/79/83/360_F_531798391_XFz7gyPmDRTAfiEE5sRjFu5NpKrJt4rC.jpg",
+          uri: cover,
         }}
+        style={styles.backgroundImage}
       >
-        <View style={styles.darkness} />
+        <View style={styles.darkOverlay} />
       </ImageBackground>
 
-      <View style={styles.profileImgContainer}>
+      <View style={styles.profileContainer}>
         <View>
           <Image
             source={{
-              uri: "https://picsum.photos/200",
+              uri: pdp,
             }}
-            style={styles.profileImg}
+            style={styles.profileImage}
           />
-          <Text style={styles.active}></Text>
+
+          <Text style={active ? styles.active : styles.desactive}></Text>
         </View>
-        <View>
-          <View style={styles.descContainer}>
-            <View style={styles.descDetails}>
-              <Text
-                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
-              >
-                50
-              </Text>
-              <Text style={{ color: "white", fontWeight: "300", fontSize: 15 }}>
-                Projects
-              </Text>
-            </View>
-            <View style={styles.descDetails}>
-              <Text
-                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
-              >
-                50
-              </Text>
-              <Text style={{ color: "white", fontWeight: "300", fontSize: 15 }}>
-                Followers
-              </Text>
-            </View>
-            <View style={styles.descDetails}>
-              <Text
-                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
-              >
-                50
-              </Text>
-              <Text style={{ color: "white", fontWeight: "300", fontSize: 15 }}>
-                Following
-              </Text>
-            </View>
+        <View style={styles.descriptionContainer}>
+          <View style={styles.descriptionDetails}>
+            <Text style={styles.detailText}>
+              {}
+
+              {role == "STUDENT" ? project?.length : posts?.length}
+            </Text>
+            <Text style={styles.detailLabel}>
+              {role == "STUDENT" ? "Projects" : "Posts"}
+            </Text>
+          </View>
+
+          <View style={styles.descriptionDetails}>
+            <Text style={styles.detailText}>62</Text>
+            <Text style={styles.detailLabel}>Followers</Text>
+          </View>
+
+          <View style={styles.descriptionDetails}>
+            <Text style={styles.detailText}>23</Text>
+            <Text style={styles.detailLabel}>Following</Text>
           </View>
         </View>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   active: {
     position: "absolute",
-    bottom: 2,
-    right: 0,
+    bottom: 6,
+    right: 3,
     width: 20,
     height: 20,
     borderColor: "white",
@@ -82,37 +69,61 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
     borderRadius: 100,
   },
-  darkness: {
-    backgroundColor: STYLES.COLORS.ShadowColor,
-    width: "100%",
-    height: 130,
+  desactive: {
+    position: "absolute",
+    bottom: 6,
+    right: 3,
+    width: 20,
+    height: 20,
+    borderColor: "white",
+    borderWidth: 2,
+    backgroundColor: "red",
+    borderRadius: 100,
   },
-
-  profileImgContainer: {
+  backgroundImage: {
+    width: "100%",
+    height: 180,
+  },
+  darkOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: STYLES.COLORS.ShadowColor,
+  },
+  profileContainer: {
     flexDirection: "row",
     paddingHorizontal: 20,
     justifyContent: "space-between",
-    gap: 20,
-    width: "100%",
     alignItems: "center",
     position: "absolute",
-    top: 25,
+    top: "70%",
+    transform: [{ translateY: -70 }],
+    width: "100%",
   },
-  profileImg: {
+  profileImage: {
     height: 90,
     width: 90,
     borderColor: "white",
     borderWidth: 3,
     borderRadius: 100,
   },
-  descContainer: {
+  descriptionContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
     gap: 10,
   },
-  descDetails: {
+  descriptionDetails: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  detailText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  detailLabel: {
+    color: "white",
+    fontWeight: "300",
+    fontSize: 15,
   },
 });
 
