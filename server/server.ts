@@ -75,18 +75,37 @@ io.on('connection', (socket) => {
         roomId,
       },
     });
-
+    
     // Emit the new message to the room
     io.to(roomId).emit('newMessage', message);
   });
-
+  
   socket.on('joinRoom', (roomId) => {
     socket.join(roomId);
     console.log(`User joined room: ${roomId}`);
   });
+  
+  const userNotifications = {}
+  socket.on('userConnected' , (userId) => {
+    userNotifications[userId] = 0
+  })
+  socket.on('sendNotification' ,async ({sender , receiver , content , type}) => {
+    const notification = await prisma.notifications.create({
+      data: {
+        sender,
+        receiver,
+        content,
+        type
+      },
+    });
+    io.to(receiver).emit('newNotification', notification);
+   userNotifications[receiver] +=1 ;
+   io.emit('updateNotification', {receiver , count : userNotifications[receiver]});
+  }) 
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    delete userNotifications[socket.id]
   });
   socket.on('newMessage',()=> socket.emit('newMessage')
   )

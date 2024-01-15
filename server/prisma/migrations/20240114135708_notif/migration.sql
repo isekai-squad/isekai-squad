@@ -117,7 +117,8 @@ CREATE TABLE "Notifications" (
     "content" TEXT NOT NULL,
     "seen" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" TEXT,
+    "from" TEXT,
+    "to" TEXT,
 
     CONSTRAINT "Notifications_pkey" PRIMARY KEY ("id")
 );
@@ -273,6 +274,15 @@ CREATE TABLE "Messages" (
 );
 
 -- CreateTable
+CREATE TABLE "NotificationRoom" (
+    "id" TEXT NOT NULL,
+    "From" TEXT,
+    "To" TEXT NOT NULL,
+
+    CONSTRAINT "NotificationRoom_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_UserTouserRooms" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -339,7 +349,10 @@ ALTER TABLE "Replies" ADD CONSTRAINT "Replies_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Report" ADD CONSTRAINT "Report_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_from_fkey" FOREIGN KEY ("from") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_to_fkey" FOREIGN KEY ("to") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FavList" ADD CONSTRAINT "FavList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -427,6 +440,12 @@ ALTER TABLE "Messages" ADD CONSTRAINT "Messages_userId_fkey" FOREIGN KEY ("userI
 
 -- AddForeignKey
 ALTER TABLE "Messages" ADD CONSTRAINT "Messages_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("roomId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "NotificationRoom" ADD CONSTRAINT "NotificationRoom_From_fkey" FOREIGN KEY ("From") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "NotificationRoom" ADD CONSTRAINT "NotificationRoom_To_fkey" FOREIGN KEY ("To") REFERENCES "Notifications"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserTouserRooms" ADD CONSTRAINT "_UserTouserRooms_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

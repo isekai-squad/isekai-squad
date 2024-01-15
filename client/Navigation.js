@@ -24,6 +24,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from 'expo-secure-store';
 import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
+import CreateForumPost from "./App/component/Posts/CreateForumPost";
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -189,7 +191,12 @@ export const Navigation = () => {
                   headerShown: false,
                 }}
               />
-            </Drawer.Navigator>
+              <Drawer.Screen
+            name="CreateForumPost"
+            component={CreateForumPost}
+            options={{headerTitle : "" , headerShown: false }}
+            />
+          </Drawer.Navigator>
           </VisitProfileProvider>
         </ProfileProvider>
       ) : (
