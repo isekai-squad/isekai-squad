@@ -19,7 +19,6 @@ import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
 import ChatScreen from "./App/Screens/Chat/ChatScreen";
 import Basket from "./App/Screens/Basket/basket";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from 'expo-secure-store';

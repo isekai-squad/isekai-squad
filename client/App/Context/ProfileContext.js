@@ -5,7 +5,8 @@ import { storage } from "../../FirebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-
+import { jwtDecode } from "jwt-decode";
+import * as SecureStore from 'expo-secure-store';
 
 export const ProfileContext = createContext();
 
@@ -25,7 +26,15 @@ export const ProfileProvider = ({ children }) => {
   const phoneRef = useRef("");
   const linkedInRef = useRef("");
   const githHubRef = useRef("");
-  const userId = "2";
+  const [userId, setUserId] = useState();
+  const getCurrentUser = async () => {
+    const res = await SecureStore.getItemAsync("Token");
+    const decodeResult = await jwtDecode(res);
+    setUserId(decodeResult.id);
+  };
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
   // ===========================REFETCH PART===========================
   const [refetchPosts, setRefetchPosts] = useState("");
@@ -404,9 +413,7 @@ export async function PostProjectReplyComment(userId, projectId, data) {
 // -------------------------COMPANY && ADVISOR------------
 
 export function useFetchUserPosts(userId) {
-  
   const userPosts = async ({ pageParam = 1 }) => {
-    
     try {
       const { data } = await axios.get(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Post/${userId}?limit=6&page=${pageParam}`
@@ -418,9 +425,9 @@ export function useFetchUserPosts(userId) {
       throw err;
     }
   };
-  console.log('====================================');
+  console.log("====================================");
   console.log(userPosts);
-  console.log('====================================');
+  console.log("====================================");
   return useInfiniteQuery({
     queryKey: ["posts"],
     queryFn: userPosts,
