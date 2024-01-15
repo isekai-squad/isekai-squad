@@ -45,8 +45,8 @@ export const VisitProfileProvider = ({ children }) => {
         setActiveMiddleTab,
         reportPop,
         setReportPop,
-        refetchPosts,
-        setRefetchPosts,
+        // refetchPosts,
+        // setRefetchPosts,
       }}
     >
       {children}

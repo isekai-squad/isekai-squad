@@ -9,14 +9,15 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
-import HeaderPhoto from "./Componants/HeaderPhoto";
-import Bio from "./Componants/Bio";
-import MiddelTab from "./Componants/MiddelTab";
-import AboutProfile from "./AboutProfile/AboutProfile";
 import { STYLES } from "../../../GlobalCss";
-import Activity from "./ActivityProfile/Activity";
-import Report from "./Componants/Report";
+import HeaderPhoto from "../../component/ProfileComponants/HeaderPhoto";
+import Bio from "../../component/ProfileComponants/Bio";
+import MiddelTab from "../../component/ProfileComponants/MiddelTab";
+import AboutProfile from "./AboutProfile/AboutProfile";
+import VisitedActivity from "./VisitedActivity";
+import Report from "../../component/ProfileComponants/Report";
 import { VisitProfileContext } from "../../Context/VisitProfileContext";
+import { ProfileContext } from "../../Context/ProfileContext";
 
 function UserProfile() {
   const [fontsLoaded] = useFonts({
@@ -26,17 +27,14 @@ function UserProfile() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const {
-    activeMiddleTab,
-    LoadingVisitedProfile,
-    refetchVisitedProfile,
-    refetchPosts,
-  } = useContext(VisitProfileContext);
+  const { activeMiddleTab, LoadingVisitedProfile } =
+    useContext(VisitProfileContext);
+  const { setRefetchPosts, refetchPosts } = useContext(ProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetchVisitedProfile();
+    setRefetchPosts();
     refetchPosts && refetchPosts();
     setTimeout(() => {
       setRefreshing(false);
@@ -53,6 +51,8 @@ function UserProfile() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Report />
+
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -63,9 +63,8 @@ function UserProfile() {
           <Bio />
         </View>
         <MiddelTab />
-        <Report />
         {activeMiddleTab === "About" && <AboutProfile />}
-        {activeMiddleTab === "Activity" && <Activity />}
+        {activeMiddleTab === "Activity" && <VisitedActivity />}
       </ScrollView>
     </SafeAreaView>
   );

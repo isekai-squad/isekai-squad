@@ -1,17 +1,11 @@
 import React, { useContext, useEffect } from "react";
-import {
-  Animated,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { Animated, Text, StyleSheet, TouchableOpacity } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { ProfileContext } from "../../../Context/ProfileContext";
 import { Easing } from "react-native-reanimated";
+import { VisitProfileContext } from "../../Context/VisitProfileContext";
 
-
-function Report({ navigation }) {
-  const { setReportPop, reportPop } = useContext(ProfileContext);
+function Report() {
+  const { setReportPop, reportPop } = useContext(VisitProfileContext);
   const animatedHeight = new Animated.Value(0);
 
   const toggleReport = () => {
@@ -56,7 +50,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    zIndex:100
+    zIndex: 100,
   },
   btnTouchable: {
     borderTopWidth: 1,

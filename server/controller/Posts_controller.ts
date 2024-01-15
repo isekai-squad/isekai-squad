@@ -174,7 +174,6 @@ export const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
-
 export const getAllPostsOneUser = async (
   req: Request,
   res: Response

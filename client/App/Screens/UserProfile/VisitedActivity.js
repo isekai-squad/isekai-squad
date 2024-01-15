@@ -1,35 +1,32 @@
 import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 
-import { VisitProfileContext } from "../../../Context/VisitProfileContext";
-import { STYLES } from "../../../../GlobalCss";
-import RenderPost from "./components/RenderPost";
+import { VisitProfileContext } from "../../Context/VisitProfileContext";
+
+import { STYLES } from "../../../GlobalCss";
+import RenderPost from "../../component/ProfileComponants/RenderPosts/RenderPost";
 import { useContext } from "react";
 import { useRoute } from "@react-navigation/native";
-
 import {
   ProfileContext,
   useFetchStudentProjects,
   useFetchUserPosts,
-} from "../../../Context/ProfileContext";
+} from "../../Context/ProfileContext";
 
 const Activity = () => {
   const route = useRoute();
-  const { userId, ProfileData } = useContext(ProfileContext);
   const { visitedProfileId, visitedProfileData } =
     useContext(VisitProfileContext);
 
   let data, isLoading, hasNextPage, fetchNextPage, refetchPosts;
 
-  if (visitedProfileData.role !== "STUDENT" || ProfileData.role !== "STUDENT") {
+  if (visitedProfileData.role !== "STUDENT") {
     const {
       data: posts,
       isLoading: userPostsLoading,
       hasNextPage: userPostsHasNextPage,
       fetchNextPage: userPostsFetchNextPage,
       refetch: userPostsRefetch,
-    } = useFetchUserPosts(
-      route.name === "VisitedProfile" ? visitedProfileId : userId
-    );
+    } = useFetchUserPosts(visitedProfileId);
 
     data = posts;
     isLoading = userPostsLoading;
@@ -43,9 +40,7 @@ const Activity = () => {
       hasNextPage: projectsHasNextPage,
       fetchNextPage: projectsFetchNextPage,
       refetch: projectsRefetch,
-    } = useFetchStudentProjects(
-      route.name === "VisitedProfile" ? visitedProfileId : userId
-    );
+    } = useFetchStudentProjects(visitedProfileId);
 
     data = projects;
     isLoading = projectsLoading;
