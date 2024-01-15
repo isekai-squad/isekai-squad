@@ -63,6 +63,8 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const SignIn = async (req: Request, res: Response) => {
+  console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+  
   try {
     const { email, password, role } = req.body;
 

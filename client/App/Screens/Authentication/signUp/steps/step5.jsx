@@ -14,7 +14,6 @@ export default Step5 = ({ setPdp, pdp, createAccount,setStep,navigation }) => {
   const [loading, setLoading] = useState(false)
   
   useEffect(() => {
-    console.log(pdp);
   }, [pdp]);
 
 

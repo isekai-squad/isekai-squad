@@ -16,7 +16,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { STYLES } from '../../../../../GlobalCss';
 import { useFonts } from 'expo-font';
 
-const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role }) => {
+const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,navigation}) => {
   const [pressed, setPressed] = useState('');
   const [errorInput, setErrorInput] = useState('');
 
@@ -56,7 +56,12 @@ const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role })
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <View style={{ width, height, justifyContent: 'center', alignItems: 'center', bottom: 100 }}>
+
+<TouchableOpacity onPress={()=>navigation.navigate('signIn')}>
+
+<Text style={{position:'absolute',top:0,marginTop:50,marginLeft:10,fontSize:20,color:STYLES.COLORS.Priamary}}>Create Account?</Text>
+</TouchableOpacity>
+      <View style={{ width, height, justifyContent: 'center', alignItems: 'center',bottom:20 }}>
         <View style={{ gap: 20, justifyContent: 'center', alignItems: 'center' }}>
           <View>
             <TouchableOpacity

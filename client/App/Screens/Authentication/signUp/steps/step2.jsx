@@ -33,7 +33,6 @@ function Step2({setStep,email,setEmail,password,setPassword,conPassword,setConPa
         if (!email) return;
      try {
       const response = await   axios.get(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/email/${email}`)
-      console.log(response.statusCode,'heeeeeeeeeeere');
       if  (response.statusCode ===404) {
         setInputError('Invalid email address')
       }

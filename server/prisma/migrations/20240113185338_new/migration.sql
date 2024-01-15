@@ -11,14 +11,16 @@ CREATE TABLE "User" (
     "bio" TEXT,
     "dateOfBirth" TEXT,
     "password" TEXT,
-    "pdp" TEXT NOT NULL,
+    "pdp" TEXT NOT NULL DEFAULT 'https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg',
     "number" INTEGER,
-    "cover" TEXT,
+    "cover" TEXT DEFAULT 'https://images.unsplash.com/photo-1535911062114-764574491173?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dW1icmVsbGF8ZW58MHx8MHx8fDA%3D',
     "socials" TEXT[],
     "active" BOOLEAN NOT NULL DEFAULT false,
     "premuim" BOOLEAN NOT NULL DEFAULT false,
     "forgotPassword" TEXT,
     "role" "Role" NOT NULL,
+    "specialtyId" TEXT,
+    "confirmed" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -53,7 +55,7 @@ CREATE TABLE "Project_comments" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "userId" TEXT,
-    "images" TEXT NOT NULL,
+    "images" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "projectId" TEXT,
 
@@ -64,7 +66,7 @@ CREATE TABLE "Project_comments" (
 CREATE TABLE "Post_comments" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "images" TEXT NOT NULL,
+    "images" TEXT,
     "userId" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "postId" TEXT,
@@ -92,6 +94,7 @@ CREATE TABLE "Replies" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "post_commentsId" TEXT,
     "project_commentsId" TEXT,
+    "image" TEXT,
     "fPost_commentsId" TEXT,
     "userId" TEXT,
 
@@ -135,6 +138,7 @@ CREATE TABLE "Basket" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
     "serviceId" TEXT,
+    "payed" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Basket_pkey" PRIMARY KEY ("id")
 );
@@ -169,8 +173,8 @@ CREATE TABLE "Technologies" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "userId" TEXT,
     "projectId" TEXT,
+    "specialtyId" TEXT,
 
     CONSTRAINT "Technologies_pkey" PRIMARY KEY ("id")
 );
@@ -179,7 +183,7 @@ CREATE TABLE "Technologies" (
 CREATE TABLE "userTechnology" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
-    "technologyId" TEXT,
+    "technologiesId" TEXT,
 
     CONSTRAINT "userTechnology_pkey" PRIMARY KEY ("id")
 );
@@ -214,7 +218,6 @@ CREATE TABLE "Likes" (
 CREATE TABLE "Specialty" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "userId" TEXT,
 
     CONSTRAINT "Specialty_pkey" PRIMARY KEY ("id")
 );
@@ -228,8 +231,76 @@ CREATE TABLE "Forum_Category" (
     CONSTRAINT "Forum_Category_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT,
+    "basketId" TEXT,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Room" (
+    "roomId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userRoomsId" TEXT,
+
+    CONSTRAINT "Room_pkey" PRIMARY KEY ("roomId")
+);
+
+-- CreateTable
+CREATE TABLE "userRooms" (
+    "id" TEXT NOT NULL,
+    "roomRoomId" TEXT,
+
+    CONSTRAINT "userRooms_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Messages" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "text" TEXT NOT NULL,
+    "image" TEXT,
+    "userId" TEXT NOT NULL,
+    "roomId" TEXT NOT NULL,
+    "userRoomsId" TEXT,
+
+    CONSTRAINT "Messages_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_UserTouserRooms" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_RoomTouserRooms" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_UserTouserRooms_AB_unique" ON "_UserTouserRooms"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_UserTouserRooms_B_index" ON "_UserTouserRooms"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_RoomTouserRooms_AB_unique" ON "_RoomTouserRooms"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_RoomTouserRooms_B_index" ON "_RoomTouserRooms"("B");
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "Specialty"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Project" ADD CONSTRAINT "Project_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -301,16 +372,16 @@ ALTER TABLE "FPost_comments" ADD CONSTRAINT "FPost_comments_userId_fkey" FOREIGN
 ALTER TABLE "FPost_comments" ADD CONSTRAINT "FPost_comments_forum_PostsId_fkey" FOREIGN KEY ("forum_PostsId") REFERENCES "Forum_Posts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Technologies" ADD CONSTRAINT "Technologies_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "Specialty"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "userTechnology" ADD CONSTRAINT "userTechnology_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "userTechnology" ADD CONSTRAINT "userTechnology_technologyId_fkey" FOREIGN KEY ("technologyId") REFERENCES "Technologies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "userTechnology" ADD CONSTRAINT "userTechnology_technologiesId_fkey" FOREIGN KEY ("technologiesId") REFERENCES "Technologies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "projectTechnology" ADD CONSTRAINT "projectTechnology_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -346,4 +417,25 @@ ALTER TABLE "Likes" ADD CONSTRAINT "Likes_fPost_commentsId_fkey" FOREIGN KEY ("f
 ALTER TABLE "Likes" ADD CONSTRAINT "Likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Specialty" ADD CONSTRAINT "Specialty_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_basketId_fkey" FOREIGN KEY ("basketId") REFERENCES "Basket"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Messages" ADD CONSTRAINT "Messages_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Messages" ADD CONSTRAINT "Messages_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("roomId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UserTouserRooms" ADD CONSTRAINT "_UserTouserRooms_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_UserTouserRooms" ADD CONSTRAINT "_UserTouserRooms_B_fkey" FOREIGN KEY ("B") REFERENCES "userRooms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RoomTouserRooms" ADD CONSTRAINT "_RoomTouserRooms_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("roomId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RoomTouserRooms" ADD CONSTRAINT "_RoomTouserRooms_B_fkey" FOREIGN KEY ("B") REFERENCES "userRooms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
