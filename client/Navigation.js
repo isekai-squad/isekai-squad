@@ -26,9 +26,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
 import { STYLES } from "./GlobalCss";
-import FavoriteList from "./App/Service/favoritList";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import service from "./App/Service/service";
+import * as SecureStore from 'expo-secure-store';
+import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
+import CreateForumPost from "./App/component/Posts/CreateForumPost";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -143,13 +143,15 @@ const DrawerNavigator = () => {
         component={ChatScreen}
         options={{
           headerShown: false,
-          drawerIcon: ({ focused, size }) => (
-            <Ionicons
-              name="chat"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
-            />
-          ),
+         
+        }}
+      />
+      <Drawer.Screen
+        name="rooms"
+        component={UserChatRoom}
+        options={{
+          headerShown: false,
+      
         }}
       />
       <Drawer.Screen
@@ -184,18 +186,20 @@ const DrawerNavigator = () => {
   );
 };
 export const Navigation = () => {
-  const [Token, setToken] = useState();
-  const getCurrentUser = async () => {
-    AsyncStorage.clear();
-    await setToken((await AsyncStorage.getItem("Token")).valueOf());
-  };
-  useEffect(() => {
-    getCurrentUser();
-  }, [Token]);
+  const [auth, setAuth] = useState();
+   const [Token,setToken]=useState()
+   const getCurrentUser =async ()=>{
+    const res = await SecureStore.getItemAsync('Token')
+    setAuth(res)
+    }
 
+  useEffect(()=>{
+    
+    getCurrentUser()
+  },[Token])
   return (
     <NavigationContainer>
-      {!Token ? (
+      {auth ? (
         <ProfileProvider>
           <VisitProfileProvider>
             <Drawer.Navigator>
@@ -239,7 +243,12 @@ export const Navigation = () => {
                   headerShown: false,
                 }}
               />
-            </Drawer.Navigator>
+              <Drawer.Screen
+            name="CreateForumPost"
+            component={CreateForumPost}
+            options={{headerTitle : "" , headerShown: false }}
+            />
+          </Drawer.Navigator>
           </VisitProfileProvider>
         </ProfileProvider>
       ) : (

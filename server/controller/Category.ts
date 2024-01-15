@@ -27,3 +27,19 @@ export const getAllCategory = async (req  : Request, res : Response) => {
         res.status(500).send(err)
     }
 }
+
+export const getAllPostsCategory = async (req : Request, res : Response) => {
+let {id} = req.params
+try{
+    const result = await prisma.forum_Posts.findMany({
+        where:{
+            forum_CategoryId : id
+        }
+    })
+    res.status(200).json(result)
+}catch (err) {
+    console.log(err)
+    res.status(500).send(err)
+}
+}
+

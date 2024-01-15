@@ -11,7 +11,7 @@ CREATE TABLE "User" (
     "bio" TEXT,
     "dateOfBirth" TEXT,
     "password" TEXT,
-    "pdp" TEXT NOT NULL DEFAULT 'https://img.myloview.com/stickers/default-avatar-profile-icon-vector-social-media-user-image-700-205124837.jpg',
+    "pdp" TEXT NOT NULL DEFAULT 'https://cdn-icons-png.flaticon.com/512/219/219983.png',
     "number" INTEGER,
     "cover" TEXT DEFAULT 'https://images.unsplash.com/photo-1535911062114-764574491173?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dW1icmVsbGF8ZW58MHx8MHx8fDA%3D',
     "socials" TEXT[],
@@ -43,7 +43,7 @@ CREATE TABLE "Post" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "images" TEXT NOT NULL,
+    "images" TEXT[],
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT,
 
@@ -81,6 +81,7 @@ CREATE TABLE "Service" (
     "description" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "Price" INTEGER NOT NULL,
+    "category" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT,
 
@@ -117,7 +118,10 @@ CREATE TABLE "Notifications" (
     "content" TEXT NOT NULL,
     "seen" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" TEXT,
+    "type" TEXT,
+    "from" TEXT,
+    "to" TEXT,
+    "postId" TEXT,
 
     CONSTRAINT "Notifications_pkey" PRIMARY KEY ("id")
 );
@@ -273,6 +277,27 @@ CREATE TABLE "Messages" (
 );
 
 -- CreateTable
+CREATE TABLE "NotificationRoom" (
+    "id" TEXT NOT NULL,
+    "From" TEXT,
+    "To" TEXT NOT NULL,
+
+    CONSTRAINT "NotificationRoom_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "InterviewRequest" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "state" TEXT NOT NULL DEFAULT 'Pending',
+    "message" TEXT,
+    "studentId" TEXT,
+    "companyId" TEXT,
+
+    CONSTRAINT "InterviewRequest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_UserTouserRooms" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -339,7 +364,10 @@ ALTER TABLE "Replies" ADD CONSTRAINT "Replies_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Report" ADD CONSTRAINT "Report_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_from_fkey" FOREIGN KEY ("from") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_to_fkey" FOREIGN KEY ("to") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FavList" ADD CONSTRAINT "FavList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -427,6 +455,18 @@ ALTER TABLE "Messages" ADD CONSTRAINT "Messages_userId_fkey" FOREIGN KEY ("userI
 
 -- AddForeignKey
 ALTER TABLE "Messages" ADD CONSTRAINT "Messages_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("roomId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "NotificationRoom" ADD CONSTRAINT "NotificationRoom_From_fkey" FOREIGN KEY ("From") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "NotificationRoom" ADD CONSTRAINT "NotificationRoom_To_fkey" FOREIGN KEY ("To") REFERENCES "Notifications"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InterviewRequest" ADD CONSTRAINT "InterviewRequest_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InterviewRequest" ADD CONSTRAINT "InterviewRequest_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserTouserRooms" ADD CONSTRAINT "_UserTouserRooms_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

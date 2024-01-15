@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect,useContext } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Animated, FlatList, useWindowDimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import * as SecureStore from 'expo-secure-store';
 
 import Step1 from './steps/step1';
 import Step2 from './steps/step2';
@@ -26,16 +26,18 @@ import { useRoute } from '@react-navigation/native';
     const [role,setRole]=useState()
     const [pdp,setPdp]=useState()
     const slideAnim = useRef(new Animated.Value(0)).current;
-    // const {token,setToken} = useContext(AuthContext)
     const route = useRoute()
     const {setToken}=route.params
 useEffect( ()=>{
-  const tst = async ()=>{
-  
-  }
-  // tst()
+
 },[])
-  // console.log(setToken,token);
+const saveCurrentUser =async (data)=>{
+await SecureStore.setItemAsync('Token',data)
+}
+const getCurrentUser =async ()=>{
+const res = await SecureStore.getItemAsync('Token')
+console.log(res,'TOKEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEENNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN');
+}
     const switchToStep2 = () => {
       Animated.timing(slideAnim, {
         toValue: 1,
@@ -70,12 +72,10 @@ useEffect( ()=>{
          const emailSent= await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/company/create`,{email,name,pdp,userName})
          const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/create`,companyData)
          await createUserWithEmailAndPassword(auth,email,password)
-         await AsyncStorage.setItem("Token",response.data)
-
-        await setToken(response.data)
-        await AsyncStorage.setItem('Token',response.data).then(()=>{
-          navigation.navigate('Home')
-         })
+         saveCurrentUser(response.data)
+         getCurrentUser()
+         await setToken(response.data)
+        
       }catch(err){
           console.log(err);
       }
@@ -96,10 +96,9 @@ useEffect( ()=>{
       try {
         const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/create`,userData)
         await  createUserWithEmailAndPassword(auth,email,password)
-        await setToken(response.data)
-       await AsyncStorage.setItem('Token',response.data).then(()=>{
-        navigation.navigate('Home')
-       })
+       await setToken(response.data)
+       saveCurrentUser(response.data)
+       getCurrentUser()
       }catch(err){
 console.log(err);
       }finally{
