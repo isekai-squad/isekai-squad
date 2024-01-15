@@ -17,10 +17,14 @@ import ForumCategories from "./App/component/Posts/ForumCategories";
 import UserProfile from "./App/Screens/UserProfile/ProfileUser";
 import CreatePost from "./App/component/Posts/CreatePost";
 import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPassword";
+import ServiceDetaite from "./App/component/sreviceDetait";
+import ServiceDofStudent from "./App/Service/ServiceDetatUser"
+import PostServices from "./App/component/PostServices";
 import ChatScreen from "./App/Screens/Chat/ChatScreen";
 import Basket from "./App/Screens/Basket/basket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from 'expo-secure-store';
 import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
@@ -66,6 +70,39 @@ const DrawerNavigator = () => {
           ),
         }}
       />
+      <Drawer.Screen name="ServiceDetails" component={ServiceDofStudent} />
+      <Drawer.Screen name="Servicee" component={service} />
+
+      <Drawer.Screen
+        name="service"
+        component={service}
+        options={{
+          // headerShown: false,
+
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="home"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Postservices"
+        component={PostServices}
+        options={{
+          // headerShown: false,
+
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="home"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="basket"
         component={Basket}
@@ -78,14 +115,29 @@ const DrawerNavigator = () => {
           ),
           headerTitleContainerStyle: { width: "100%" },
           drawerIcon: ({ focused, size }) => (
-            <Ionicons
-              name="basket"
+            <Feather
+              name="shopping-cart"
               size={size}
               color={focused ? STYLES.COLORS.Priamary : "black"}
             />
           ),
         })}
       />
+
+      <Drawer.Screen
+        name="favoriteList"
+        component={FavoriteList}
+        options={{
+          drawerIcon: ({ focused, size }) => (
+            <MaterialCommunityIcons
+              name="heart-multiple"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
+
       <Drawer.Screen
         name="chat"
         component={ChatScreen}
