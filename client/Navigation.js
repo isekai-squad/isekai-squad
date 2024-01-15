@@ -18,36 +18,28 @@ import ForgotPassword from "./App/Screens/Authentication/forgotPassword/ForgotPa
 import { AuthContext } from "./App/Context/AuthContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatScreen from "./App/Screens/Chat/ChatScreen";
-
+import * as SecureStore from 'expo-secure-store';
+import { UserChatRoom } from "./App/Screens/Chat/UserChatRoom";
 const Stack = createStackNavigator();
 export const Navigation = () => {
-  const [auth, setAuth] = useState(true);
-  const [Token,setToken]=useState()
-  const getCurrentUser = async()=>{
-    AsyncStorage.clear()
-   await setToken(  (await AsyncStorage.getItem('Token')).valueOf() )
-  }
+  const [auth, setAuth] = useState();
+   const [Token,setToken]=useState()
+   const getCurrentUser =async ()=>{
+    const res = await SecureStore.getItemAsync('Token')
+    setAuth(res)
+    }
+
   useEffect(()=>{
     getCurrentUser()
   },[Token])
   return (
     <NavigationContainer>
-      {Token ? (
+      {auth ? (
         <ProfileProvider>
           <Stack.Navigator>
             <Stack.Screen
               name="tabs"
               component={MainContainer}
-              //   options={({ navigation }) => ({
-              //     headerTitle: () => (
-              //       <SearchHeader
-              //         onChangeText={(text) => console.log("Search:", text)}
-              //       />
-              //     ),
-              //     headerTitleContainerStyle: { width: "100%" },
-              //   })
-
-              // }
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -102,6 +94,13 @@ export const Navigation = () => {
             }}
             name="chat"
             component={ChatScreen}
+          />
+               <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="rooms"
+            component={UserChatRoom}
           />
           </Stack.Navigator>
         </ProfileProvider>

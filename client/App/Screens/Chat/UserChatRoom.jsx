@@ -1,81 +1,94 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList, useWindowDimensions, SafeAreaView } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList,StyleSheet, TouchableOpacity, Image } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default Calls = () => {
-    const [convos, setConvos] = useState([])
-  const userId="e0e2d7aa-f256-4fa1-b1e1-614a63651409"
-useEffect(()=>{
- const getConvos= async()=>{
-    try{
+export const UserChatRoom = ({navigation}) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [convos, setConvos] = useState([]);
+
+  const getCurrentUser = async () => {
+    try {
+      const res = await SecureStore.getItemAsync('Token');
+      const decoded = await jwtDecode(res);
+      setCurrentUser(decoded);
+    } catch (error) {
+      console.error('Error retrieving or decoding token:', error);
+    }
+  };
+
+  const getConvos = async () => {
+    try {
+      if (currentUser) {
         const response = await axios.get(
-            `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/chat/room/get/e0e2d7aa-f256-4fa1-b1e1-614a63651409`
-          )
-          setConvos(response.data);
-        const obj = {
-            Messages: 'ds',
-            users1: 'dsd',
-            users2: 'dsd',
-        }
-        
-        // console.log(response.data,'heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-    }catch(err){
-        console.log(err);
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/chat/room/get/${currentUser.id}`
+        );
+        setConvos(response.data);
+    
+      }
+    } catch (err) {
+      console.log(err);
     }
- }
- getConvos()
-},[])
+  };
 
-const renderItem = ({ item }) => {
-    let other
-    var callIcon = 'https://img.icons8.com/color/48/000000/phone.png'
-    if (item.video == true) {
-        callIcon = 'https://img.icons8.com/color/48/000000/video-call.png'
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      getConvos();
     }
-     if (item.user1.id === userId){
-        other = item.user2
-     } else {
-        other = item.user1
-     }
+  }, [currentUser]);
+ 
+
+
+  const renderItem = ({ item }) => {
+    
+    if (item.user1.id === currentUser.id){
+              other = item.user2
+           } else {
+              other = item.user1
+           }
     return (
-      <TouchableOpacity >
+      <TouchableOpacity 
+      onPress={()=>navigation.navigate('chat',{userId:currentUser.id,roomId:item.roomId,other:other})}
+      >
         <View style={styles.row}>
-          <Image source={{ uri: other.pdp}} style={styles.pic} />
+          <Image source={{ uri: other.pdp }} style={styles.pic} />
           <View>
             <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt}> {other.userName}</Text>
-            </View>
-            <View style={styles.nameContainer}>
-                {item.lastMessage !== null ? <Text>{item.lastMessage.sender.id === userId ? "You: " : item.lastMessage.sender.name}{item.lastMessage.text}</Text> : <Text>No Messages yet</Text>}
-              {/* <Text style={{top:10,marginLeft:10}} > {item.lastMessage !== null ?  item.lastMessage.text : "no Message yet"}</Text> */}
+              <Text style={styles.nameTxt}>{other.name}</Text>
             </View>
             <View style={styles.end}>
-              <View style={{ width:'100%'}}>
-
-              <Text style={styles.time}>
+            {item.lastMessage !== null ? <Text>{item.lastMessage.sender.id === currentUser.id ? "You:" : item.lastMessage.sender.name} {item.lastMessage.text}</Text> : <Text>No Messages yet</Text>}
+            {/* <Text style={{top:10,marginLeft:10}} > {item.lastMessage !== null ?  item.lastMessage.text : "no Message yet"}</Text>            */}
+               <Text style={styles.time}>
                 {item.date} {item.time}
               </Text>
-              </View>
-              
             </View>
           </View>
-          {/* <Image style={[styles.icon, { marginRight: 50 }]} source={{ uri: callIcon }} /> */}
         </View>
       </TouchableOpacity>
     )
   }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
+
+    <View style={{ flex: 1 }}>
       <FlatList
         extraData={convos}
         data={convos}
         keyExtractor={item => {
-            // console.log(item.sender.pdp,'fffffffffffffffffffffffffffffffffffffffffffffffffffff')
           return item.id
         }}
         renderItem={renderItem}
-      />
-    </SafeAreaView>
+        />
+    </View>
+</SafeAreaView>
   )
 }
 
@@ -98,6 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: 270,
+    right:20,
   },
   nameTxt: {
     marginLeft: 15,
@@ -118,9 +132,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#666',
     fontSize: 12,
-    alignSelf:'flex-end',
-    marginRight:50,
-    bottom:20
   },
   icon: {
     height: 28,
@@ -128,4 +139,4 @@ const styles = StyleSheet.create({
   },
 })
 
-                                        
+
