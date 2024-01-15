@@ -6,7 +6,7 @@ import {
   Heading,
   VStack,
 } from "@gluestack-ui/themed";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -15,14 +15,22 @@ import NormalNotif from "./NormalNotif";
 import InterviewNotif from "./InterviewNotif";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 const Notification = () => {
   const [focused, setFocused] = useState("General");
-  const [data, setData] = useState([1, 1, 1, 1, 1, 1, 1, 1]);
+  const [data, setData] = useState([]);
+  const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`)
 
-  const query = useQuery({
-    queryKey : ["notifications"] , 
-    queryFn : () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/`).then(res => res.data).catch(err => console.log(er))
+  const retreiveNotifications = async () => {
+  await axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/`).then(res => [...res.data].sort((a , b) => new Date(b.created_at) - new Date(a.created_at))).then(data => setData(data)) 
+  }
+
+  useEffect(() => {
+    retreiveNotifications();
+    socket.on('newNotification' , () => {
+      retreiveNotifications();
+    }, [])
   })
   return (
     <ScrollView style={{ backgroundColor: "white", marginBottom: 40 }}>

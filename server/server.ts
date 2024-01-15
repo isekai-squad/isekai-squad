@@ -85,6 +85,17 @@ io.on('connection', (socket) => {
     console.log(`User joined room: ${roomId}`);
   });
 
+  socket.on('sendNotification' ,async ({sender , receiver , content}) => {
+     await prisma.notifications.create({
+      data: {
+        sender,
+        receiver,
+        content,
+      },
+    });
+    io.to(receiver).emit('newNotification', notification);
+  }) 
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
