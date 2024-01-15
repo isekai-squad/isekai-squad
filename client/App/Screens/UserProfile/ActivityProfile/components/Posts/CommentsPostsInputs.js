@@ -1,7 +1,6 @@
 import {
   Image,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -12,19 +11,21 @@ import {
 import React, { useContext, useState } from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
-import { STYLES } from "../../../../../GlobalCss";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../../../../FirebaseConfig";
+import { storage } from "../../../../../../FirebaseConfig";
 import { useMutation } from "@tanstack/react-query";
 import { ToastAndroid } from "react-native";
+
 import {
-  PostProjectComment,
-  PostProjectReplyComment,
+  PostPostsComment,
+  PostPostsReplyComment,
   ProfileContext,
-} from "../../../../Context/ProfileContext";
+} from "../../../../../Context/ProfileContext";
+import { STYLES } from "../../../../../../GlobalCss";
 
 const CommentsInputs = ({
-  projectsComments,
+  refetchPostsComments,
+  postsCommentsId,
   commentType,
   replyCommentId,
   showReplyInput,
@@ -37,11 +38,10 @@ const CommentsInputs = ({
   const [alert, setAlert] = useState(false);
   // ================================================
   const { mutateAsync: PostComment } = useMutation({
-    mutationFn: (data) =>
-      PostProjectComment(userId, projectsComments.projectId, data),
+    mutationFn: (data) => PostPostsComment(userId, postsCommentsId, data),
   });
   const { mutateAsync: PostReply } = useMutation({
-    mutationFn: (data) => PostProjectReplyComment(userId, replyCommentId, data),
+    mutationFn: (data) => PostPostsReplyComment(userId, replyCommentId, data),
   });
   // ================================================
 
@@ -68,11 +68,8 @@ const CommentsInputs = ({
       const filename = imageFile.substring(imageFile.lastIndexOf("/") + 1);
       console.log("Filename:", filename);
 
-      const storageRef = ref(storage, "/commentImage");
+      const storageRef = ref(storage, "/PostsCommentImage");
       const imageRef = ref(storageRef, filename);
-
-      // Log upload start
-      console.log("Uploading image to Firebase Storage...");
 
       await uploadBytes(imageRef, blob);
 
@@ -101,8 +98,6 @@ const CommentsInputs = ({
 
         const result = await uploadImage(selectedImageComment);
 
-        console.log("Upload Result:", result);
-
         if (result) {
           postCommentImage = result;
         }
@@ -113,7 +108,7 @@ const CommentsInputs = ({
           userId: userId,
           content: commentText,
           image: postCommentImage,
-          project_commentsId: replyCommentId,
+          post_commentsId: replyCommentId,
         };
 
         await PostReply(reply);
@@ -121,8 +116,8 @@ const CommentsInputs = ({
         const comment = {
           userId: userId,
           content: commentText,
-          image: postCommentImage,
-          projectId: projectsComments.projectId,
+          images: postCommentImage,
+          postId: postsCommentsId,
         };
 
         await PostComment(comment);
@@ -135,7 +130,7 @@ const CommentsInputs = ({
       setSelectedImageComment(null);
       setCommentText(null);
       setRefetchReplyComment(true);
-      projectsComments && projectsComments.refetchComments();
+      refetchPostsComments && refetchPostsComments();
     }
   };
 

@@ -20,7 +20,7 @@ const checkout = async (data) => {
     );
     return response.data;
   } catch (err) {
-    console.log(err, "eeee");
+    console.log(err);
   }
 };
 // STEP 2
@@ -71,7 +71,6 @@ const CheckoutScreen = ({ ORDER, refetchBasket, setCheckOurServices }) => {
   const { mutateAsync: updateBasket } = useMutation({
     mutationFn: (data) => payedBasket(data),
   });
-
   const { mutateAsync: byNow } = useMutation({
     mutationFn: (total) => checkout({ amount: Math.floor(total * 100) }),
 

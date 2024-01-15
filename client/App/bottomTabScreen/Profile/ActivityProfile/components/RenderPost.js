@@ -10,9 +10,8 @@ import {
 import { STYLES } from "../../../../../GlobalCss";
 import Swiper from "react-native-swiper";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import Interaction from "./Interaction";
 import AwesomeAlert from "react-native-awesome-alerts";
-
+import Interaction from "../../../../Screens/UserProfile/ActivityProfile/components/Interaction";
 import {
   ProfileContext,
   deleteProject,
@@ -100,7 +99,7 @@ const RenderPost = ({ item, refetchProject }) => {
           />
         ))}
       </Swiper>
-      <Interaction projectId={item.id} />
+      <Interaction postId={item.id} />
 
       <AwesomeAlert
         show={confirmAlert}
