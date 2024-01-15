@@ -22,6 +22,8 @@ import Basket from "./App/Screens/Basket/basket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { STYLES } from "./GlobalCss";
+import * as SecureStore from 'expo-secure-store';
+import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
 import CreateForumPost from "./App/component/Posts/CreateForumPost";
 
 const Stack = createStackNavigator();
@@ -89,13 +91,15 @@ const DrawerNavigator = () => {
         component={ChatScreen}
         options={{
           headerShown: false,
-          drawerIcon: ({ focused, size }) => (
-            <Ionicons
-              name="chatbubbles-sharp"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
-            />
-          ),
+         
+        }}
+      />
+      <Drawer.Screen
+        name="rooms"
+        component={UserChatRoom}
+        options={{
+          headerShown: false,
+      
         }}
       />
       <Drawer.Screen
@@ -130,18 +134,20 @@ const DrawerNavigator = () => {
   );
 };
 export const Navigation = () => {
-  const [Token, setToken] = useState();
-  const getCurrentUser = async () => {
-    AsyncStorage.clear();
-    await setToken((await AsyncStorage.getItem("Token")).valueOf());
-  };
-  useEffect(() => {
-    getCurrentUser();
-  }, [Token]);
+  const [auth, setAuth] = useState();
+   const [Token,setToken]=useState()
+   const getCurrentUser =async ()=>{
+    const res = await SecureStore.getItemAsync('Token')
+    setAuth(res)
+    }
 
+  useEffect(()=>{
+    
+    getCurrentUser()
+  },[Token])
   return (
     <NavigationContainer>
-      {!Token ? (
+      {auth ? (
         <ProfileProvider>
           <VisitProfileProvider>
             <Drawer.Navigator>

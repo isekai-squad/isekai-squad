@@ -23,9 +23,6 @@ const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`);
 export const MainContainer = () => {
   const { activeMiddleTab } = useContext(ProfileContext);
 
-  // useEffect(() => {
-  //   socket.on('userConnected' , useri)
-  // },[])
 
   return (
     <Tab.Navigator
