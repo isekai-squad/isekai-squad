@@ -17,8 +17,9 @@ function HomeScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate("chat")}>
         <Text>go to chat</Text>
       </TouchableOpacity>
-
-
+      <TouchableOpacity onPress={() => navigation.navigate("rooms")}>
+        <Text>go to ROOms</Text>
+      </TouchableOpacity>
     </View>
   );
 }
