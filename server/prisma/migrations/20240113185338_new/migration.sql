@@ -138,6 +138,7 @@ CREATE TABLE "Basket" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
     "serviceId" TEXT,
+    "payed" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Basket_pkey" PRIMARY KEY ("id")
 );
@@ -228,6 +229,17 @@ CREATE TABLE "Forum_Category" (
     "image" TEXT NOT NULL,
 
     CONSTRAINT "Forum_Category_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT,
+    "basketId" TEXT,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -403,6 +415,12 @@ ALTER TABLE "Likes" ADD CONSTRAINT "Likes_fPost_commentsId_fkey" FOREIGN KEY ("f
 
 -- AddForeignKey
 ALTER TABLE "Likes" ADD CONSTRAINT "Likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Payment" ADD CONSTRAINT "Payment_basketId_fkey" FOREIGN KEY ("basketId") REFERENCES "Basket"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Messages" ADD CONSTRAINT "Messages_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

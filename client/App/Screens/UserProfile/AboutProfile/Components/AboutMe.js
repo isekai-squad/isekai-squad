@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { STYLES } from "../../../../../GlobalCss";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { ProfileContext } from "../../../../Context/ProfileContext";
+import { VisitProfileContext } from "../../../../Context/VisitProfileContext";
 
 const AboutMe = () => {
-  const { ProfileData } = useContext(ProfileContext);
+  const { visitedProfileData } = useContext(VisitProfileContext);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -15,27 +15,27 @@ const AboutMe = () => {
           size={20}
           color={STYLES.COLORS.Priamary}
         />
-        <Text style={styles.header}>About {ProfileData.role}</Text>
+        <Text style={styles.header}>About {visitedProfileData.role}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Name:</Text>
-        <Text style={styles.value}>{ProfileData.name}</Text>
+        <Text style={styles.value}>{visitedProfileData.name}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Phone:</Text>
-        <Text style={styles.value}>(+216) {ProfileData.number}</Text>
+        <Text style={styles.value}>(+216) {visitedProfileData.number}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{ProfileData.email}</Text>
+        <Text style={styles.value}>{visitedProfileData.email}</Text>
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Location:</Text>
-        <Text style={styles.value}>{ProfileData.location}</Text>
+        <Text style={styles.value}>{visitedProfileData.location}</Text>
       </View>
       <View style={styles.bioContainer}>
         <Text style={styles.label}>Bio:</Text>
-        <Text style={styles.bioText}>{ProfileData.bio}</Text>
+        <Text style={styles.bioText}>{visitedProfileData.bio}</Text>
       </View>
     </ScrollView>
   );
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     flexDirection: "row",
     alignItems: "center",
+
     marginBottom: 10,
   },
   label: {
@@ -85,6 +86,7 @@ const styles = StyleSheet.create({
     color: STYLES.COLORS.LightText,
     textTransform: "capitalize",
     paddingRight:50
+
   },
 });
 

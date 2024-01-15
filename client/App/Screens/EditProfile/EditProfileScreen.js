@@ -18,7 +18,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import { STYLES } from "../../../GlobalCss";
 
 function EditProfile() {
-  const { setActiveMiddleTab, handleSubmit, loading, role } =
+  const { setActiveMiddleTab, handleSubmit, loading, ProfileData } =
     useContext(ProfileContext);
   const navigation = useNavigation();
   const [showAlert, setShowAlert] = useState(false);
@@ -61,7 +61,7 @@ function EditProfile() {
           </TouchableOpacity>
           <ChangeImages />
           <ChangeInfo />
-          {role == "STUDENT" && <MainSkills />}
+          {ProfileData.role == "STUDENT" && <MainSkills />}
           <TouchableOpacity
             disabled={loading}
             style={styles.saveButton}
@@ -93,7 +93,7 @@ function EditProfile() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 50,
     paddingBottom: 20,
     flex: 1,
     backgroundColor: "white",

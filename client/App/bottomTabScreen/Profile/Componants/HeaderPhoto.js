@@ -29,7 +29,7 @@ const HeaderPhoto = () => {
           <View style={styles.descriptionDetails}>
             <Text style={styles.detailText}>{ProfileData.project?.length}</Text>
             <Text style={styles.detailLabel}>
-              {role == "STUDENT" ? "Projects" : "Posts"}
+              {ProfileData.role == "STUDENT" ? "Projects" : "Posts"}
             </Text>
           </View>
 
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     height: 90,
     width: 90,
     borderColor: "white",
-    borderWidth: 3,
+    borderWidth: 1,
     borderRadius: 100,
   },
   descriptionContainer: {

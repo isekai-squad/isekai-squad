@@ -39,20 +39,21 @@ const Bio = () => {
             contentContainerStyle={styles.scrollViewContent}
           >
             <View style={styles.interestingContainer}>
-              {userTechnology.map((technologie, i) => {
-                return (
-                  <TouchableOpacity key={i} style={styles.interestingTag}>
-                    <Image
-                      source={{ uri: technologie.Technologies.image }}
-                      style={styles.tagImage}
-                    />
+              {userTechnology.length>0 &&
+                userTechnology?.map((technologie, i) => {
+                  return (
+                    <TouchableOpacity key={i} style={styles.interestingTag}>
+                      <Image
+                        source={{ uri: technologie.Technologies.image }}
+                        style={styles.tagImage}
+                      />
 
-                    <Text style={styles.tagText}>
-                      {technologie.Technologies.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+                      <Text style={styles.tagText}>
+                        {technologie.Technologies?.name}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
             </View>
           </ScrollView>
         )}

@@ -55,7 +55,7 @@ export default function SignIn({ navigation }) {
         try {
             var response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/signin/`, data)
             await setToken(response.data.token)
-            console.log(response.data.token);
+            
             await AsyncStorage.setItem('Token', response.data.token).then(() => {
                 navigation.navigate('Home')
             })

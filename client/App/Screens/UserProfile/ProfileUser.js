@@ -12,12 +12,13 @@ import {
 import HeaderPhoto from "./Componants/HeaderPhoto";
 import Bio from "./Componants/Bio";
 import MiddelTab from "./Componants/MiddelTab";
-import { ProfileContext } from "../../Context/ProfileContext";
 import AboutProfile from "./AboutProfile/AboutProfile";
 import { STYLES } from "../../../GlobalCss";
 import Activity from "./ActivityProfile/Activity";
+import Report from "./Componants/Report";
+import { VisitProfileContext } from "../../Context/VisitProfileContext";
 
-function ProfileScreen() {
+function UserProfile() {
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../../../assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Bold": require("../../../assets/fonts/Roboto-Bold.ttf"),
@@ -25,20 +26,24 @@ function ProfileScreen() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const { activeMiddleTab, LoadingProfile, refetchProfile, refetchProject } =
-    useContext(ProfileContext);
+  const {
+    activeMiddleTab,
+    LoadingVisitedProfile,
+    refetchVisitedProfile,
+    refetchPosts,
+  } = useContext(VisitProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refetchProfile();
-    refetchProject && refetchProject();
+    refetchVisitedProfile();
+    refetchPosts && refetchPosts();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
-  if (!fontsLoaded || LoadingProfile) {
+  if (!fontsLoaded || LoadingVisitedProfile) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={STYLES.COLORS.Priamary} />
@@ -58,6 +63,7 @@ function ProfileScreen() {
           <Bio />
         </View>
         <MiddelTab />
+        <Report />
         {activeMiddleTab === "About" && <AboutProfile />}
         {activeMiddleTab === "Activity" && <Activity />}
       </ScrollView>
@@ -90,4 +96,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default UserProfile;

@@ -1,56 +1,75 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-} from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Entypo from "react-native-vector-icons/Entypo";
+import React, { useContext } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Entypo from "react-native-vector-icons/Entypo";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import { STYLES } from "../../../../GlobalCss";
-import { View } from "react-native";
+import { VisitProfileContext } from "../../../Context/VisitProfileContext";
 
-function MiddelTab({ navigation }) {
-  const [active, setActive] = useState(0);
+function MiddelTab() {
+  const { setReportPop, activeMiddleTab, setActiveMiddleTab } =
+    useContext(VisitProfileContext);
+
+  const renderTabButton = (tabName, iconComponent) => (
+    <TouchableOpacity
+      style={styles.tabButton}
+      onPress={() => setActiveMiddleTab(tabName)}
+    >
+      {iconComponent}
+      <Text
+        style={
+          activeMiddleTab === tabName ? styles.activeText : styles.inactiveText
+        }
+      >
+        {tabName}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
-      <View style={styles.nestedContainer}>
-        <TouchableOpacity
-          style={styles.btnTouch}
-          onPress={() => {
-            setActive(0);
-          }}
-        >
+      <View style={styles.tabContainer}>
+        {renderTabButton(
+          "Activity",
           <AntDesign
-            name={"appstore-o"}
+            name="appstore-o"
             size={20}
-            color={active === 0 ? STYLES.COLORS.Priamary : "#ab71ef"}
+            color={
+              activeMiddleTab === "Activity"
+                ? STYLES.COLORS.Priamary
+                : "#ab71ef"
+            }
           />
-          <Text style={active === 0 ? styles.btnActive : styles.btn}>
-            Activity
-          </Text>
-        </TouchableOpacity>
+        )}
 
-        <TouchableOpacity
-          style={styles.btnTouch}
-          onPress={() => {
-            setActive(1);
-          }}
-        >
+        {renderTabButton(
+          "About",
           <MaterialCommunityIcons
-            name={"newspaper"}
+            name="newspaper"
             size={20}
-            color={active === 1 ? STYLES.COLORS.Priamary : "#ab71ef"}
+            color={
+              activeMiddleTab === "About" ? STYLES.COLORS.Priamary : "#ab71ef"
+            }
           />
-          <Text style={active === 1 ? styles.btnActive : styles.btn}>
-            About
-          </Text>
-        </TouchableOpacity>
+        )}
       </View>
+
+      <TouchableOpacity
+        style={{
+          borderColor: "#00000078",
+          borderWidth: 1,
+          borderRadius: 100,
+          padding: 12,
+          alignSelf: "center",
+        }}
+        onPress={() => setReportPop((pop) => !pop)}
+      >
+        <Entypo name="dots-three-horizontal" color={"black"} />
+      </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
@@ -58,27 +77,27 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     justifyContent: "space-between",
     alignItems: "center",
+    borderBottomWidth: 5,
+    borderBottomColor: "#eee",
   },
-  nestedContainer: {
+  tabContainer: {
     flexDirection: "row",
     gap: 20,
   },
-
-  btnTouch: {
+  tabButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    stifyContent: "center",
     gap: 10,
   },
-
-  btnActive: {
+  activeText: {
     fontSize: STYLES.SIZES.sizeM,
     fontWeight: STYLES.FONTS.bold,
     color: "black",
   },
-  btn: {
+  inactiveText: {
     color: "#7a7a7a",
   },
 });
+
 export default MiddelTab;

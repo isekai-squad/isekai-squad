@@ -5,7 +5,7 @@ const route = require("express").Router()
 route.get("/Projects" , PostController.getAllProject)
 route.get("/Projects/:userId", PostController.getAllProjectOneUser)
 route.get("/Posts" , PostController.getAllPosts)
-route.get("/Posts/:userId", PostController.getAllPostsOneUser)
+route.get("/Post/:userId", PostController.getAllPostsOneUser)
 route.post("/Projects/:userId", PostController.addProject)
 route.post("/Posts/:userId" , PostController.addPost)
 route.delete("/Projects/:userId/:projectId", PostController.deleteProject)
@@ -17,7 +17,7 @@ route.post("/Projects/DownVote/:userId/:projectId" , PostController.downVoteProj
 route.post("/Posts/UpVote/:userId/:postId" , PostController.upVotePost)
 route.post("/Posts/DownVote/:userId/:postId" , PostController.downVotePost)
 route.get("/Projects/Likes/:projectId", PostController.getAlllLikesProject)
-route.get("/Projects/:userId/Likes", PostController.getUserLikes)
+route.get("/:userId/Likes", PostController.getUserLikes)
 route.get("/Posts/Likes/:postId", PostController.getAllLikesPosts)
 
 export default route;
