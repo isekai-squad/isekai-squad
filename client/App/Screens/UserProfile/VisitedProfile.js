@@ -29,15 +29,20 @@ function UserProfile() {
 
   const { activeMiddleTab, LoadingVisitedProfile } =
     useContext(VisitProfileContext);
-  const { setRefetchPosts, refetchPosts } = useContext(ProfileContext);
+  const { refetchProfile, setRefetchPosts, setRefetchProject } =
+    useContext(ProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setRefetchPosts();
-    refetchPosts && refetchPosts();
+    setRefetchPosts(true);
+    setRefetchProject(true);
+    refetchProfile();
     setTimeout(() => {
       setRefreshing(false);
+      setRefreshing(false);
+      setRefetchPosts(false);
+      setRefetchProject(false);
     }, 2000);
   }, []);
 
