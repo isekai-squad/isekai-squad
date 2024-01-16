@@ -13,7 +13,7 @@ function HomeScreen({ navigation }) {
 
   return (
     <ScrollView>
-      <SafeAreaView
+      {/* <SafeAreaView
         style={{
           backgroundColor: "white",
           flex: 1,
@@ -23,7 +23,7 @@ function HomeScreen({ navigation }) {
       >
         <StartCover />
         {ProfileData.role === "STUDENT" && <PremiumRecommendation />}
-      </SafeAreaView>
+      </SafeAreaView> */}
     </ScrollView>
   );
 }
