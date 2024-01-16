@@ -9,12 +9,13 @@ import {
   KeyboardAvoidingView,
   SafeAreaView,
   Platform,
-} from "react-native";
-import Feather from "react-native-vector-icons/Feather";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { STYLES } from "../../../../../GlobalCss";
-import { useFonts } from "expo-font";
+} from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { STYLES } from '../../../../../GlobalCss';
+import { useFonts } from 'expo-font';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const Step1 = ({
   setStep,
@@ -61,35 +62,18 @@ const Step1 = ({
   const { width, height } = useWindowDimensions();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <TouchableOpacity
-        onPress={() => navigation.navigate("signIn")}
-        style={{
-          position: "absolute",
-          top: 0,
-          marginLeft: 10,
-        }}
-      >
-        <Text style={{ fontSize: 20, color: STYLES.COLORS.Priamary }}>
-          Already have an Account?
-        </Text>
-      </TouchableOpacity>
+    // <KeyboardAwareScrollView
+      
+    // >
+    <View>
 
-      <View
-        style={{
-          width,
-          height,
-          justifyContent: "center",
-          alignItems: "center",
-          bottom: 20,
-        }}
-      >
-        <View
-          style={{ gap: 20, justifyContent: "center", alignItems: "center" }}
-        >
+
+<TouchableOpacity onPress={()=>navigation.navigate('signIn')}>
+
+<Text style={{position:'absolute',top:0,marginTop:50,marginLeft:10,fontSize:20,color:STYLES.COLORS.Priamary}}>Create Account?</Text>
+</TouchableOpacity>
+      <View style={{ width, height, justifyContent: 'center', alignItems: 'center',bottom:20 }}>
+        <View style={{ gap: 20, justifyContent: 'center', alignItems: 'center' }}>
           <View>
             <TouchableOpacity
               onPress={() => setPressed("STUDENT")}
@@ -103,74 +87,42 @@ const Step1 = ({
                 size={30}
               />
             </TouchableOpacity>
-            {pressed !== "STUDENT" ? (
-              <Text style={{ textAlign: "center" }}>Student</Text>
-            ) : (
-              <Text style={{ textAlign: "center" }}>
-                <FontAwesome
-                  color={STYLES.COLORS.Priamary}
-                  size={22}
-                  name="caret-up"
-                />
+            {pressed !== 'STUDENT' ? (
+              <Text style={{ textAlign: 'center' }}>Student</Text>
+              ) : (
+              <Text style={{ textAlign: 'center' }}>
+                <FontAwesome color={STYLES.COLORS.Priamary} size={22} name='caret-up' />
               </Text>
             )}
           </View>
           <View style={{ gap: 40, flexDirection: "row" }}>
             <View>
               <TouchableOpacity
-                onPress={() => setPressed("COMPANY")}
-                style={
-                  pressed !== "COMPANY"
-                    ? Styles.IconView
-                    : Styles.PressedIconView
-                }
-              >
-                <FontAwesome
-                  style={
-                    pressed !== "COMPANY" ? Styles.Icon : Styles.PressedIcon
-                  }
-                  name="building-o"
-                  size={30}
-                />
+                onPress={() => setPressed('COMPANY')}
+                style={pressed !== 'COMPANY' ? Styles.IconView : Styles.PressedIconView}
+                >
+                <FontAwesome style={pressed !== 'COMPANY' ? Styles.Icon : Styles.PressedIcon} name='building-o' size={30} />
               </TouchableOpacity>
-              {pressed !== "COMPANY" ? (
-                <Text style={{ textAlign: "center" }}>Company</Text>
-              ) : (
-                <Text style={{ textAlign: "center" }}>
-                  <FontAwesome
-                    color={STYLES.COLORS.Priamary}
-                    size={22}
-                    name="caret-up"
-                  />
+              {pressed !== 'COMPANY' ? (
+                <Text style={{ textAlign: 'center' }}>Company</Text>
+                ) : (
+                  <Text style={{ textAlign: 'center' }}>
+                  <FontAwesome color={STYLES.COLORS.Priamary} size={22} name='caret-up' />
                 </Text>
               )}
             </View>
             <View>
               <TouchableOpacity
-                onPress={() => setPressed("ADVISOR")}
-                style={
-                  pressed !== "ADVISOR"
-                    ? Styles.IconView
-                    : Styles.PressedIconView
-                }
-              >
-                <FontAwesome5
-                  style={
-                    pressed !== "ADVISOR" ? Styles.Icon : Styles.PressedIcon
-                  }
-                  name="hands-helping"
-                  size={30}
-                />
+                onPress={() => setPressed('ADVISOR')}
+                style={pressed !== 'ADVISOR' ? Styles.IconView : Styles.PressedIconView}
+                >
+                <FontAwesome5 style={pressed !== 'ADVISOR' ? Styles.Icon : Styles.PressedIcon} name='hands-helping' size={30} />
               </TouchableOpacity>
-              {pressed !== "ADVISOR" ? (
-                <Text style={{ textAlign: "center" }}>Advisor</Text>
-              ) : (
-                <Text style={{ textAlign: "center" }}>
-                  <FontAwesome
-                    color={STYLES.COLORS.Priamary}
-                    size={22}
-                    name="caret-up"
-                  />
+              {pressed !== 'ADVISOR' ? (
+                <Text style={{ textAlign: 'center' }}>Advisor</Text>
+                ) : (
+                  <Text style={{ textAlign: 'center' }}>
+                  <FontAwesome color={STYLES.COLORS.Priamary} size={22} name='caret-up' />
                 </Text>
               )}
             </View>
@@ -206,7 +158,7 @@ const Step1 = ({
                     placeholder="FullName"
                     value={name}
                     onChangeText={(text) => setName(text)}
-                  />
+                    />
                 </View>
                 {errorInput === "no name" && (
                   <Text style={{ color: "red", top: 20 }}>Enter A name</Text>
@@ -263,7 +215,8 @@ const Step1 = ({
           </View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+      </View>
+    // </KeyboardAwareScrollView>
   );
 };
 const Styles = {

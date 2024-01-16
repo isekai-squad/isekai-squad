@@ -1,248 +1,175 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-  Image,
-  ScrollView,
-} from "react-native";
-import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, useWindowDimensions, Image } from "react-native"
 import { STYLES } from "../../../../../GlobalCss";
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import * as ImagePicker from 'expo-image-picker';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
 
-const Step6 = ({ createAccount, role }) => {
-  const [company, setComapny] = useState(false);
+import { storage, auth } from "../../../../../FirebaseConfig";
+import { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+export default Step6 = ({ setPdp, pdp, createAccount,setStep,navigation }) => {
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+  }, [pdp]);
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      const selectedAsset = result.assets[0];
+      const source = { uri: selectedAsset.uri };
+      await setPdp(source.uri)
 
-  const { width, height } = useWindowDimensions();
+    }
+  };
+
+
+  const uploadPdp = async () => {
+
+    try {
+      if (!pdp) {
+        console.error("No image selected for upload.");
+        return;
+      }
+      let r = (Math.random() + 1).toString(36).substring(7);
+
+      setLoading(true)
+      const imageRef = ref(storage, `profileImage/${r}`);
+      const response = await fetch(pdp);
+      const blob = await response.blob();
+
+      await uploadBytes(imageRef, blob);
+
+      const downloadURL = await getDownloadURL(imageRef);
+
+      await setPdp(downloadURL);
+      setLoading(false)
+      setStep(7)
+
+    } catch (error) {
+      setLoading(false)
+      console.error("Error uploading image:", error);
+    }
+  };
+
+  const { width } = useWindowDimensions()
+
   return (
-    <View style={{}}>
-      {role === "COMPANY" && (
-        <View
-          style={{ alignItems: "center", width, height, gap: 30, bottom: 40 }}
-        >
+    <View>
+      <SafeAreaView>
+        <View style={Styles.mainContainer}>
           <View>
-            <Text style={Styles.SignUp}>Procces Done</Text>
-            <Text style={{ fontSize: 25, left: 20 }}>Terms & Conditions</Text>
+            <Text style={Styles.SignUp}>Profile Picture</Text>
+            <Text style={{ fontFamily: 'Roboto-Light', fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>
+              Express Yourself With A Picture
+            </Text>
           </View>
-          <View style={{ height: "75%" }}>
-            <ScrollView style={{ width: "100%" }}>
-              <View style={{ gap: 40, margin: 17 }}>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  Welcome to ISEKAI! By creating an account, you acknowledge and
-                  agree to our terms and conditions. Our platform is designed to
-                  assist your company in hiring efficiently and managing
-                  projects seamlessly. If your account creation wasn't
-                  confirmed, fret not! We've sent an email to authenticate your
-                  company. Kindly follow the instructions within to activate
-                  your account and unlock the full potential of [Your App Name].
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>
-                    Non-Discrimination:
-                  </Text>
-                  We promote a diverse and inclusive environment. Discrimination
-                  based on race, gender, ethnicity, or any other characteristic
-                  is strictly prohibited.
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>Confidentiality:</Text>
-                  Your company's information and data are treated with utmost
-                  confidentiality. We prioritize the security of your data.{" "}
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>Compliance:</Text> Users
-                  are expected to comply with all relevant laws and regulations
-                  in their respective regions.
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>Responsible Use: </Text>{" "}
-                  The platform is intended for professional use. Users are
-                  expected to use the platform responsibly and ethically.
-                </Text>
+          <View style={{ justifyContent: 'center', alignItems: 'center', gap: 120 }}>
+            {!pdp ? <View>
 
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  We're excited to help you build a more productive and
-                  successful team while maintaining a respectful and
-                  collaborative community.
-                </Text>
-              </View>
-            </ScrollView>
-          </View>
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              alignItems: "center",
-              marginBottom: 20,
-              justifyContent: "center",
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => createAccount()}
-              style={{
-                width: 200,
-                height: 50,
-                backgroundColor: STYLES.COLORS.Priamary,
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontFamily: "Roboto-Bold",
-                  fontSize: STYLES.SIZES.sizeXL,
+              <Feather color={STYLES.COLORS.Priamary} size={250} name='image' />
+              <TouchableOpacity onPress={pickImage}>
+                <Feather color={STYLES.COLORS.Priamary} style={{ position: 'absolute', bottom: -30, left: 180 }} size={100} name='plus-circle' />
+              </TouchableOpacity>
+            </View> :
+              <Image
+                style={{ width: 220, height: 220, borderRadius: 75 }}
+                source={{
+                  uri: pdp,
                 }}
-              >
-                Accept
-              </Text>
-            </TouchableOpacity>
+              />}
+            {pdp && <View style={{justifyContent:'center',alignItems:'center',gap:20}}>
+            <View style={{ flexDirection: 'row', gap: 20 }}>
+
+              <TouchableOpacity
+                onPress={uploadPdp}
+                style={{
+                  backgroundColor: STYLES.COLORS.Priamary,
+                  width: 150,
+                  height: 50,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+
+                }}>
+                <Text style={{ color: 'white', fontFamily: 'Roboto-Bold', fontSize: STYLES.SIZES.sizeL }}>I like it</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={pickImage}
+                style={{
+                  backgroundColor: STYLES.COLORS.Priamary,
+                  width: 150,
+                  height: 50,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+
+                }}>
+           <Text style={{ color: 'white', fontFamily: 'Roboto-Bold', fontSize: STYLES.SIZES.sizeL }}>Change it</Text>
+
+              </TouchableOpacity>
+            </View> 
+             </View>
+            }
+            <TouchableOpacity
+                onPress={()=>setStep(7)}
+                style={{
+                  backgroundColor: STYLES.COLORS.Priamary,
+                  width: 150,
+                  height: 50,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+
+                }}>
+           <Text 
+           style={{ color: 'white', fontFamily: 'Roboto-Bold', fontSize: STYLES.SIZES.sizeL }}>Skip</Text>
+
+              </TouchableOpacity>
+
           </View>
         </View>
-      )}
-
-      {role !== "COMPANY" && (
-        <View
-          style={{ alignItems: "center", width, height, gap: 30, bottom: 40 }}
-        >
-          <View>
-            <Text style={Styles.SignUp}>Procces Done</Text>
-            <Text style={{ fontSize: 25, left: 20 }}>Terms & Conditions</Text>
-          </View>
-          <View style={{ height: "75%" }}>
-            <ScrollView style={{ width: "100%" }}>
-              <View style={{ gap: 40, margin: 17 }}>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  Welcome to ISEKAI! Congratulations on successfully creating
-                  your student account. You are now part of a platform dedicated
-                  to enhancing your educational journey. Explore opportunities
-                  to connect with potential projects and fellow students,
-                  fostering collaboration and growth. Feel free to navigate and
-                  utilize the features designed to make your academic experience
-                  more enriching. If you have any queries or need assistance,
-                  our support team is here to help. Dive into a world of
-                  possibilities at ISEKAI!
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>
-                    Non-Discrimination:
-                  </Text>
-                  We promote a diverse and inclusive environment. Discrimination
-                  based on race, gender, ethnicity, or any other characteristic
-                  is strictly prohibited.
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>Confidentiality:</Text>
-                  Your company's information and data are treated with utmost
-                  confidentiality. We prioritize the security of your data.{" "}
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>Compliance:</Text> Users
-                  are expected to comply with all relevant laws and regulations
-                  in their respective regions.
-                </Text>
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  {"\u2022"}{" "}
-                  <Text style={{ fontWeight: "bold" }}>Responsible Use: </Text>{" "}
-                  The platform is intended for professional use. Users are
-                  expected to use the platform responsibly and ethically.
-                </Text>
-
-                <Text style={{ fontSize: 16 }}>
-                  {" "}
-                  We're excited to help you build a more productive and
-                  successful team while maintaining a respectful and
-                  collaborative community.
-                </Text>
-              </View>
-            </ScrollView>
-          </View>
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              alignItems: "center",
-              marginBottom: 20,
-              justifyContent: "center",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                width: 200,
-                height: 50,
-                backgroundColor: STYLES.COLORS.Priamary,
-                alignItems: "center",
-              }}
-              onPress={() => createAccount()}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontFamily: "Roboto-Bold",
-                  fontSize: STYLES.SIZES.sizeXL,
-                }}
-              >
-                Accept
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      </SafeAreaView>
     </View>
-  );
-};
-const Styles = StyleSheet.create({
-  scrolView: {
-    height: 0,
-    width: 100,
-    flexGrow: 1,
-  },
-  Icon: {
-    color: "white",
-  },
-  IconView: {
-    backgroundColor: STYLES.COLORS.Priamary,
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-  },
+  )
+}
 
-  PressedIcon: {
-    color: STYLES.COLORS.Priamary,
-  },
-  PressedIconView: {
-    backgroundColor: "white",
-    width: 60,
-    height: 60,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
+const Styles = StyleSheet.create({
+
+  mainContainer: {
+    gap: 40,
+    margin: 20,
   },
   SignUp: {
     color: STYLES.COLORS.Priamary,
-    fontFamily: "Roboto-Bold",
+    fontFamily: 'Roboto-Bold',
     fontSize: STYLES.SIZES.sizeXXL,
+    marginBottom: 2,
   },
-  loginInput: {
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  checkboxLabel: {
+    marginLeft: 10,
+    fontFamily: 'Roboto-Light',
+    fontSize: STYLES.SIZES.sizeM,
+  },
+  loginContainer: {
+    flexDirection: 'row', // Change this to 'row' if you want checkboxes in a row
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    width: '90%',
+
+    marginTop: 20,
+  }, loginInput: {
     height: 60,
     width: "100%",
     borderColor: "#dbdbdb",
@@ -251,32 +178,4 @@ const Styles = StyleSheet.create({
     paddingLeft: 40,
     color: "#000",
   },
-  loginIcon: {
-    left: 30,
-  },
-  loginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "90%",
-    right: 34,
-    top: 40,
-  },
-  loginContainer3: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "90%",
-    right: 24,
-    top: 40,
-  },
-  loginContainer2: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "90%",
-    right: 16,
-    top: 40,
-  },
 });
-export default Step6;
