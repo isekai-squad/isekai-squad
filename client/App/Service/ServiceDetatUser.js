@@ -20,7 +20,7 @@ const ServiceDetaite = ({ navigation, route }) => {
     try {
       const response = await axios.post(`http://${API}:4070/baskets`, {
         userId: "1",
-        serviceId: "1 ",
+        serviceId: "1",
       });
 
       console.log("UpVote successful:", response.data);
@@ -33,7 +33,7 @@ const ServiceDetaite = ({ navigation, route }) => {
     <ScrollView style={styles.container}>
       <TouchableOpacity 
       onPress={() =>
-        navigation.navigate("Servicee")
+        navigation.navigate("servicee")
       }>
         <Entypo name="arrow-with-circle-left" size={30} color="#8244CB" />
       </TouchableOpacity>

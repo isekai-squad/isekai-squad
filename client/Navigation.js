@@ -25,6 +25,12 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from 'expo-secure-store';
 import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
+import FavoriteList from "./App/Service/favoritList";
+import  service from "./App/Service/service";
+import  servicee from "./App/Service/service";
+
+import postServices from "./App/component/PostServices.js"
+import ServiceDetails from "./App/Service/ServiceDetatUser"
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 

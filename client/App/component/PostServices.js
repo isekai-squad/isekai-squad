@@ -27,17 +27,12 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { STYLES } from "../../GlobalCss";
 import Foundation from "react-native-vector-icons/Foundation";
-import { MultiSelect , Dropdown } from 'react-native-element-dropdown';
+import { MultiSelect, Dropdown } from "react-native-element-dropdown";
 const data = [
-  { label: 'AAA', value: '1' },
-  { label: 'BBB', value: '2' },
-  { label: 'CCC', value: '3' },
-
-
+  { label: "Mobile App Development", value: "1" },
+  { label: "Web Development", value: "2" },
+  { label: "UX Design", value: "3" },
 ];
-
-
-
 
 const CreatePost = () => {
   const [selected, setSelected] = useState([]);
@@ -45,6 +40,7 @@ const CreatePost = () => {
   const [description, setdescription] = useState(null);
   const [price, setPrice] = useState(null);
   const [image, setimage] = useState(null);
+  const [Category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const renderItem = (item) => {
     return (
@@ -98,12 +94,15 @@ const CreatePost = () => {
         description: description,
         image: image,
         Price: Number(price),
+        category: Category,
       };
 
+     
       const response = await axios.post(
-        `http://172.20.0.88:4070/Services/1`,
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Services/1`,
         data
       );
+      
       console.log("successful:", response.data);
     } catch (error) {
       console.error("Error during :", error.message);
@@ -194,40 +193,42 @@ const CreatePost = () => {
             />
           </Input>
           <MultiSelect
-          style={styles.dropdown}
-          itemContainerStyle={{color : '#674188'}}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
-          data={data}
-          labelField="label"
-          valueField="value"
-          placeholder="Select Category"
-          value={selected}
-          search
-          searchPlaceholder="Search..."
-          onChange={item => {
-            setSelected(item);
-          }}
-          renderLeftIcon={() => (
-            <AntDesign
-              style={styles.icon}
-              color="black"
-              name="Safety"
-              size={20}
-            />
-          )}
-          renderItem={renderItem}
-          renderSelectedItem={(item, unSelect) => (
-            <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
-              <View style={styles.selectedStyle}>
-                <Text style={styles.textSelectedStyle}>{item.label}</Text>
-                <AntDesign color="black" name="delete" size={17} />
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+            style={styles.dropdown}
+            itemContainerStyle={{ color: "#674188" }}
+            placeholderStyle={styles.placeholderStyle}
+            selectedTextStyle={styles.selectedTextStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            iconStyle={styles.iconStyle}
+            data={data}
+            labelField="label"
+            valueField="value"
+            placeholder="Select Category"
+            value={selected}
+            search
+            searchPlaceholder="Search..."
+            onChange={(items) => {
+              setSelected(items);
+              setCategory(data[items[0]].label);
+            }}
+            renderLeftIcon={() => (
+              <AntDesign
+                style={styles.icon}
+                color="black"
+                name="Safety"
+                size={20}
+              />
+            )}
+            renderItem={renderItem}
+            renderSelectedItem={(item, unSelect) => (
+              <TouchableOpacity onPress={() => unSelect && unSelect(item)}>
+                <View style={styles.selectedStyle}>
+                  <Text style={styles.textSelectedStyle}>{item.label}</Text>
+                  <AntDesign color="black" name="delete" size={17} />
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+
           <TouchableOpacity
             style={{
               backgroundColor: "#8244CB",

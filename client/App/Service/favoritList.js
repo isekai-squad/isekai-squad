@@ -5,29 +5,26 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  ScrollView, 
+  ScrollView,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const FavoriteList = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const API = process.env.EXPO_PUBLIC_IP_KEY;
-
-  useEffect(() => {
-    fetchFavoriteList();
-  }, []);
 
   const fetchFavoriteList = async () => {
     try {
-      setLoading(true); // Set loading to true when fetching
+      setLoading(true);
       const response = await axios.get(`http://${API}:4070/favorit/1`);
       setFavoriteItems(response.data);
     } catch (error) {
       console.error("Error fetching favorites:", error);
     } finally {
-      setLoading(false); // Set loading to false when fetching is done
+      setLoading(false);
     }
   };
 
@@ -46,7 +43,7 @@ const FavoriteList = () => {
       <View style={styles.textContainer}>
         <Text style={styles.title}>{item.Service.title}</Text>
         <Text style={styles.price}>{item.Service.Price}</Text>
-        <Text style={styles.description}>{item.Service.description}</Text>
+        
         <Text style={styles.createdAt}>{item.Service.created_at}</Text>
       </View>
       <TouchableOpacity onPress={() => deleteFromFavorites(item.id)}>
@@ -55,16 +52,20 @@ const FavoriteList = () => {
     </View>
   );
 
+  // useFocusEffect will execute the provided function when the component gains focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchFavoriteList();
+    }, [])
+  );
+
   return (
     <ScrollView style={styles.container}>
-      {/* Replace Button with TouchableOpacity */}
       <TouchableOpacity
         style={styles.refetchButton}
         onPress={fetchFavoriteList}
         disabled={loading}
-      >
-        <Text style={styles.refetchButtonText}>Refetch</Text>
-      </TouchableOpacity>
+      ></TouchableOpacity>
       {loading ? (
         <Text style={styles.noItemsText}>Loading...</Text>
       ) : favoriteItems.length > 0 ? (
@@ -82,7 +83,6 @@ const styles = StyleSheet.create({
     padding: 7,
   },
   refetchButton: {
-    backgroundColor: "#007BFF",
     padding: 10,
     marginVertical: 10,
     borderRadius: 5,
@@ -91,10 +91,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
     textAlign: "center",
-  },
-  container: {
-    flex: 1,
-    padding: 7,
   },
   heading: {
     fontSize: 30,
@@ -137,7 +133,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 50,
   },
-
 });
 
 export default FavoriteList;
