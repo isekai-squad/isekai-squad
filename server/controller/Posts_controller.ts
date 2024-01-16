@@ -398,6 +398,7 @@ export const getMostLikedProject = async (req: Request, res: Response) => {
     const projectId = String(mostLiked[0].projectId);
     const project = await prisma.project.findUnique({
       where: { id: projectId },
+      include: { User: true },
     });
 
     if (!project) {

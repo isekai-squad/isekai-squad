@@ -45,13 +45,16 @@ const Basket = () => {
         const response = await axios.get(
           `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/${userId}`
         );
+   
         return response.data;
       } catch (error) {
         console.error("Error fetching basket:", error);
       }
     },
   });
-
+  console.log('====================================');
+  console.log(userId);
+  console.log('====================================');
   const deleteFromBasket = async (serviceId) => {
     try {
       await axios.delete(

@@ -1,113 +1,129 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Linking,
+} from "react-native";
+import React, { useCallback, useEffect } from "react";
 import { STYLES } from "../../../../GlobalCss";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Interaction from "../../../component/ProfileComponants/itnteractionComponants/Interaction";
+import { formatTimeDifference } from "../../../Context/ProfileContext";
+import Swiper from "react-native-swiper";
+import AntDesign from "react-native-vector-icons/AntDesign";
 const fetchMostLikedProject = async () => {
   try {
     const { data } = await axios.get(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/Posts/Projects/likes/mostLikedProject`
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/likes/mostLikedProject`
     );
+
     return data;
   } catch (err) {
+    console.log(err);
     throw new Error(err);
   }
 };
 
 const PremiumRecommendation = () => {
+  const openFileUrl = useCallback((fileUrl) => {
+    Linking.openURL(fileUrl);
+  }, []);
+
   const { data } = useQuery({
     queryKey: ["projectMostLiked"],
     queryFn: () => fetchMostLikedProject(),
   });
+  // const { pdp, name } = data.User;
+  // return (
+  //   <View style={styles.container}>
+  //     <View
+  //       style={{
+  //         flexDirection: "row",
+  //         justifyContent: "space-between",
+  //         alignItems: "center",
+  //         paddingHorizontal: 15,
+  //       }}
+  //     >
+  //       <Text
+  //         style={{
+  //           fontWeight: STYLES.FONTS.Large,
+  //           fontSize: STYLES.SIZES.sizeL,
+  //         }}
+  //       >
+  //         Recommendation
+  //       </Text>
 
-  return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingHorizontal: 15,
-        }}
-      >
-        <Text
-          style={{
-            fontWeight: STYLES.FONTS.Large,
-            fontSize: STYLES.SIZES.sizeL,
-          }}
-        >
-          Recommendation
-        </Text>
+  //       <TouchableOpacity>
+  //         <Text
+  //           style={{
+  //             color: STYLES.COLORS.Priamary,
+  //             fontWeight: STYLES.FONTS.Large,
+  //             fontSize: STYLES.SIZES.sizeM,
+  //           }}
+  //         >
+  //           See All
+  //         </Text>
+  //       </TouchableOpacity>
+  //     </View>
 
-        <TouchableOpacity>
-          <Text
-            style={{
-              color: STYLES.COLORS.Priamary,
-              fontWeight: STYLES.FONTS.Large,
-              fontSize: STYLES.SIZES.sizeM,
-            }}
-          >
-            See All
-          </Text>
-        </TouchableOpacity>
-      </View>
+  //     <View key={data.id} style={styles.postContainer}>
+  //       <View style={styles.userContainer}>
+  //         <View style={styles.userInfoContainer}>
+  //           <View style={styles.footerContainer}>
+  //             <Image source={{ uri: pdp }} style={styles.userImage} />
+  //             <Text style={styles.userName}>{name}</Text>
+  //           </View>
+  //           <Text style={styles.createdAt}>
+  //             {formatTimeDifference(data.created_at)}
+  //           </Text>
+  //         </View>
+  //       </View>
 
-      <View key={data.id} style={styles.postContainer}>
-        <View style={styles.userContainer}>
-          <View style={styles.userInfoContainer}>
-            <View style={styles.footerContainer}>
-              <Image source={{ uri: pdp }} style={styles.userImage} />
-              <Text style={styles.userName}>{profileName}</Text>
-            </View>
-            <Text style={styles.createdAt}>
-              {formatTimeDifference(data.created_at)}
-            </Text>
-          </View>
-        </View>
+  //       <View style={styles.postInfoContainer}>
+  //         <Text style={styles.postTitle}>{data.title}</Text>
+  //         <Text style={styles.projectDescription}>{data.description}</Text>
+  //       </View>
 
-        <View style={styles.postInfoContainer}>
-          <Text style={styles.postTitle}>{data.title}</Text>
-          <Text style={styles.projectDescription}>{data.description}</Text>
-        </View>
+  //       {data.content.length > 0 && (
+  //         <View style={styles.fileContainer}>
+  //           {data.content.map((fileUrl, index) => (
+  //             <TouchableOpacity
+  //               key={index}
+  //               onPress={() => openFileUrl(fileUrl)}
+  //               style={styles.filebtn}
+  //             >
+  //               <AntDesign name={"filetext1"} size={STYLES.SIZES.sizeL} />
+  //               <Text style={styles.fileLink}>
+  //                 {fileUrl.split("/").reverse()[0].split(".").pop()} File
+  //               </Text>
+  //             </TouchableOpacity>
+  //           ))}
+  //         </View>
+  //       )}
 
-        {data.content.length > 0 && (
-          <View style={styles.fileContainer}>
-            {data.content.map((fileUrl, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => openFileUrl(fileUrl)}
-                style={styles.filebtn}
-              >
-                <AntDesign name={"filetext1"} size={STYLES.SIZES.sizeL} />
-                <Text style={styles.fileLink}>
-                  {fileUrl.split("/").reverse()[0].split(".").pop()} File
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {data.images.length > 0 && (
-          <Swiper
-            style={styles.swiperContainer}
-            showsButtons={false}
-            autoplayTimeout={3}
-            autoplay
-          >
-            {data.images.map((imageUrl, index) => (
-              <Image
-                key={index}
-                source={{ uri: imageUrl }}
-                style={styles.postImage}
-              />
-            ))}
-          </Swiper>
-        )}
-        <Interaction postId={data.id} />
-      </View>
-    </View>
-  );
+  //       {data.images.length > 0 && (
+  //         <Swiper
+  //           style={styles.swiperContainer}
+  //           showsButtons={false}
+  //           autoplayTimeout={3}
+  //           autoplay
+  //         >
+  //           {data.images.map((imageUrl, index) => (
+  //             <Image
+  //               key={index}
+  //               source={{ uri: imageUrl }}
+  //               style={styles.postImage}
+  //             />
+  //           ))}
+  //         </Swiper>
+  //       )}
+  //       <Interaction postId={data.id} />
+  //     </View>
+  //   </View>
+  // );
 };
 
 export default PremiumRecommendation;
@@ -115,7 +131,7 @@ export default PremiumRecommendation;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 200,
+    height: "100%",
     borderRadius: 10,
     overflow: "hidden",
     marginVertical: 10,
@@ -151,9 +167,9 @@ const styles = StyleSheet.create({
   },
   postContainer: {
     marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    elevation: 3,
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#ddd",
+    elevation: 5,
     shadowColor: STYLES.COLORS.ShadowColor,
   },
   postImage: {

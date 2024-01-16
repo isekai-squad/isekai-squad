@@ -10,8 +10,9 @@ const Interaction = ({ postId }) => {
   const { visitedProfileData } = useContext(VisitProfileContext);
   const { ProfileData } = useContext(ProfileContext);
 
-  const isStudentProfile = (profileData) => profileData.role === "STUDENT";
-  const isVisitedProfile = route.name === "VisitedProfile";
+  const isStudentProfile = (profileData) =>
+    profileData.role === "STUDENT" || route.name === "Home";
+  const isVisitedProfile = route.name === "Visited Profile";
   const getInteractionComponent = () => {
     return isStudentProfile(
       isVisitedProfile ? visitedProfileData : ProfileData

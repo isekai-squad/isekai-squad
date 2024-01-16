@@ -119,6 +119,9 @@ export const ProfileProvider = ({ children }) => {
           technologiesId,
         })
       );
+      console.log('====================================');
+      console.log(updatedMainSkills);
+      console.log('====================================');
 
       const Info = {
         name: nameRef.current.value || ProfileData.name,

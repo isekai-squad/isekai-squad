@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -28,6 +28,7 @@ import axios from "axios";
 import { STYLES } from "../../GlobalCss";
 import Foundation from "react-native-vector-icons/Foundation";
 import { MultiSelect, Dropdown } from "react-native-element-dropdown";
+import { ProfileContext } from "../Context/ProfileContext";
 const data = [
   { label: "Mobile App Development", value: "1" },
   { label: "Web Development", value: "2" },
@@ -35,6 +36,7 @@ const data = [
 ];
 
 const CreatePost = () => {
+  const {userId}=useContext(ProfileContext)
   const [selected, setSelected] = useState([]);
   const [Titel, setTitel] = useState(null);
   const [description, setdescription] = useState(null);
@@ -99,7 +101,7 @@ const CreatePost = () => {
 
      
       const response = await axios.post(
-        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Services/1`,
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Services/${userId}`,
         data
       );
       

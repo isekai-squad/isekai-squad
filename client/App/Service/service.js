@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,13 +11,14 @@ import {
 } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { ProfileContext } from "../Context/ProfileContext";
 
 const AllServices = ({ navigation }) => {
   const [services, setServices] = useState([]);
   const [likes, setLikes] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+const {userId}=useContext(ProfileContext)
   useEffect(() => {
     fetchServices();
   }, []);
@@ -43,7 +44,7 @@ const AllServices = ({ navigation }) => {
       const response = await axios.post(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/favorit`,
         {
-          userId: "1",
+          userId: userId,
           serviceId: "1",
         }
       );

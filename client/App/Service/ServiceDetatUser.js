@@ -33,7 +33,7 @@ const ServiceDetaite = ({ navigation, route }) => {
     <ScrollView style={styles.container}>
       <TouchableOpacity 
       onPress={() =>
-        navigation.navigate("servicee")
+        navigation.navigate("Services")
       }>
         <Entypo name="arrow-with-circle-left" size={30} color="#8244CB" />
       </TouchableOpacity>
