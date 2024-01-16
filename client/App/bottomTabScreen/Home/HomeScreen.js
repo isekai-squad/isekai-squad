@@ -12,12 +12,12 @@ function HomeScreen({ navigation }) {
   const { ProfileData } = useContext(ProfileContext);
 
   return (
-    <ScrollView>
+    <ScrollView style={{flex:1}}>
       <SafeAreaView
         style={{
           backgroundColor: "white",
           flex: 1,
-          height: "100%",
+          // height: "100%",
           paddingBottom: 100,
         }}
       >

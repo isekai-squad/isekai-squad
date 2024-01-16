@@ -1,26 +1,42 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Linking,
+} from "react-native";
+import React, { useCallback, useEffect } from "react";
 import { STYLES } from "../../../../GlobalCss";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Interaction from "../../../component/ProfileComponants/itnteractionComponants/Interaction";
+import { formatTimeDifference } from "../../../Context/ProfileContext";
+import Swiper from "react-native-swiper";
+import AntDesign from "react-native-vector-icons/AntDesign";
 const fetchMostLikedProject = async () => {
   try {
     const { data } = await axios.get(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/Posts/Projects/likes/mostLikedProject`
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/likes/mostLikedProject`
     );
+
     return data;
   } catch (err) {
+    console.log(err);
     throw new Error(err);
   }
 };
 
 const PremiumRecommendation = () => {
+  const openFileUrl = useCallback((fileUrl) => {
+    Linking.openURL(fileUrl);
+  }, []);
+
   const { data } = useQuery({
     queryKey: ["projectMostLiked"],
     queryFn: () => fetchMostLikedProject(),
   });
-
+  const { pdp, name } = data.User;
   return (
     <View style={styles.container}>
       <View
@@ -58,7 +74,7 @@ const PremiumRecommendation = () => {
           <View style={styles.userInfoContainer}>
             <View style={styles.footerContainer}>
               <Image source={{ uri: pdp }} style={styles.userImage} />
-              <Text style={styles.userName}>{profileName}</Text>
+              <Text style={styles.userName}>{name}</Text>
             </View>
             <Text style={styles.createdAt}>
               {formatTimeDifference(data.created_at)}
@@ -115,7 +131,7 @@ export default PremiumRecommendation;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 200,
+    height: "100%",
     borderRadius: 10,
     overflow: "hidden",
     marginVertical: 10,
@@ -151,9 +167,9 @@ const styles = StyleSheet.create({
   },
   postContainer: {
     marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    elevation: 3,
+    // borderBottomWidth: 1,
+    // borderBottomColor: "#ddd",
+    elevation: 5,
     shadowColor: STYLES.COLORS.ShadowColor,
   },
   postImage: {
