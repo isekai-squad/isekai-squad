@@ -24,6 +24,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from 'expo-secure-store';
 import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
+import FavoriteList from "./App/Service/favoritList";
+import  service from "./App/Service/service";
+import  servicee from "./App/Service/service";
+
+import postServices from "./App/component/PostServices.js"
+import ServiceDetails from "./App/Service/ServiceDetatUser"
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -84,6 +90,58 @@ const DrawerNavigator = () => {
           ),
         })}
       />
+        <Drawer.Screen
+        name="FavoriteList"
+        component={FavoriteList}
+        options={({ navigation }) => ({
+          headerLeft: false,
+          headerTitle: () => (
+            <SearchHeader
+              onChangeText={(text) => console.log("Search:", text)}
+            />
+          ),
+          headerTitleContainerStyle: { width: "100%" },
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="basket"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        })}
+      />
+           <Drawer.Screen
+        name="service"
+        component={service}
+        options={({ navigation }) => ({
+        
+          
+          headerTitleContainerStyle: { width: "100%" },
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="basket"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        })}
+      />
+        <Drawer.Screen
+        name="postServices"
+        component={postServices}
+        options={({ navigation }) => ({
+        
+          
+          headerTitleContainerStyle: { width: "100%" },
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="basket"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        })}
+      />
       <Drawer.Screen
         name="chat"
         component={ChatScreen}
@@ -92,11 +150,26 @@ const DrawerNavigator = () => {
          
         }}
       />
+      
       <Drawer.Screen
         name="rooms"
         component={UserChatRoom}
         options={{
           headerShown: false,
+      
+        }}
+      />
+       <Drawer.Screen
+        name="ServiceDetails"
+        component={ServiceDetails}
+        options={{
+      
+        }}
+      />
+       <Drawer.Screen
+        name="servicee"
+        component={servicee}
+        options={{
       
         }}
       />
