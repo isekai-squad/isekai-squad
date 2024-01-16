@@ -15,6 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { STYLES } from '../../../../../GlobalCss';
 import { useFonts } from 'expo-font';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,navigation}) => {
   const [pressed, setPressed] = useState('');
@@ -52,10 +53,11 @@ const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,n
   const { width, height } = useWindowDimensions();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
-    >
+    // <KeyboardAwareScrollView
+      
+    // >
+    <View>
+
 
 <TouchableOpacity onPress={()=>navigation.navigate('signIn')}>
 
@@ -72,7 +74,7 @@ const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,n
             </TouchableOpacity>
             {pressed !== 'STUDENT' ? (
               <Text style={{ textAlign: 'center' }}>Student</Text>
-            ) : (
+              ) : (
               <Text style={{ textAlign: 'center' }}>
                 <FontAwesome color={STYLES.COLORS.Priamary} size={22} name='caret-up' />
               </Text>
@@ -83,13 +85,13 @@ const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,n
               <TouchableOpacity
                 onPress={() => setPressed('COMPANY')}
                 style={pressed !== 'COMPANY' ? Styles.IconView : Styles.PressedIconView}
-              >
+                >
                 <FontAwesome style={pressed !== 'COMPANY' ? Styles.Icon : Styles.PressedIcon} name='building-o' size={30} />
               </TouchableOpacity>
               {pressed !== 'COMPANY' ? (
                 <Text style={{ textAlign: 'center' }}>Company</Text>
-              ) : (
-                <Text style={{ textAlign: 'center' }}>
+                ) : (
+                  <Text style={{ textAlign: 'center' }}>
                   <FontAwesome color={STYLES.COLORS.Priamary} size={22} name='caret-up' />
                 </Text>
               )}
@@ -98,13 +100,13 @@ const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,n
               <TouchableOpacity
                 onPress={() => setPressed('ADVISOR')}
                 style={pressed !== 'ADVISOR' ? Styles.IconView : Styles.PressedIconView}
-              >
+                >
                 <FontAwesome5 style={pressed !== 'ADVISOR' ? Styles.Icon : Styles.PressedIcon} name='hands-helping' size={30} />
               </TouchableOpacity>
               {pressed !== 'ADVISOR' ? (
                 <Text style={{ textAlign: 'center' }}>Advisor</Text>
-              ) : (
-                <Text style={{ textAlign: 'center' }}>
+                ) : (
+                  <Text style={{ textAlign: 'center' }}>
                   <FontAwesome color={STYLES.COLORS.Priamary} size={22} name='caret-up' />
                 </Text>
               )}
@@ -122,7 +124,7 @@ const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,n
                     placeholder='FullName'
                     value={name}
                     onChangeText={(text) => setName(text)}
-                  />
+                    />
                 </View>
                 {errorInput === 'no name' && <Text style={{ color: 'red', top: 20 }}>Enter A name</Text>}
               </View>
@@ -160,7 +162,8 @@ const Step1 = ({ setStep, setName, setUserName, setRole, name, userName, role ,n
           </View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+      </View>
+    // </KeyboardAwareScrollView>
   );
 };
 const Styles = {

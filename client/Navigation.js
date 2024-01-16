@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer ,useRoute} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
 import Posts from "./App/component/Posts/Posts";
 import { MainContainer } from "./App/bottomTabScreen/MainContainer";
 import SearchHeader from "./App/component/SearchHeader";
@@ -21,35 +21,48 @@ import ChatScreen from "./App/Screens/Chat/ChatScreen";
 import Basket from "./App/Screens/Basket/basket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from 'expo-secure-store';
 import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = () => {
+const DrawerNavigator = ({params}) => {
+  const route = useRoute()
+  const {setToken}=route.params
+  const logout =async ()=>{
+    await SecureStore.deleteItemAsync('Token')
+    setToken(null)
+  }
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        drawerStyle: { paddingTop: 20 },
-      }}
+    initialRouteName="Home"
+    screenOptions={{
+      drawerStyle: { paddingTop: 20 },
+    }}
+    drawerContent={(props)=>  (
+      <DrawerContentScrollView {...props}>
+          <DrawerItemList {...props} />
+          <DrawerItem icon={()=><MaterialIcons name="logout" size={25}/>}   label="Logout" onPress={() => logout()} />
+        </DrawerContentScrollView>
+      )}
     >
       <Drawer.Screen
         name="Home"
         component={MainContainer}
         options={{
           headerShown: false,
-
+          
           drawerIcon: ({ focused, size }) => (
             <Ionicons
-              name="home"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
+            name="home"
+            size={size}
+            color={focused ? STYLES.COLORS.Priamary : "black"}
             />
-          ),
-        }}
-      />
+            ),
+          }}
+          />
       <Drawer.Screen
         name="VisitedProfile"
         component={UserProfile}
@@ -57,9 +70,9 @@ const DrawerNavigator = () => {
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <Ionicons
-              name="person"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
+            name="person"
+            size={size}
+            color={focused ? STYLES.COLORS.Priamary : "black"}
             />
           ),
         }}
@@ -71,35 +84,35 @@ const DrawerNavigator = () => {
           headerLeft: false,
           headerTitle: () => (
             <SearchHeader
-              onChangeText={(text) => console.log("Search:", text)}
+            onChangeText={(text) => console.log("Search:", text)}
             />
-          ),
-          headerTitleContainerStyle: { width: "100%" },
-          drawerIcon: ({ focused, size }) => (
-            <Ionicons
+            ),
+            headerTitleContainerStyle: { width: "100%" },
+            drawerIcon: ({ focused, size }) => (
+              <Ionicons
               name="basket"
               size={size}
               color={focused ? STYLES.COLORS.Priamary : "black"}
+              />
+              ),
+            })}
             />
-          ),
-        })}
-      />
       <Drawer.Screen
         name="chat"
         component={ChatScreen}
         options={{
           headerShown: false,
-         
+          
         }}
-      />
+        />
       <Drawer.Screen
         name="rooms"
         component={UserChatRoom}
         options={{
           headerShown: false,
-      
+          
         }}
-      />
+        />
       <Drawer.Screen
         name="QRCode"
         component={QR_code}
@@ -107,13 +120,13 @@ const DrawerNavigator = () => {
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <Ionicons
-              name="qr-code"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
+            name="qr-code"
+            size={size}
+            color={focused ? STYLES.COLORS.Priamary : "black"}
             />
-          ),
-        }}
-      />
+            ),
+          }}
+          />
       <Drawer.Screen
         name="AboutScreen"
         component={AboutScreen}
@@ -121,28 +134,29 @@ const DrawerNavigator = () => {
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <Ionicons
-              name="information-circle"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
+            name="information-circle"
+            size={size}
+            color={focused ? STYLES.COLORS.Priamary : "black"}
             />
-          ),
-        }}
-      />
+            ),
+          }}
+          />
     </Drawer.Navigator>
   );
 };
 export const Navigation = () => {
+  const [Token,setToken]=useState()
   const [auth, setAuth] = useState();
-   const [Token,setToken]=useState()
    const getCurrentUser =async ()=>{
     const res = await SecureStore.getItemAsync('Token')
     setAuth(res)
     }
-
-  useEffect(()=>{
     
-    getCurrentUser()
-  },[Token])
+   
+    useEffect(()=>{
+      
+      getCurrentUser()
+    },[Token])
   return (
     <NavigationContainer>
       {auth ? (
@@ -153,6 +167,7 @@ export const Navigation = () => {
                 name="Home"
                 component={DrawerNavigator}
                 options={{ headerShown: false }}
+                initialParams={{setToken:setToken}}
               />
               <Drawer.Screen
                 name="QRCode"
