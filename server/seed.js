@@ -3,34 +3,34 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-// const expertiseList = [
-//   "Software Development",
-//   "Database Administration",
-//   "Network Security",
-//   "Cloud Computing",
-//   // ... other expertise items
-// ];
+const expertiseList = [
+  "Software Development",
+  "Database Administration",
+  "Network Security",
+  "Cloud Computing",
+  // ... other expertise items
+];
 
-// async function seed() {
-//   try {
-//     // Create specialties with the provided expertiseList
-//     for (const expertise of expertiseList) {
-//       await prisma.specialty.create({
-//         data: {
-//           name: expertise,
-//         },
-//       });
-//     }
+async function seed() {
+  try {
+    // Create specialties with the provided expertiseList
+    for (const expertise of expertiseList) {
+      await prisma.specialty.create({
+        data: {
+          name: expertise,
+        },
+      });
+    }
 
-//     console.log('Seed completed successfully');
-//   } catch (error) {
-//     console.error('Error seeding database:', error);
-//   } finally {
-//     await prisma.$disconnect();
-//   }
-// }
+    console.log('Seed completed successfully');
+  } catch (error) {
+    console.error('Error seeding database:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 
-// seed();
+seed();
 
 
 const specialties = [
