@@ -36,94 +36,94 @@ const PremiumRecommendation = () => {
     queryKey: ["projectMostLiked"],
     queryFn: () => fetchMostLikedProject(),
   });
-  const { pdp, name } = data.User;
-  return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingHorizontal: 15,
-        }}
-      >
-        <Text
-          style={{
-            fontWeight: STYLES.FONTS.Large,
-            fontSize: STYLES.SIZES.sizeL,
-          }}
-        >
-          Recommendation
-        </Text>
+  // const { pdp, name } = data.User;
+  // return (
+  //   <View style={styles.container}>
+  //     <View
+  //       style={{
+  //         flexDirection: "row",
+  //         justifyContent: "space-between",
+  //         alignItems: "center",
+  //         paddingHorizontal: 15,
+  //       }}
+  //     >
+  //       <Text
+  //         style={{
+  //           fontWeight: STYLES.FONTS.Large,
+  //           fontSize: STYLES.SIZES.sizeL,
+  //         }}
+  //       >
+  //         Recommendation
+  //       </Text>
 
-        <TouchableOpacity>
-          <Text
-            style={{
-              color: STYLES.COLORS.Priamary,
-              fontWeight: STYLES.FONTS.Large,
-              fontSize: STYLES.SIZES.sizeM,
-            }}
-          >
-            See All
-          </Text>
-        </TouchableOpacity>
-      </View>
+  //       <TouchableOpacity>
+  //         <Text
+  //           style={{
+  //             color: STYLES.COLORS.Priamary,
+  //             fontWeight: STYLES.FONTS.Large,
+  //             fontSize: STYLES.SIZES.sizeM,
+  //           }}
+  //         >
+  //           See All
+  //         </Text>
+  //       </TouchableOpacity>
+  //     </View>
 
-      <View key={data.id} style={styles.postContainer}>
-        <View style={styles.userContainer}>
-          <View style={styles.userInfoContainer}>
-            <View style={styles.footerContainer}>
-              <Image source={{ uri: pdp }} style={styles.userImage} />
-              <Text style={styles.userName}>{name}</Text>
-            </View>
-            <Text style={styles.createdAt}>
-              {formatTimeDifference(data.created_at)}
-            </Text>
-          </View>
-        </View>
+  //     <View key={data.id} style={styles.postContainer}>
+  //       <View style={styles.userContainer}>
+  //         <View style={styles.userInfoContainer}>
+  //           <View style={styles.footerContainer}>
+  //             <Image source={{ uri: pdp }} style={styles.userImage} />
+  //             <Text style={styles.userName}>{name}</Text>
+  //           </View>
+  //           <Text style={styles.createdAt}>
+  //             {formatTimeDifference(data.created_at)}
+  //           </Text>
+  //         </View>
+  //       </View>
 
-        <View style={styles.postInfoContainer}>
-          <Text style={styles.postTitle}>{data.title}</Text>
-          <Text style={styles.projectDescription}>{data.description}</Text>
-        </View>
+  //       <View style={styles.postInfoContainer}>
+  //         <Text style={styles.postTitle}>{data.title}</Text>
+  //         <Text style={styles.projectDescription}>{data.description}</Text>
+  //       </View>
 
-        {data.content.length > 0 && (
-          <View style={styles.fileContainer}>
-            {data.content.map((fileUrl, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => openFileUrl(fileUrl)}
-                style={styles.filebtn}
-              >
-                <AntDesign name={"filetext1"} size={STYLES.SIZES.sizeL} />
-                <Text style={styles.fileLink}>
-                  {fileUrl.split("/").reverse()[0].split(".").pop()} File
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
+  //       {data.content.length > 0 && (
+  //         <View style={styles.fileContainer}>
+  //           {data.content.map((fileUrl, index) => (
+  //             <TouchableOpacity
+  //               key={index}
+  //               onPress={() => openFileUrl(fileUrl)}
+  //               style={styles.filebtn}
+  //             >
+  //               <AntDesign name={"filetext1"} size={STYLES.SIZES.sizeL} />
+  //               <Text style={styles.fileLink}>
+  //                 {fileUrl.split("/").reverse()[0].split(".").pop()} File
+  //               </Text>
+  //             </TouchableOpacity>
+  //           ))}
+  //         </View>
+  //       )}
 
-        {data.images.length > 0 && (
-          <Swiper
-            style={styles.swiperContainer}
-            showsButtons={false}
-            autoplayTimeout={3}
-            autoplay
-          >
-            {data.images.map((imageUrl, index) => (
-              <Image
-                key={index}
-                source={{ uri: imageUrl }}
-                style={styles.postImage}
-              />
-            ))}
-          </Swiper>
-        )}
-        <Interaction postId={data.id} />
-      </View>
-    </View>
-  );
+  //       {data.images.length > 0 && (
+  //         <Swiper
+  //           style={styles.swiperContainer}
+  //           showsButtons={false}
+  //           autoplayTimeout={3}
+  //           autoplay
+  //         >
+  //           {data.images.map((imageUrl, index) => (
+  //             <Image
+  //               key={index}
+  //               source={{ uri: imageUrl }}
+  //               style={styles.postImage}
+  //             />
+  //           ))}
+  //         </Swiper>
+  //       )}
+  //       <Interaction postId={data.id} />
+  //     </View>
+  //   </View>
+  // );
 };
 
 export default PremiumRecommendation;

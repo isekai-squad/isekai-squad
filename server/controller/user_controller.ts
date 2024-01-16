@@ -54,8 +54,8 @@ export const createUser = async (req: Request, res: Response) => {
       },
       "secretKey"
     );
-
-    res.json(token);
+     
+    res.json({token,id:student.id})
   } catch (err) {
     console.log(err);
     res.status(500).json("Error creating user");
@@ -107,7 +107,7 @@ export const SignIn = async (req: Request, res: Response) => {
         "secretKey"
       );
 
-      res.json({ token });
+      res.json({ token,id:user.id });
     } else {
       res.status(401).json({ error: "Invalid Credentials" });
     }

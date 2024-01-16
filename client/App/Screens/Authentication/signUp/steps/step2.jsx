@@ -8,22 +8,24 @@ import Feather
     from 'react-native-vector-icons/Feather'
 import {
     View,
-    SafeAreaView,
+
     Text,
     Image,
     StyleSheet,
     TouchableOpacity,
-    ScrollView,
     TextInput,
     Vibration,
     useWindowDimensions,
-    KeyboardAvoidingView,
     Platform,
 
 } from 'react-native'
 import { useFonts } from 'expo-font'
 import { STYLES } from '../../../../../GlobalCss'
 import { axios } from 'axios'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 function Step2({setStep,email,setEmail,password,setPassword,conPassword,setConPassword}) {
     const [shown,setShown]=useState(true)
     const [shown2,setShown2]=useState(true)
@@ -55,122 +57,111 @@ const nextStep = async()=>{
    }
 }
 const {width,height} = useWindowDimensions()
-
+const [fontsLoaded] = useFonts({
+    "Roboto-Regular": require("../../../../../assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Bold": require("../../../../../assets/fonts/Roboto-Bold.ttf"),
+    "Roboto-Light": require("../../../../../assets/fonts/Roboto-Light.ttf"),
+    "Roboto-Medium": require("../../../../../assets/fonts/Roboto-Medium.ttf"),
+});
   return (
-    <KeyboardAvoidingView
-    behavior={Platform.OS === 'ios' ? 'padding' : undefined} // Use 'padding' for iOS, undefined for Android
-    style={{ flex: 1 }}
-    keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -200} // Adjust as needed
-  >
-    <View style={{width,height}}>
-           <View style={{marginLeft:40, marginTop:100}} >
-                        <Text style={Styles.SignUp}>SignUp</Text>
-                        <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>SignUp And Join Us</Text>
+ <KeyboardAwareScrollView>
 
+<SafeAreaView >
+    <ScrollView>
 
-                        <View style={{ gap: 40,      justifyContent: 'center',
-                        alignItems: 'center', }}>
+    <View style={{gap:20}} >
+        <View style={{justifyContent:'center',alignItems:'center'}}>
+            <Image source={{uri:'https://i.imgur.com/KyAazUD.png'}} style={{width:200,height:200}}/>
+        </View>
+         <View style={{marginLeft:20}}>
+        <Text style={Styles.SignUp}>SignUp</Text>
+                         <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>SignUp And Join Us</Text>
+        </View>
+        <View style={{justifyContent:'center',alignItems:'center',gap:30}}>
+            <View>
 
-
-<View style={Styles.loginContainer}>
+        <View style={{...Styles.loginContainer,right:10}}>
 <Fontisto style={Styles.loginIcon} name="email" size={20} color={"#8244CB"} />
     <TextInput
         style={Styles.loginInput}
         placeholder="Your Email"
         onChangeText={(text)=>setEmail(text)}
-    />
+        />
 </View>
-<View style={Styles.loginContainer3}>
-                            <Ionicons  style={Styles.loginIcon} name="key-outline" size={20} color={"#8244CB"} />
+{inputError === 'Invalid email address' && <Text style={{ color:'red',left:20 }}>An Account with this email already exists</Text>}
+
+            </View>
+<View style={{...Styles.loginContainer,left:0}}>
+                            <Ionicons style={Styles.loginIcon} name="key-outline" size={20} color={"#8244CB"} />
                             <TextInput
+                                secureTextEntry={shown}
                                 
-                            secureTextEntry={shown}
                                 style={Styles.loginInput}
                                 placeholder="Your Password"
-                                onChangeText={(text)=>setPassword(text)}
-
+                                onChangeText={(password) => setPassword(password)}
                                 >
 
-                                </TextInput>
-                                <TouchableOpacity style={{right:28, }} onPress={()=>setShown(!shown)}>
+                            </TextInput>
+                            <TouchableOpacity style={{ right: 28, }} onPress={() => setShown(!shown)}>
 
-                               { shown ? <Feather size={20} name="eye" /> :
-                                <Feather size={20} name="eye-off" />}
-                                </TouchableOpacity>
+                                {shown ? <Feather size={20} name="eye" /> :
+                                    <Feather size={20} name="eye-off" />}
+                            </TouchableOpacity>
                         </View>
                         <View>
 
-<View style={Styles.loginContainer2}>
-                            <Ionicons  style={Styles.loginIcon} name="key-outline" size={20} color={"#8244CB"} />
+<View style={{...Styles.loginContainer,left:10}}>
+                            <Ionicons style={Styles.loginIcon} name="key-outline" size={20} color={"#8244CB"} />
                             <TextInput
-                                                       secureTextEntry={shown2}
-
+                                secureTextEntry={shown2}
+                                
                                 style={Styles.loginInput}
-                                placeholder="Confirm Password"
-
-                                onChangeText={(text)=>setConPassword(text)}
-
+                                placeholder="Confirm Your Password"
+                                onChangeText={(password) => setConPassword(password)}
                                 >
-                           
-                                </TextInput>
-                                <TouchableOpacity style={{right:28, }} onPress={()=>setShown2(!shown2)}>
 
-                               { shown2 ? <Feather size={20} name="eye" /> :
-                                <Feather size={20} name="eye-off" />}
-                                </TouchableOpacity>
+                            </TextInput>
+                            <TouchableOpacity style={{ right: 28, }} onPress={() => setShown2(!shown2)}>
+
+                                {shown2 ? <Feather size={20} name="eye" /> :
+                                    <Feather size={20} name="eye-off" />}
+                            </TouchableOpacity>
+                            
                         </View>
-                        {inputError === 'all' && <Text style={{ color:'red', top: 40 }}>Enter Full Information Pleaser</Text>}
-                        {inputError === 'password' && <Text style={{ color:'red', top: 40 }}>Confirmed password is wrong</Text>}
-
-                                </View>
-
-<TouchableOpacity
+                        {inputError === 'all' && <Text style={{ color:'red', left:20 }}>Enter Full Information Please</Text>}
+                         {inputError === 'password' && <Text style={{ color:'red',left:20 }}>Confirmed password is wrong</Text>}
+            </View>
+        </View> 
+        <View style={{justifyContent:'center',alignItems:'center'}}>
+        <TouchableOpacity
                     
-                onPress={()=>nextStep()}
-                     style={{
+                    onPress={()=>nextStep()}
+                    style={{
                         backgroundColor: STYLES.COLORS.Priamary,
                         width: 150,
                         height: 50,
                         borderRadius: 10,
                         justifyContent: 'center',
                         alignItems: 'center',
-                       top:40,
-                       right:18
+                        //  top:40,
+                        //  right:18
                         
                     }}>
-                   <Text style={{color:'white', fontFamily:'Roboto-bold', fontSize: STYLES.SIZES.sizeL}}>Next Step <Feather size={20} name='arrow-right'/></Text>
-                    </TouchableOpacity>
-</View>
+                       <Text style={{color:'white', fontFamily:'Roboto-bold', fontSize: STYLES.SIZES.sizeL}}>Next Step <Feather size={20} name='arrow-right'/></Text>
+                        </TouchableOpacity>
+        </View>
+  
+    </View> 
+</ScrollView>
+</SafeAreaView>
+                                
 
-                        </View>
-    </View>
-    </KeyboardAvoidingView>
+</KeyboardAwareScrollView>
   )
 }
 const Styles = StyleSheet.create({
-    Icon: {
-        color: 'white'
-    },
-    IconView: {
-        backgroundColor: STYLES.COLORS.Priamary,
-        width: 60,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-    },
+    
 
-    PressedIcon: {
-        color: STYLES.COLORS.Priamary
-    },
-    PressedIconView: {
-        backgroundColor: 'white',
-        width: 60,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-    },
     SignUp: {
         color: STYLES.COLORS.Priamary,
         fontFamily: 'Roboto-Bold',
@@ -193,24 +184,7 @@ const Styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width: "90%",
-        right:34,
-        top:40,
-    },
-    loginContainer3: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "90%",
-        right:24,
-        top:40,
-    },
-    loginContainer2: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "90%",
-        right:16,
-        top:40,
+      
     },
 
 })

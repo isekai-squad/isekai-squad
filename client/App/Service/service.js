@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,13 +11,14 @@ import {
 } from "react-native";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { ProfileContext } from "../Context/ProfileContext";
 
 const AllServices = ({ navigation }) => {
   const [services, setServices] = useState([]);
   const [likes, setLikes] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+const {userId}=useContext(ProfileContext)
   useEffect(() => {
     fetchServices();
   }, []);
@@ -43,7 +44,7 @@ const AllServices = ({ navigation }) => {
       const response = await axios.post(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/favorit`,
         {
-          userId: "1",
+          userId: userId,
           serviceId: "1",
         }
       );
@@ -68,14 +69,14 @@ const AllServices = ({ navigation }) => {
 
   const renderItem = ({ item }) => (
     <View style={styles.gridItem}>
-   <View style={styles.heart}>
-      <Ionicons
-        name={likes[item.serviceId]? "heart" : "heart-outline"}
-        size={32}
-        color={likes[item.item] ? "red" : "black"}
-        onPress={() => handleAddToFavorite(item.serviceId)}
-      />
-    </View>
+      <View style={styles.heart}>
+        <Ionicons
+          name={likes[item.serviceId] ? "heart" : "heart-outline"}
+          size={32}
+          color={likes[item.serviceId] ? "red" : "black"}  
+          onPress={() => handleAddToFavorite(item.serviceId)}
+        />
+      </View>
       <Text style={styles.title} numberOfLines={2}>
         {item.title}
       </Text>
@@ -97,95 +98,111 @@ const AllServices = ({ navigation }) => {
   );
 
   if (services.length === 0) {
-    return <ActivityIndicator size="large" color="#A77CDA" />;
+    return <ActivityIndicator size="large" color="#8244CB" />;
   }
 
   return (
     <ScrollView>
       <View>
-        <View >
-        <View style={{flexDirection:'row'}}>
+        <View>
+          <ScrollView horizontal={true}>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedCategory === "" ? "#8244CB" : "white",
+                  padding: 8,
+                  borderRadius: 90,
+                  width: 90,
+                  alignItems: "center",
+                  marginLeft: 10,
+                }}
+                onPress={() => handleCategoryPress("")}
+              >
+                <Text
+                  style={{
+                    color:
+                      selectedCategory === "All Services" ? "white" : "#8244CB",
+                  }}
+                >
+                  All Services
+                </Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: selectedCategory === "" ? "#8244CB" : "white",
-              padding: 8,
-              borderRadius: 90,
-              width: 90,
-              alignItems: "center",
-              marginLeft: 10,
-            }}
-            onPress={() => handleCategoryPress("")}
-          >
-            <Text
-              style={{
-                color: selectedCategory === "All Services" ? "white" : "#8244CB",
-              }}
-            >
-              All Services
-            </Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedCategory === "Mobile App Development"
+                      ? "#8244CB"
+                      : "white",
+                  padding: 8,
+                  borderRadius: 90,
+                  width: 240,
+                  alignItems: "center",
+                  marginLeft: 4,
+                }}
+                onPress={() => handleCategoryPress("Mobile App Development")}
+              >
+                <Text
+                  style={{
+                    color:
+                      selectedCategory === "Mobile App Development"
+                        ? "white"
+                        : "#8244CB",
+                  }}
+                >
+                  Mobile App Development
+                </Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{
-              backgroundColor: selectedCategory === "AAA" ? "#A77CDA" : "white",
-              padding: 8,
-              borderRadius: 90,
-              width: 90,
-              alignItems: "center",
-              marginLeft: 4,
-            }}
-            onPress={() => handleCategoryPress("AAA")}
-          >
-            <Text
-              style={{
-                color: selectedCategory === "AAA" ? "white" : "#A77CDA",
-              }}
-            >
-              AAA
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: selectedCategory === "BBB" ? "#A77CDA" : "white",
-              padding: 8,
-              borderRadius: 90,
-              width: 90,
-              alignItems: "center",
-              marginLeft: 4,
-            }}
-            onPress={() => handleCategoryPress("BBB")}
-          >
-            <Text
-              style={{
-                color: selectedCategory === "BBB" ? "white" : "#A77CDA",
-              }}
-            >
-              BBB
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: selectedCategory === "ccc" ? "#A77CDA" : "white",
-              padding: 8,
-              borderRadius: 90,
-              width: 90,
-              alignItems: "center",
-              marginLeft: 4,
-            }}
-            onPress={() => handleCategoryPress("ccc")}
-          >
-            <Text
-              style={{
-                color: selectedCategory === "ccc" ? "white" : "#A77CDA",
-              }}
-            >
-              ccc
-            </Text>
-          </TouchableOpacity>
-
-          </View>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedCategory === "Web Development"
+                      ? "#8244CB"
+                      : "white",
+                  padding: 8,
+                  borderRadius: 90,
+                  width: 140,
+                  alignItems: "center",
+                  marginLeft: 4,
+                }}
+                onPress={() => handleCategoryPress("Web Development")}
+              >
+                <Text
+                  style={{
+                    color:
+                      selectedCategory === "Web Development"
+                        ? "white"
+                        : "#8244CB",
+                  }}
+                >
+                  Web Development
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor:
+                    selectedCategory === "UX Design" ? "#8244CB" : "white",
+                  padding: 8,
+                  borderRadius: 90,
+                  width: 140,
+                  alignItems: "center",
+                  marginLeft: 4,
+                }}
+                onPress={() => handleCategoryPress("UX Design")}
+              >
+                <Text
+                  style={{
+                    color:
+                      selectedCategory === "UX Design" ? "white" : "#8244CB",
+                  }}
+                >
+                  UX Design
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
           <FlatList
             data={filteredData.length > 0 ? filteredData : services}
             keyExtractor={(item) => item.id.toString()}

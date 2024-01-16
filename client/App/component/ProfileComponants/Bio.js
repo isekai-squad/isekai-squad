@@ -26,6 +26,7 @@ const Bio = () => {
     profileName = ProfileData.name;
     userName = ProfileData.userName;
     location = ProfileData.location;
+    role = ProfileData.role;
     Specialty = ProfileData.Specialty;
     Linkedin = ProfileData.Linkedin;
     GitHub = ProfileData.GitHub;
@@ -33,6 +34,7 @@ const Bio = () => {
   } else {
     profileName = visitedProfileData.name;
     userName = visitedProfileData.userName;
+    role = visitedProfileData.role;
     location = visitedProfileData.location;
     Specialty = visitedProfileData.Specialty;
     Linkedin = visitedProfileData.Linkedin;
@@ -56,7 +58,7 @@ const Bio = () => {
         <Text style={styles.detailText}>{Specialty.name}</Text>
       </View>
 
-      {route.name === "VisitedProfile" && role !== "COMPANY" && (
+      {route.name === "Visited Profile" && role !== "COMPANY" && (
         <TouchableOpacity
           style={{
             flexDirection: "row",
@@ -88,7 +90,7 @@ const Bio = () => {
         </TouchableOpacity>
       )}
 
-      {route.name === "VisitedProfile" && role === "COMPANY" && (
+      {route.name === "Visited Profile" && role === "COMPANY" && (
         <TouchableOpacity
           style={{
             flexDirection: "row",
@@ -139,6 +141,7 @@ const Bio = () => {
           </View>
         </ScrollView>
       )}
+      
       {(Linkedin || GitHub) && (
         <View style={styles.socialContainer}>
           <Text style={{ fontWeight: STYLES.FONTS.Large }}>Social Links:</Text>

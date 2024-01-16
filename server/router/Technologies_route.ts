@@ -11,4 +11,7 @@ route.post("/Project/:id" , technologyController.addProjectTechnology);
 route.get("/:specialtyId", technologyController.getAllTechno);
 route.get("/Technology/:userId", technologyController.getUserTechno);
 route.post("/user/Technology/:userId", technologyController.addUserTechnology);
+route.get("/speciality/all",technologyController.getAllSpecialties)
+route.get("/speciality/techno/:specialtyId",technologyController.getSpecialityTech)
+route.post('/user/speciality/add',technologyController.addUserSpecialty)
 export default route;

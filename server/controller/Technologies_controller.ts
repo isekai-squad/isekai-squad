@@ -85,8 +85,7 @@ export const getUserTechno = async (req: Request, res: Response) => {
       where: { userId: userId },
 
       include: {
-        // technologies: { select: { name: true, image: true } },
-        Technologies: true,
+        Technologies: { select: { name: true, image: true } },
       },
     });
     res.status(200).send(result);
@@ -98,6 +97,7 @@ export const getUserTechno = async (req: Request, res: Response) => {
 
 export const addUserTechnology = async (req: Request, res: Response) => {
   const { data } = req.body;
+  // console.log(req.body,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
   const { userId } = req.params;
 
   try {
@@ -109,25 +109,71 @@ export const addUserTechnology = async (req: Request, res: Response) => {
     });
     res.status(200).send("updated");
   } catch (err) {
+    console.log(err);
+
     res.status(400).send(err);
   }
 };
 
+export const getAllSpecialties = async (req: Request, res: Response) => {
+  const { specialtyId } = req.params;
+  try {
+    const result = await prisma.specialty.findMany();
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send(err);
+    console.log(err);
+  }
+};
 
-export const addProjectTechnology = async (req : Request , res : Response) => {
-  let {data} = req.body;
-  let {id} = req.params;
+export const getSpecialityTech = async (req: Request, res: Response) => {
+  console.log("here");
+
+  const { specialtyId } = req.params;
+  try {
+    const result = await prisma.technologies.findMany({
+      where: { specialtyId: specialtyId },
+    });
+    res.status(200).send(result);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send(err);
+  }
+};
+
+export const addUserSpecialty = async (req: Request, res: Response) => {
+  const { userId, specialtyId } = req.body;
+  try {
+    // Assuming you have a User model with a specialtyId field
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        specialtyId: specialtyId,
+      },
+    });
+    res.json("succes");
+  } catch (error) {
+    console.error("Error adding specialty to user:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
+export const addProjectTechnology = async (req: Request, res: Response) => {
+  let { data } = req.body;
+  let { id } = req.params;
   try {
     await prisma.projectTechnology.deleteMany({
-      where : {projectId : id}
-    })
+      where: { projectId: id },
+    });
     const result = await prisma.projectTechnology.createMany({
       data,
       skipDuplicates: true,
-    })
-     res.status(201).json(result);
-  }catch (err) {
+    });
+    res.status(201).json(result);
+  } catch (err) {
     console.log(err);
     res.status(401).send(err);
   }
-}
+};
