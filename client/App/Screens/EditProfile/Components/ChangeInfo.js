@@ -10,8 +10,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { ProfileContext } from "../../../Context/ProfileContext";
 
 const ChangeInfo = () => {
-  const { nameRef, usernameRef, bioRef, phoneRef,ProfileData } =
-    useContext(ProfileContext);
+  const {
+    nameRef,
+    usernameRef,
+    bioRef,
+    phoneRef,
+    ProfileData,
+    linkedInRef,
+    githHubRef,
+  } = useContext(ProfileContext);
 
   return (
     <ScrollView>
@@ -55,6 +62,26 @@ const ChangeInfo = () => {
             onChangeText={(text) => (phoneRef.current.value = text)}
             ref={phoneRef}
             keyboardType="phone-pad"
+          />
+        </View>
+
+        <View style={styles.fieldContainer}>
+          <Ionicons name="logo-linkedin" size={25} style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder={"Your LinedIn Link"||ProfileData.Linkedin }
+            onChangeText={(text) => (linkedInRef.current.value = text)}
+            ref={linkedInRef}
+          />
+        </View>
+
+        <View style={styles.fieldContainer}>
+          <Ionicons name="logo-github" size={25} style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder={"Your GitHub Link"||ProfileData.GitHub}
+            onChangeText={(text) => (githHubRef.current.value = text)}
+            ref={githHubRef}
           />
         </View>
       </SafeAreaView>

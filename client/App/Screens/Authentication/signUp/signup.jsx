@@ -1,7 +1,15 @@
-import React, { useState, useRef, useEffect,useContext } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, Animated, FlatList, useWindowDimensions } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
+import React, { useState, useRef, useEffect, useContext } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  Animated,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 import Step1 from './steps/step1';
 import Step2 from './steps/step2';

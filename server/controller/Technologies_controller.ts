@@ -167,3 +167,21 @@ res.json('succes')
     await prisma.$disconnect();
   }
 };
+
+export const addProjectTechnology = async (req : Request , res : Response) => {
+  let {data} = req.body;
+  let {id} = req.params;
+  try {
+    await prisma.projectTechnology.deleteMany({
+      where : {projectId : id}
+    })
+    const result = await prisma.projectTechnology.createMany({
+      data,
+      skipDuplicates: true,
+    })
+     res.status(201).json(result);
+  }catch (err) {
+    console.log(err);
+    res.status(401).send(err);
+  }
+}

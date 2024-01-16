@@ -26,19 +26,39 @@ export const getFavorite = async (req: Request, res: Response) => {
 };
 
 export const addFav = async (req: Request, res: Response) => {
-  const { userId, projectId, postId, serviceId } = req.params;
+  const { userId, serviceId } = req.body;
+  console.log(serviceId );
+  
   try {
     let newFav = await prisma.favList.create({
       data: {
-        userId: String(userId),
-        projectId: String(projectId),
-        postId: String(postId),
-        serviceId: String(serviceId),
+        userId: userId,
+        serviceId: serviceId,
       },
     });
     res.status(200).send("fav item added");
   } catch (err) {
     res.status(400).send({ error: err });
+  }
+};
+
+export const addToBasket = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.idUser;
+    const serviceId = req.params.idItem;
+    
+    const item = await prisma.basket.create({
+      data: {
+        userId: userId,
+        serviceId:serviceId,
+      },
+      
+    });
+    res.status(201).send("successful");
+  } catch(error) {
+    console.log(error);
+    
+    res.status(404).send(error);
   }
 };
 
@@ -52,7 +72,7 @@ export const removeFav = async (req: Request, res: Response): Promise<void> => {
       },
     });
 
-    // Add response handling if needed
+    
     res.status(200).json({ success: true, deleted });
   } catch (error) {
     console.error("Error deleting from basket:", error);

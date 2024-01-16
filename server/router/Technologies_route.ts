@@ -6,6 +6,7 @@ route.post("/Technology/:specialtyId", technologyController.addNewTechnology);
 route.delete("/Technology", technologyController.deleteTechnology);
 route.post("/Speciality", technologyController.addSpeciality);
 route.delete("/Speciality", technologyController.deleteSpeciality);
+route.post("/Project/:id" , technologyController.addProjectTechnology);
 
 route.get("/:specialtyId", technologyController.getAllTechno);
 route.get("/Technology/:userId", technologyController.getUserTechno);

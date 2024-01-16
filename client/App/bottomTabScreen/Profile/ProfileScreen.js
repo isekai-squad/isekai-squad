@@ -9,14 +9,14 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
-import HeaderPhoto from "./Componants/HeaderPhoto";
-import Bio from "./Componants/Bio";
-import MiddelTab from "./Componants/MiddelTab";
 import { ProfileContext } from "../../Context/ProfileContext";
-import AboutProfile from "./AboutProfile/AboutProfile";
 import { STYLES } from "../../../GlobalCss";
-import Activity from "./ActivityProfile/Activity";
 
+import HeaderPhoto from "../../component/ProfileComponants/HeaderPhoto";
+import Bio from "../../component/ProfileComponants/Bio";
+import MiddelTab from "../../component/ProfileComponants/MiddelTab";
+import AboutProfile from "./AboutProfile/AboutProfile";
+import Activity from "./Activity";
 function ProfileScreen() {
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../../../assets/fonts/Roboto-Regular.ttf"),
@@ -25,16 +25,25 @@ function ProfileScreen() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const { activeMiddleTab, LoadingProfile, refetchProfile, refetchProject } =
-    useContext(ProfileContext);
+  const {
+    activeMiddleTab,
+    LoadingProfile,
+    refetchProfile,
+    setRefetchPosts,
+    setRefetchProject,
+  } = useContext(ProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    setRefetchPosts(true);
+    setRefetchProject(true);
     refetchProfile();
-    refetchProject && refetchProject();
     setTimeout(() => {
       setRefreshing(false);
+      setRefreshing(false);
+      setRefetchPosts(false);
+      setRefetchProject(false);
     }, 2000);
   }, []);
 

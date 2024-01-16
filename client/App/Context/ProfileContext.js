@@ -5,16 +5,13 @@ import { storage } from "../../FirebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
-import { AuthContext } from "./AuthContext";
 import { jwtDecode } from "jwt-decode";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 export const ProfileContext = createContext();
+
 export const ProfileProvider = ({ children }) => {
   const navigation = useNavigation();
-  const token = AsyncStorage.getItem("Token").valueOf();
-  // const decoded = jwtDecode(token);
-  console.log(token);
   const [checkOurServices, setCheckOurServices] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSelectTech, setShowSelectTech] = useState(false);
@@ -27,11 +24,24 @@ export const ProfileProvider = ({ children }) => {
   const usernameRef = useRef("");
   const bioRef = useRef("");
   const phoneRef = useRef("");
-  const userId = "1";
+  const linkedInRef = useRef("");
+  const githHubRef = useRef("");
+  const [userId, setUserId] = useState();
+
+  const getCurrentUser = async () => {
+    const res = await SecureStore.getItemAsync("Token");
+    const decodeResult = jwtDecode(res);
+    console.log(decodeResult);
+    setUserId(decodeResult.id);
+  };
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
   // ===========================REFETCH PART===========================
-  const [refetchProject, setRefetchProject] = useState("");
-  const [refetchReplyComment, setRefetchReplyComment] = useState(false);
+
+  const [refetchPosts, setRefetchPosts] = useState(false);
+  const [refetchProject, setRefetchProject] = useState(false);
   // ================================REFETCH PART======================
 
   const {
@@ -117,9 +127,13 @@ export const ProfileProvider = ({ children }) => {
         number: Number(phoneRef.current.value) || Number(ProfileData.number),
         pdp: updatedProfileImage,
         cover: updatedCoverImage,
+        Linkedin: linkedInRef.current.value || ProfileData.Linkedin,
+        GitHub: githHubRef.current.value || ProfileData.GitHub,
       };
       await mutateAsyncInfo(Info);
-      await mutateAsyncTechno(updatedMainSkills);
+      if (ProfileData.role === "STUDENT") {
+        await mutateAsyncTechno(updatedMainSkills);
+      }
     } catch (error) {
       console.error("Error during submission:", error);
     } finally {
@@ -134,6 +148,8 @@ export const ProfileProvider = ({ children }) => {
       usernameRef.current = UserData.username;
       bioRef.current = UserData.bio;
       phoneRef.current = UserData.number;
+      linkedInRef.current = UserData.Linkedin;
+      githHubRef.current = UserData.GitHub;
       setProfileImage(UserData.pdp);
       setCoverImage(UserData.cover);
       setMainSkills(UserData.userTechnology);
@@ -150,7 +166,6 @@ export const ProfileProvider = ({ children }) => {
         setProfileData,
         activeMiddleTab,
         setActiveMiddleTab,
-
         profileImage,
         setProfileImage,
         coverImage,
@@ -161,14 +176,16 @@ export const ProfileProvider = ({ children }) => {
         usernameRef,
         bioRef,
         phoneRef,
+        linkedInRef,
+        githHubRef,
         showSelectTech,
         setShowSelectTech,
         handleSubmit,
         userId,
+        refetchPosts,
+        setRefetchPosts,
         refetchProject,
         setRefetchProject,
-        refetchReplyComment,
-        setRefetchReplyComment,
         checkOurServices,
         setCheckOurServices,
       }}
@@ -302,6 +319,16 @@ export async function deleteProject(userId, projectId) {
     throw new err();
   }
 }
+
+export async function deletePost(userId, postId) {
+  try {
+    const response = await axios.delete(
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/posts/Posts/${userId}/${postId}`
+    );
+  } catch (err) {
+    throw new err();
+  }
+}
 export async function upVoteProject(userId, projectId) {
   try {
     const response = await axios.post(
@@ -389,22 +416,21 @@ export async function PostProjectReplyComment(userId, projectId, data) {
 // -------------------------COMPANY && ADVISOR------------
 
 export function useFetchUserPosts(userId) {
-  console.log('====================================');
-  console.log(userId,"iii");
-  console.log('====================================');
   const userPosts = async ({ pageParam = 1 }) => {
     try {
       const { data } = await axios.get(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Post/${userId}?limit=6&page=${pageParam}`
       );
-   
+
       return data;
     } catch (err) {
       console.error(err);
       throw err;
     }
   };
-
+  console.log("====================================");
+  console.log(userPosts);
+  console.log("====================================");
   return useInfiniteQuery({
     queryKey: ["posts"],
     queryFn: userPosts,

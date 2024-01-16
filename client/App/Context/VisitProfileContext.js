@@ -14,8 +14,8 @@ export const VisitProfileProvider = ({ children }) => {
   const visitedProfileId = "2";
 
   // ===========================REFETCH PART===========================
-  const [refetchPosts, setRefetchPosts] = useState("");
-  const [refetchReplyComment, setRefetchReplyComment] = useState(false);
+  const [refetchPosts, setRefetchPosts] = useState(false);
+  const [refetchProject, setRefetchProject] = useState(false);
   // ================================REFETCH PART======================
 
   const {
@@ -47,6 +47,8 @@ export const VisitProfileProvider = ({ children }) => {
         setReportPop,
         refetchPosts,
         setRefetchPosts,
+        refetchProject,
+        setRefetchProject,
       }}
     >
       {children}

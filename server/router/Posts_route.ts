@@ -4,6 +4,7 @@ const route = require("express").Router()
 
 route.get("/Projects" , PostController.getAllProject)
 route.get("/Projects/:userId", PostController.getAllProjectOneUser)
+route.get("/Projects/likes/mostLikedProject", PostController.getMostLikedProject)
 route.get("/Posts" , PostController.getAllPosts)
 route.get("/Post/:userId", PostController.getAllPostsOneUser)
 route.post("/Projects/:userId", PostController.addProject)

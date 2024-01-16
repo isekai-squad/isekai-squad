@@ -174,11 +174,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
-
-export const getAllPostsOneUser = async (
-  req: Request,
-  res: Response
-) => {
+export const getAllPostsOneUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const { limit = 10, page = 1 } = req.query;
@@ -224,7 +220,7 @@ export const upVotePost = async (req: Request, res: Response) => {
     const user = await prisma.likes.findFirst({
       where: {
         userId,
-        postId
+        postId,
       },
     });
     if (user) {
@@ -245,9 +241,9 @@ export const upVotePost = async (req: Request, res: Response) => {
           userId,
         },
       });
-      console.log('====================================');
+      console.log("====================================");
       console.log(result);
-      console.log('====================================');
+      console.log("====================================");
       res.status(201).json(result);
     }
   } catch (err) {
@@ -261,7 +257,8 @@ export const downVotePost = async (req: Request, res: Response) => {
   try {
     const user = await prisma.likes.findFirst({
       where: {
-        userId,postId
+        userId,
+        postId,
       },
     });
     if (user) {
@@ -376,6 +373,37 @@ export const getUserLikes = async (req: Request, res: Response) => {
       where: { userId: userId },
     });
     res.status(200).json(likes);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+};
+export const getMostLikedProject = async (req: Request, res: Response) => {
+  try {
+    const mostLiked = await prisma.likes.groupBy({
+      by: ["projectId"],
+
+      orderBy: {
+        _count: {
+          projectId: "desc",
+        },
+      },
+      take: 1,
+    });
+
+    if (mostLiked.length === 0) {
+      return res.status(404).json({ message: "No likes found" });
+    }
+
+    const projectId = String(mostLiked[0].projectId);
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+    });
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    res.status(200).json(project);
   } catch (err) {
     console.log(err);
     res.status(400).send(err);
