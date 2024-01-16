@@ -102,7 +102,7 @@ const Signup = ({ navigation }) => {
       const userData = {
         name,
         userName,
-        email: email + "qsdqsd",
+        email: email,
         password,
         pdp,
         role,

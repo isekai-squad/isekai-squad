@@ -25,16 +25,25 @@ function ProfileScreen() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const { activeMiddleTab, LoadingProfile, refetchProfile, refetchPosts } =
-    useContext(ProfileContext);
+  const {
+    activeMiddleTab,
+    LoadingProfile,
+    refetchProfile,
+    setRefetchPosts,
+    setRefetchProject,
+  } = useContext(ProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    setRefetchPosts(true);
+    setRefetchProject(true);
     refetchProfile();
-    refetchPosts && refetchPosts();
     setTimeout(() => {
       setRefreshing(false);
+      setRefreshing(false);
+      setRefetchPosts(false);
+      setRefetchProject(false);
     }, 2000);
   }, []);
 

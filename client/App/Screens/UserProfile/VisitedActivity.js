@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 import { VisitProfileContext } from "../../Context/VisitProfileContext";
 
 import { STYLES } from "../../../GlobalCss";
-import RenderPost from "../../component/ProfileComponants/RenderPosts/RenderPost";
+import RenderPost from "../../component/ProfileComponants/Render_Posts_Project/RenderPost";
 import { useContext } from "react";
 import { useRoute } from "@react-navigation/native";
 import {

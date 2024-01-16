@@ -1,7 +1,7 @@
 import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 
 import { STYLES } from "../../../GlobalCss";
-import RenderPost from "../../component/ProfileComponants/RenderPosts/RenderPost";
+import RenderPost from "../../component/ProfileComponants/Render_Posts_Project/RenderPost";
 import { useContext, useEffect } from "react";
 import {
   ProfileContext,

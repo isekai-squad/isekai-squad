@@ -218,7 +218,7 @@ export const Navigation = () => {
   },[Token])
   return (
     <NavigationContainer>
-      {!auth ? (
+      {auth ? (
         <ProfileProvider>
           <VisitProfileProvider>
             <Drawer.Navigator>
