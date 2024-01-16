@@ -16,7 +16,7 @@ import CommentsInputs from "./CommentsProjectInputs";
 import AllComments from "./AllProjectsComments";
 
 const StudentPostsInteraction = ({ projectId }) => {
-  const { userId } = useContext(ProfileContext);
+  const { userId, refetchProject } = useContext(ProfileContext);
 
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
@@ -29,7 +29,7 @@ const StudentPostsInteraction = ({ projectId }) => {
     mutationFn: () => downVoteProject(userId, projectId),
   });
 
-  const { data: projectLikes, refetch: refetchLikes } = useQuery({
+  const { data: projectLikes, refetch: refetchAllLikes } = useQuery({
     queryKey: ["projectLikes", projectId],
     queryFn: () => getAllLikesProject(projectId),
     select: (data) => {
@@ -52,8 +52,9 @@ const StudentPostsInteraction = ({ projectId }) => {
 
   const upVoteHandle = async () => {
     await upVote();
-    refetchLikes();
+    refetchAllLikes();
     refetchUserLikes();
+
     if (!upvoted) {
       setUpvoted(true);
       setDownvoted(false);
@@ -64,8 +65,9 @@ const StudentPostsInteraction = ({ projectId }) => {
 
   const downVoteHandle = async () => {
     await downVote();
-    refetchLikes();
+    refetchAllLikes();
     refetchUserLikes();
+
     if (!downvoted) {
       setUpvoted(false);
       setDownvoted(true);
@@ -73,6 +75,13 @@ const StudentPostsInteraction = ({ projectId }) => {
       setDownvoted(false);
     }
   };
+  if (refetchProject) {
+    refetchProjectComments();
+    refetchUserLikes();
+    refetchAllLikes();
+
+    refetchProjectComments();
+  }
 
   useEffect(() => {
     const likedProject = UserProjectsLikes?.find(

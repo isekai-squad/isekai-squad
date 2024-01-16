@@ -16,7 +16,7 @@ import CommentsInputs from "./CommentsPostsInputs";
 import AllComments from "./AllPostsComments";
 
 const CompanyAdvisorPostsInteraction = ({ postId }) => {
-  const { userId } = useContext(ProfileContext);
+  const { userId, refetchPosts } = useContext(ProfileContext);
 
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
@@ -72,6 +72,12 @@ const CompanyAdvisorPostsInteraction = ({ postId }) => {
       setDownvoted(false);
     }
   };
+
+  if (refetchPosts) {
+    refetchPostsLikes();
+    refetchUserPostLikes();
+    refetchPostsComments();
+  }
   useEffect(() => {
     const likedPosts = UserPostLikes?.find((item) => item.postId === postId);
     setUpvoted(likedPosts?.like === 1);

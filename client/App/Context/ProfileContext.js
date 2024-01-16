@@ -6,7 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import { jwtDecode } from "jwt-decode";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 export const ProfileContext = createContext();
 
@@ -26,24 +26,22 @@ export const ProfileProvider = ({ children }) => {
   const phoneRef = useRef("");
   const linkedInRef = useRef("");
   const githHubRef = useRef("");
-  const [userId, setUserId] = useState("1");
+  const [userId, setUserId] = useState();
 
-  // const getCurrentUser = async () => {
-  //   const res = await SecureStore.getItemAsync("Token");
-  //   console.log('====================================');
-  //   console.log(res);
-  //   console.log('====================================');
-  //   const decodeResult = await jwtDecode(res);
-  //   setUserId(decodeResult.id);
-  // };
-  // useEffect(() => {
-  //   getCurrentUser();
-  // }, []);
+  const getCurrentUser = async () => {
+    const res = await SecureStore.getItemAsync("Token");
+    const decodeResult = jwtDecode(res);
+    console.log(decodeResult);
+    setUserId(decodeResult.id);
+  };
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
   // ===========================REFETCH PART===========================
- 
-  const [refetchPosts, setRefetchPosts] = useState("");
-  const [refetchReplyComment, setRefetchReplyComment] = useState(false);
+
+  const [refetchPosts, setRefetchPosts] = useState(false);
+  const [refetchProject, setRefetchProject] = useState(false);
   // ================================REFETCH PART======================
 
   const {
@@ -186,8 +184,8 @@ export const ProfileProvider = ({ children }) => {
         userId,
         refetchPosts,
         setRefetchPosts,
-        refetchReplyComment,
-        setRefetchReplyComment,
+        refetchProject,
+        setRefetchProject,
         checkOurServices,
         setCheckOurServices,
       }}
