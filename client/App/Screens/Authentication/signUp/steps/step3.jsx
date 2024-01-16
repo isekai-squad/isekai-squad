@@ -39,9 +39,12 @@
 
     return (
         <View style={{width}}>
-            <View style={{marginLeft:40, marginTop:100,top:80}} >
+               <View style={{justifyContent:'center',alignItems:'center',marginTop:40}}>
+            <Image source={{uri:'https://i.imgur.com/KyAazUD.png'}} style={{width:200,height:200}}/>
+        </View>
+            <View style={{marginLeft:40, marginTop:10}} >
                             <Text style={Styles.SignUp}>SignUp</Text>
-                            <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>SignUp And Join Us</Text>
+                            <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>Select A Country & Region</Text>
 
 
                             <View style={{ gap: 40,      justifyContent: 'center',
