@@ -20,10 +20,10 @@ import { io } from "socket.io-client";
 const Notification = () => {
   const [focused, setFocused] = useState("General");
   const [data, setData] = useState([]);
-  const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`)
+  const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
   const retreiveNotifications = async () => {
-  await axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/notification/2`).then(res => [...res.data].sort((a , b) => new Date(b.created_at) - new Date(a.created_at))).then(data => setData(data)).catch(err => console.log(err)) 
+  await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/notification/2`).then(res => [...res.data].sort((a , b) => new Date(b.created_at) - new Date(a.created_at))).then(data => setData(data)).catch(err => console.log(err)) 
   }
 
   useEffect(() => {

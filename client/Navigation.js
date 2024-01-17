@@ -205,16 +205,16 @@ export const Navigation = () => {
             options={{
               headerShown: false,
             }}
-            name="signIn"
-            component={SignIn}
+            name="signup"
+            component={Signup}
             initialParams={{ setToken: setToken }}
           />
           <Stack.Screen
             options={{
               headerShown: false,
             }}
-            name="signup"
-            component={Signup}
+            name="signIn"
+            component={SignIn}
             initialParams={{ setToken: setToken }}
           />
           <Stack.Screen name="forgotPassword" component={ForgotPassword} />

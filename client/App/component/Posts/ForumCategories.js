@@ -21,7 +21,7 @@ import { ForumContext } from "../../Context/ForumContext";
 const ForumCategories = () => {
   let {getCategory} = useContext(ForumContext)
   const navigation = useNavigation();
-  const url = process.env.EXPO_PUBLIC_API_URL
+  const url = process.env.EXPO_PUBLIC_IP_KEY
   console.log(url)
   const {data , isLoading , error} = useQuery({
     queryKey: ["Category"],

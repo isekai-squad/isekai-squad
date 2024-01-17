@@ -68,7 +68,7 @@ const Comment = ({ user, comment }) => {
     queryFn: async () =>
       await axios
         .get(
-          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${comment.id}/comments/likes`
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumComment/${comment.id}/comments/likes`
         )
         .then((res) => res.data)
         .catch((err) => console.error(err)),
@@ -90,7 +90,7 @@ const Comment = ({ user, comment }) => {
   const addLike = async () => {
     return await axios
       .post(
-        `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${comment.id}/${user.id}/comments/increment`
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumComment/${comment.id}/${user.id}/comments/increment`
       )
       .then((res) => console.log("liked"))
       .then(() => refetch())

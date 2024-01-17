@@ -85,7 +85,7 @@ io.on('connection', (socket) => {
     console.log(`User joined room: ${roomId}`);
   });
   
-  const userNotifications = {}
+  const userNotifications : any = {}
   socket.on('userConnected' , (userId) => {
     userNotifications[userId] = 0
   })

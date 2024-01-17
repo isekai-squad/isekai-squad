@@ -41,7 +41,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Swiper from "react-native-swiper";
 import io from 'socket.io-client';
 
-const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`)
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
 const PostDetails = ({ route }) => {
   const [liked , setLiked] = useState(false)
@@ -72,7 +72,7 @@ const PostDetails = ({ route }) => {
     queryFn: async () =>
       await axios
         .get(
-          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/likes/${post.id}`
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/likes/${post.id}`
         )
         .then((res) => res.data)
         .catch((err) => console.error(err)),
@@ -96,7 +96,7 @@ const PostDetails = ({ route }) => {
     mutationFn: async () =>
       await axios
         .post(
-          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/increment/${post.id}/${user.id}`
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/increment/${post.id}/${user.id}`
         )
         .then((res) => console.log("liked"))
         .then(() => socket.emit('') )

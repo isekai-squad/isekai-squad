@@ -110,9 +110,9 @@ const CreatePost = () => {
 
     const addPost = async () => {
       if(role === 'STUDENT'){
-        await axios.post(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/Posts/Projects/1` , {title , description, content : fileResponse , images : Images}).then(res => console.log("added successfully")).catch(err => console.log(err))    
+        await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/1` , {title , description, content : fileResponse , images : Images}).then(res => console.log("added successfully")).catch(err => console.log(err))    
       }else if(role ==='COMPANY') {
-        await axios.post(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/Posts/Posts/1` , {title , content : description , images : Images}).then(res => console.log("added successfully")).catch(err => console.log(err))
+        await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Posts/1` , {title , content : description , images : Images}).then(res => console.log("added successfully")).catch(err => console.log(err))
       }
     }
 

@@ -21,7 +21,7 @@ const CommentList = ({ post, user }) => {
     queryFn: async () =>
       axios
         .get(
-          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/${post.id}`
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumComment/${post.id}`
         )
         .then((res) => res.data),
   });

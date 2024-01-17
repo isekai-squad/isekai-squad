@@ -78,7 +78,7 @@ const CreateForumPost = ({ route }) => {
   };
   const addPost = async () => {
     await axios
-      .post(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/1`, {
+      .post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/1`, {
         title,
         content: description,
         images,

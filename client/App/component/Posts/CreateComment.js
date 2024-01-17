@@ -89,7 +89,7 @@ const CreateComment = ({ post, user , refetch }) => {
       } else {
        await axios
         .post(
-          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumComment/1/${post.id}/comments`,
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumComment/1/${post.id}/comments`,
           { content, images }
           )
           .then((res) => console.log("comment added successfully"))
