@@ -56,6 +56,7 @@ model User {
   receivedNotification Notifications[]    @relation("receiver")
   studentInterview     InterviewRequest[] @relation("student")
   companyInterview     InterviewRequest[] @relation("company")
+  call                 Calls[]
 }
 
 model Project {
@@ -299,6 +300,7 @@ model Room {
   userRoomsId String?
   Messages    Messages[]
   userRoom    userRooms[]
+  Calls       Calls[]
 }
 
 model userRooms {
@@ -338,4 +340,14 @@ model InterviewRequest {
   studentId  String?
   company    User?    @relation("company", fields: [companyId], references: [id])
   companyId  String?
+}
+
+model Calls {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  roomId String
+  room   Room?   @relation(fields: [roomId], references: [roomId])
+  caller   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }

@@ -33,6 +33,7 @@ import { useRoute } from '@react-navigation/native';
     const [password,setPassword]=useState()
     const [conPassword,setConPassword]=useState()
     const [role,setRole]=useState()
+    const [location,setLocation]=useState()
     const [pdp,setPdp]=useState()
     const [speciality,setSpeciality]=useState()
     const [technologies,setTechnologies]=useState()
@@ -75,6 +76,7 @@ await SecureStore.setItemAsync('Token',data)
         password,
         pdp,
         role,
+        location,
         confirmed:false
       };
       try{
@@ -100,6 +102,7 @@ await SecureStore.setItemAsync('Token',data)
         email :email,
         password,
         pdp,
+        location,
         role,
       };
       try {
@@ -172,8 +175,8 @@ console.log(err);
              { step === 1 &&<Step1 navigation={navigation} setName={setName} name={name} userName={userName} setUserName={setUserName} role={role} setRole={setRole} setStep={setStep} />}
             { step===2 &&<Step2 password={password}  setPassword={setPassword}  setEmail={setEmail} email={email}
           setConPassword={setConPassword} conPassword={conPassword}   setStep={setStep} />}
-            { step=== 3 &&<Step3 setStep={setStep} />}
-            { step === 4 && <Step4 setSpeciality={setSpeciality} setStep={setStep} />}
+            { step=== 3 &&<Step3  setLocation={setLocation} setStep={setStep} />}
+            { step === 4 && <Step4  setSpeciality={setSpeciality} setStep={setStep} />}
             { step=== 5 && <Step5 speciality={speciality} technologies={technologies} setTechnologies={setTechnologies}  setStep={setStep} />}
            { step === 6 && <Step6 createAccount={createAccount} pdp={pdp} setPdp={setPdp} setStep={setStep}/>} 
           

@@ -9,16 +9,19 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { STYLES } from "../../../../../GlobalCss";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Step7 = ({ createAccount, role }) => {
   const [company, setComapny] = useState(false);
 
   const { width, height } = useWindowDimensions();
   return (
+    <SafeAreaView>
+
     <View style={{}}>
       {role === "COMPANY" && (
         <View
-          style={{ alignItems: "center", width, height, gap: 30, bottom: 40 }}
+          style={{ alignItems: "center", width, height, gap: 30}}
         >
           <View>
             <Text style={Styles.SignUp}>Procces Done</Text>
@@ -86,7 +89,7 @@ const Step7 = ({ createAccount, role }) => {
               marginBottom: 20,
               justifyContent: "center",
             }}
-          >
+            >
             <TouchableOpacity
               onPress={() => createAccount()}
               style={{
@@ -95,7 +98,7 @@ const Step7 = ({ createAccount, role }) => {
                 backgroundColor: STYLES.COLORS.Priamary,
                 alignItems: "center",
               }}
-            >
+              >
               <Text
                 style={{
                   color: "white",
@@ -206,6 +209,7 @@ const Step7 = ({ createAccount, role }) => {
         </View>
       )}
     </View>
+</SafeAreaView>
   );
 };
 const Styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-    import React from 'react'
+    import React, { useEffect } from 'react'
     import  { useState,useContext } from 'react'
     import FontAwesome from 'react-native-vector-icons/FontAwesome'
     import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -24,12 +24,15 @@
     import { useFonts } from 'expo-font'
     import { STYLES } from '../../../../../GlobalCss'
     import { axios } from 'axios'
-    function Step3({setStep}) {
+    function Step3({setStep,setLocation}) {
         const [shown,setShown]=useState(true)
         const [shown2,setShown2]=useState(true)
         const [country,setCountry]=useState(null)
         const [visible, setVisible] = useState(false)
 
+        useEffect(()=>{
+            setLocation(country)
+        },[])
         const onSelect = (country) => {
             setCountry(country)
             console.log(country.name,country.flag);

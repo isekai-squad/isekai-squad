@@ -25,6 +25,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from 'expo-secure-store';
 import UserChatRoom from "./App/Screens/Chat/UserChatRoom";
+import Agora from "./App/Screens/Chat/Agora";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -128,6 +129,20 @@ const DrawerNavigator = ({params}) => {
           }}
           />
       <Drawer.Screen
+        name="Agora"
+        component={Agora}
+        options={{
+          headerShown: false,
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+            name="qr-code"
+            size={size}
+            color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+            ),
+          }}
+          />
+      <Drawer.Screen
         name="AboutScreen"
         component={AboutScreen}
         options={{
@@ -197,6 +212,17 @@ export const Navigation = () => {
               <Drawer.Screen
                 name="EditProfile"
                 component={EditProfile}
+                options={{
+                  // drawerItemStyle: {
+                  //   height: 0,
+                  // },
+                  headerShown: false,
+                  drawerLockMode: "",
+                }}
+              />
+              <Drawer.Screen
+                name="agora"
+                component={Agora}
                 options={{
                   // drawerItemStyle: {
                   //   height: 0,
