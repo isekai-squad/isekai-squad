@@ -76,7 +76,6 @@ io.on('connection', (socket) => {
       },
     });
     
-    // Emit the new message to the room
     io.to(roomId).emit('newMessage', message);
   });
   
@@ -114,13 +113,10 @@ io.on('connection', (socket) => {
     // Broadcast the offer to the recipient
     io.to(data.target).emit('offer', data);
   });
-
-  // Handle answer message
   socket.on('answer', (data) => {
     io.to(data.target).emit('answer', data);
   });
 
-  // Handle reject message
   socket.on('reject', (data) => {
     io.to(data.target).emit('reject', data);
   });

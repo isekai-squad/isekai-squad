@@ -21,7 +21,6 @@ const Step5 = ({setStep,speciality,setTechnologies}) => {
     
   };
 
-  console.log(checkedItems,'hhhhhhhhhhhhhhhhhhhhhhhhhhhh');
   const getAllSpecialities =async ()=>{
 try {
       const res = await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/technologie/speciality/techno/${speciality.id}`);
@@ -38,12 +37,12 @@ setExpertise(res.data)
 
   return (
    <View style={{width}}>
-     <View style={{ justifyContent: 'center', alignItems: 'center',gap:40}}>
+     <View style={{ justifyContent: 'center', alignItems: 'center',gap:40,marginTop:40}}>
       <View>
-        <Text style={Styles.SignUp}>Expertise</Text>
-        <Text style={{ fontFamily: 'Roboto-Light', fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>
-          Please select a field of expertise
-        </Text>
+      <Text style={Styles.SignUp}>Technologies</Text>
+          <Text style={{ fontFamily: 'Roboto-Light', fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>
+            Select some technologies
+          </Text>
       </View>
       <ScrollView style={{height:400}}>
 

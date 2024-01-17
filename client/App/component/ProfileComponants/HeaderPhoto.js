@@ -46,7 +46,7 @@ const HeaderPhoto = () => {
             }}
             style={styles.profileImage}
           />
-          {route.name === "VisitedProfile" && (
+          {route.name === "Visited Profile" && (
             <Text style={active ? styles.active : styles.desactive}></Text>
           )}
         </View>

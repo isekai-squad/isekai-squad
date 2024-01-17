@@ -22,8 +22,14 @@
     import axios from "axios";
     import { useRoute } from "@react-navigation/native";
     import AsyncStorage from "@react-native-async-storage/async-storage";
-
+    import * as SecureStore from "expo-secure-store";
+const saveCurrentUser =async (data)=>{
+await SecureStore.setItemAsync('Token',data)
+}
     export default function SignIn({ navigation }) {
+        const saveCurrentUser =async (data)=>{
+            await SecureStore.setItemAsync('Token',data)
+            }
     const route = useRoute();
     const { setToken } = route.params;
     const [fontsLoaded] = useFonts({
@@ -59,11 +65,10 @@
             `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/signin/`,
             data
         );
-        await setToken(response.data.token);
 
-        await AsyncStorage.setItem("Token", response.data.token).then(() => {
-            navigation.navigate("Home");
-        });
+        await setToken(response.data.token);
+        await saveCurrentUser(response.data.token)
+       
         return "success";
         } catch (err) {
         console.log(err);
@@ -80,7 +85,7 @@
     const { width, height } = useWindowDimensions();
 
     return (
-        <ScrollView style={{ flex: 1, width, height }}>
+        <ScrollView style={{ flex: 1, width, height,marginTop:4 }}>
         <TouchableOpacity
             style={{
             position: "absolute",

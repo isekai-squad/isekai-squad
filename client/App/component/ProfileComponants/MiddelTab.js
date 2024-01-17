@@ -80,7 +80,7 @@ function MiddelTab() {
         </TouchableOpacity>
       )}
 
-      {route.name === "VisitedProfile" && (
+      {route.name === "Visited Profile" && (
         <TouchableOpacity
           style={{
             borderColor: "#00000078",

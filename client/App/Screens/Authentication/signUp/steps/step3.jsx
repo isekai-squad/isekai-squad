@@ -32,7 +32,7 @@
 
         useEffect(()=>{
             setLocation(country)
-        },[])
+        },[country])
         const onSelect = (country) => {
             setCountry(country)
             console.log(country.name,country.flag);
@@ -46,7 +46,7 @@
             <Image source={{uri:'https://i.imgur.com/KyAazUD.png'}} style={{width:200,height:200}}/>
         </View>
             <View style={{marginLeft:40, marginTop:10}} >
-                            <Text style={Styles.SignUp}>SignUp</Text>
+                            <Text style={Styles.SignUp}>Location</Text>
                             <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>Select A Country & Region</Text>
 
 

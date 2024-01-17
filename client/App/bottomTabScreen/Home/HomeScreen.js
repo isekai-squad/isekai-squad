@@ -12,18 +12,18 @@ function HomeScreen({ navigation }) {
   const { ProfileData } = useContext(ProfileContext);
 
   return (
-    <ScrollView>
-      {/* <SafeAreaView
+    <ScrollView style={{ flex: 1 }}>
+      <SafeAreaView
         style={{
           backgroundColor: "white",
           flex: 1,
-          height: "100%",
+          // height: "100%",
           paddingBottom: 100,
         }}
       >
         <StartCover />
         {ProfileData.role === "STUDENT" && <PremiumRecommendation />}
-      </SafeAreaView> */}
+      </SafeAreaView> 
     </ScrollView>
   );
 }
