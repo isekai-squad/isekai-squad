@@ -80,7 +80,7 @@ const [fontsLoaded] = useFonts({
         <View style={{justifyContent:'center',alignItems:'center',gap:30}}>
             <View>
 
-        <View style={{...Styles.loginContainer,right:10}}>
+        <View style={{...Styles.loginContainer,right:5}}>
 <Fontisto style={Styles.loginIcon} name="email" size={20} color={"#8244CB"} />
     <TextInput
         style={Styles.loginInput}

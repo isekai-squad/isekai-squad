@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Image, Text, View } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble,Avatar } from 'react-native-gifted-chat';
 import { io } from 'socket.io-client';
 import axios from 'axios';
 import { STYLES } from '../../../GlobalCss';
@@ -93,11 +93,10 @@ const ChatRoom = ({ route }) => {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
       <View style={{width:'100%',backgroundColor:"#e5e5e5",height:80,justifyContent:'center'}}>
-   <View style={{flexDirection:'row',gap:20,alignItems:'center',top:13,marginLeft:10}}>
+   <View style={{flexDirection:'row',gap:20,alignItems:'center',marginLeft:10}}>
     <Image source={{uri:other.pdp}} style={{height:50,width:50,borderRadius:50}}/>
     <Text>{other.name}</Text>
    </View>
-   <View style={{alignSelf:'flex-end',alignItems:'center',bottom:28,marginRight:20}}><FontAwesome name="video-camera" color={STYLES.COLORS.Priamary} size={30}/></View>
   </View> 
          <GiftedChat
           messages={conversation}
@@ -133,9 +132,17 @@ const ChatRoom = ({ route }) => {
                    
                  }}
                  />
+                 
                  );
+                 
                }}
-               />
+               renderAvatar={(props) => {
+                if (props.currentMessage.user._id !== userId) {
+                  return <Avatar {...props} source={{ uri: other.pdp}} />;
+                }
+                return null; 
+              }}
+                           />
       </View>
     </SafeAreaView>
   );

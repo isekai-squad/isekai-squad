@@ -23,7 +23,7 @@ function HomeScreen({ navigation }) {
       >
         <StartCover />
         {ProfileData.role === "STUDENT" && <PremiumRecommendation />}
-      </SafeAreaView>
+      </SafeAreaView> 
     </ScrollView>
   );
 }

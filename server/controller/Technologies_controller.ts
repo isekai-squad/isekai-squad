@@ -97,7 +97,6 @@ export const getUserTechno = async (req: Request, res: Response) => {
 
 export const addUserTechnology = async (req: Request, res: Response) => {
   const { data } = req.body;
-  // console.log(req.body,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
   const { userId } = req.params;
 
   try {
@@ -128,7 +127,6 @@ export const getAllSpecialties = async (req: Request, res: Response) => {
 };
 
 export const getSpecialityTech = async (req: Request, res: Response) => {
-  console.log("here");
 
   const { specialtyId } = req.params;
   try {
@@ -143,6 +141,7 @@ export const getSpecialityTech = async (req: Request, res: Response) => {
 };
 
 export const addUserSpecialty = async (req: Request, res: Response) => {
+   
   const { userId, specialtyId } = req.body;
   try {
     // Assuming you have a User model with a specialtyId field

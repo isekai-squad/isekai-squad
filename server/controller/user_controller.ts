@@ -31,6 +31,8 @@ const prisma = new PrismaClient();
 // }
 
 export const createUser = async (req: Request, res: Response) => {
+  console.log('hereeee');
+  
   const body = req.body as Prisma.UserCreateInput;
 
   try {

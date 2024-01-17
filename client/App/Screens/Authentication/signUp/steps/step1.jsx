@@ -65,12 +65,19 @@ const Step1 = ({
     // <KeyboardAwareScrollView
       
     // >
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    keyboardVerticalOffset={290}
+  
+    behavior={Platform.OS == "ios" ? "position" : "position" }
+  >
+
     <View>
 
 
 <TouchableOpacity onPress={()=>navigation.navigate('signIn')}>
 
-<Text style={{position:'absolute',top:0,marginTop:50,marginLeft:10,fontSize:20,color:STYLES.COLORS.Priamary}}>Create Account?</Text>
+<Text style={{position:'absolute',top:0,marginTop:50,marginLeft:10,fontSize:20,color:STYLES.COLORS.Priamary}}>Already Have Account?</Text>
 </TouchableOpacity>
       <View style={{ width, height, justifyContent: 'center', alignItems: 'center',bottom:20 }}>
         <View style={{ gap: 20, justifyContent: 'center', alignItems: 'center' }}>
@@ -85,12 +92,12 @@ const Step1 = ({
                 style={pressed !== "STUDENT" ? Styles.Icon : Styles.PressedIcon}
                 name="user"
                 size={30}
-              />
+                />
             </TouchableOpacity>
             {pressed !== 'STUDENT' ? (
               <Text style={{ textAlign: 'center' }}>Student</Text>
               ) : (
-              <Text style={{ textAlign: 'center' }}>
+                <Text style={{ textAlign: 'center' }}>
                 <FontAwesome color={STYLES.COLORS.Priamary} size={22} name='caret-up' />
               </Text>
             )}
@@ -135,7 +142,7 @@ const Step1 = ({
                 fontSize: STYLES.SIZES.sizeL,
                 fontWeight: "100",
               }}
-            >
+              >
               SignUp And Join Us
             </Text>
             <View
@@ -144,7 +151,7 @@ const Step1 = ({
                 justifyContent: "center",
                 alignItems: "center",
               }}
-            >
+              >
               <View>
                 <View style={Styles.loginContainer}>
                   <Feather
@@ -152,7 +159,7 @@ const Step1 = ({
                     name="user"
                     size={20}
                     color={"#8244CB"}
-                  />
+                    />
                   <TextInput
                     style={Styles.loginInput}
                     placeholder="FullName"
@@ -162,7 +169,7 @@ const Step1 = ({
                 </View>
                 {errorInput === "no name" && (
                   <Text style={{ color: "red", top: 20 }}>Enter A name</Text>
-                )}
+                  )}
               </View>
               <View>
                 <View style={Styles.loginContainer}>
@@ -171,17 +178,17 @@ const Step1 = ({
                     name="user-plus"
                     size={20}
                     color={"#8244CB"}
-                  />
+                    />
                   <TextInput
                     style={Styles.loginInput}
                     placeholder="@username"
                     value={userName}
                     onChangeText={(text) => setUserName(text)}
-                  />
+                    />
                 </View>
                 {errorInput === "no userName" && (
                   <Text style={{ color: "red" }}>Enter a username, please</Text>
-                )}
+                  )}
                 {errorInput === "all" && (
                   <Text style={{ color: "red", top: 20 }}>
                     Please Enter All information
@@ -216,6 +223,7 @@ const Step1 = ({
         </View>
       </View>
       </View>
+      </KeyboardAvoidingView>
     // </KeyboardAwareScrollView>
   );
 };
@@ -248,24 +256,26 @@ const Styles = {
     fontSize: STYLES.SIZES.sizeXXL,
   },
   loginInput: {
-    height: 60,
+    height: "100%",
     width: "100%",
     borderColor: "#dbdbdb",
     borderWidth: 1,
     borderRadius: 8,
     paddingLeft: 40,
     color: "#000",
+    
   },
   loginIcon: {
     left: 30,
   },
   loginContainer: {
     flexDirection: "row",
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     right: 30,
-    top: 20,
-    width: "90%",
+    top: 40,
+    height:60,
+    width: "100%",
   },
 };
 

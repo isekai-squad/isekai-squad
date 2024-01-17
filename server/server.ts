@@ -76,7 +76,6 @@ io.on('connection', (socket) => {
       },
     });
     
-    // Emit the new message to the room
     io.to(roomId).emit('newMessage', message);
   });
   
@@ -109,6 +108,23 @@ io.on('connection', (socket) => {
   });
   socket.on('newMessage',()=> socket.emit('newMessage')
   )
+
+  socket.on('offer', (data) => {
+    // Broadcast the offer to the recipient
+    io.to(data.target).emit('offer', data);
+  });
+  socket.on('answer', (data) => {
+    io.to(data.target).emit('answer', data);
+  });
+
+  socket.on('reject', (data) => {
+    io.to(data.target).emit('reject', data);
+  });
+
+  socket.on('ice-candidate', (data) => {
+    io.to(data.target).emit('ice-candidate', data);
+  });
+
 });
 
 
