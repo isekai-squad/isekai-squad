@@ -27,6 +27,8 @@ import Basket from "./App/Screens/Basket/basket";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
+ 
+import Bayservice from "./App/Service/Bayservice";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { STYLES } from "./GlobalCss";
@@ -37,6 +39,9 @@ import service from "./App/Service/service";
 
 import postServices from "./App/component/PostServices.js";
 import ServiceDetails from "./App/Service/ServiceDetatUser";
+import Code from "./App/Service/Code";
+// import Servicee from "./App/Component/Service"
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -79,6 +84,20 @@ const DrawerNavigator = ({ params }) => {
           ),
         }}
       />
+        <Drawer.Screen
+        name="code"
+        component={Code}
+        options={{
+          headerShown: false,
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="home"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
       <Drawer.Screen
         name="Visited Profile"
         component={UserProfile}
@@ -96,6 +115,26 @@ const DrawerNavigator = ({ params }) => {
       <Drawer.Screen
         name="basket"
         component={Basket}
+        options={({ navigation }) => ({
+          headerLeft: false,
+          headerTitle: () => (
+            <SearchHeader
+              onChangeText={(text) => console.log("Search:", text)}
+            />
+          ),
+          headerTitleContainerStyle: { width: "100%" },
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="basket"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        })}
+      />
+        <Drawer.Screen
+        name="Bayservice"
+        component={Bayservice}
         options={({ navigation }) => ({
           headerLeft: false,
           headerTitle: () => (

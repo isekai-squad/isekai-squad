@@ -18,7 +18,7 @@ const AllServices = ({ navigation }) => {
   const [likes, setLikes] = useState({});
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-const {userId}=useContext(ProfileContext)
+  const { userId } = useContext(ProfileContext);
   useEffect(() => {
     fetchServices();
   }, []);
@@ -41,16 +41,18 @@ const {userId}=useContext(ProfileContext)
 
   const handleAddToFavorite = async (serviceId) => {
     try {
+    
       const response = await axios.post(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/favorit`,
         {
           userId: userId,
-          serviceId: "1",
+          serviceId: serviceId,
         }
       );
-      console.log("successful:", response.data);
+      console.log("Successful response:", response.data);
     } catch (error) {
-      console.error("Error during :", error.message);
+      console.error("Error during POST request:", error.message);
+      console.error("Error details:", error.response.data); 
     }
   };
 
@@ -73,8 +75,8 @@ const {userId}=useContext(ProfileContext)
         <Ionicons
           name={likes[item.serviceId] ? "heart" : "heart-outline"}
           size={32}
-          color={likes[item.serviceId] ? "red" : "black"}  
-          onPress={() => handleAddToFavorite(item.serviceId)}
+          color={likes[item.serviceId] ? "red" : "red"}
+          onPress={() => handleAddToFavorite(item.id)}
         />
       </View>
       <Text style={styles.title} numberOfLines={2}>
@@ -103,14 +105,16 @@ const {userId}=useContext(ProfileContext)
 
   return (
     <ScrollView>
-      <View>
+      <View style={{ backgroundColor: "white" }}>
         <View>
-          <ScrollView horizontal={true}>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={{ paddingVertical: 22 }}
+          >
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={{
-                  backgroundColor:
-                    selectedCategory === "" ? "#8244CB" : "white",
                   padding: 8,
                   borderRadius: 90,
                   width: 90,
@@ -122,7 +126,9 @@ const {userId}=useContext(ProfileContext)
                 <Text
                   style={{
                     color:
-                      selectedCategory === "All Services" ? "white" : "#8244CB",
+                      selectedCategory === "All Services"
+                        ? "#d4c4fb"
+                        : "#8244CB",
                   }}
                 >
                   All Services
@@ -134,7 +140,8 @@ const {userId}=useContext(ProfileContext)
                   backgroundColor:
                     selectedCategory === "Mobile App Development"
                       ? "#8244CB"
-                      : "white",
+                      : "#d4c4fb",
+                      
                   padding: 8,
                   borderRadius: 90,
                   width: 240,
@@ -147,7 +154,7 @@ const {userId}=useContext(ProfileContext)
                   style={{
                     color:
                       selectedCategory === "Mobile App Development"
-                        ? "white"
+                        ? "#d4c4fb"
                         : "#8244CB",
                   }}
                 >
@@ -160,7 +167,7 @@ const {userId}=useContext(ProfileContext)
                   backgroundColor:
                     selectedCategory === "Web Development"
                       ? "#8244CB"
-                      : "white",
+                      : "#d4c4fb",
                   padding: 8,
                   borderRadius: 90,
                   width: 140,
@@ -173,7 +180,7 @@ const {userId}=useContext(ProfileContext)
                   style={{
                     color:
                       selectedCategory === "Web Development"
-                        ? "white"
+                        ? "#d4c4fb"
                         : "#8244CB",
                   }}
                 >
@@ -183,7 +190,7 @@ const {userId}=useContext(ProfileContext)
               <TouchableOpacity
                 style={{
                   backgroundColor:
-                    selectedCategory === "UX Design" ? "#8244CB" : "white",
+                    selectedCategory === "UX Design" ? "#8244CB" : "#d4c4fb",
                   padding: 8,
                   borderRadius: 90,
                   width: 140,
@@ -203,13 +210,14 @@ const {userId}=useContext(ProfileContext)
               </TouchableOpacity>
             </View>
           </ScrollView>
-          <FlatList
-            data={filteredData.length > 0 ? filteredData : services}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderItem}
-            numColumns={2}
-          />
         </View>
+
+        <FlatList
+          data={filteredData.length > 0 ? filteredData : services}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          numColumns={2}
+        />
       </View>
     </ScrollView>
   );
@@ -218,11 +226,11 @@ const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
     margin: 4,
-    borderRadius: 8,
-    backgroundColor: "#f0f0f0",
+    borderRadius: 11,
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
-    elevation: 8,
-    padding: 16,
+    elevation: 4,
+    padding: 10,
   },
   image: {
     width: 150,
@@ -248,7 +256,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    fontSize: 19,
+    fontSize: 15,
     fontWeight: "bold",
     marginBottom: 2,
   },

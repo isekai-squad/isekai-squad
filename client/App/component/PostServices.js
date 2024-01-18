@@ -183,6 +183,7 @@ const CreatePost = () => {
           <Text style={{ fontSize: 22, fontWeight: 600 }}>Price :</Text>
           <Input
             style={styles.input}
+            bgColor="#fafafa"
             keyboardType="numeric"
             onChangeText={onChangeText}
             value={value}
