@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from "@prisma/client";
+import { $Enums, Prisma, Role } from "@prisma/client";
 import { Request, Response } from "express";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -401,3 +401,37 @@ export const CompanyCreate = async (req: Request, res: Response) => {
     console.log(err);
   }
 };
+
+export const findUser = async(req:Request,res:Response)=>{
+    const {searched,role}= req.body
+    
+  try {
+    if (!role){
+
+      const users = await prisma.user.findMany({
+        where: {
+          name: {
+            contains: searched,
+            
+          },
+        },
+      });
+      res.json(users);
+    } else {
+      
+      const users = await prisma.user.findMany({
+        where: {
+          name: {
+            contains: searched,
+            
+          },
+          role:role as Role,
+        },
+      });
+      res.json(users);
+    }
+  } catch (error) {
+    console.error('Error searching users:', error);
+    throw new Error('Failed to search users');
+  }
+}
