@@ -56,8 +56,8 @@ export const createUser = async (req: Request, res: Response) => {
       },
       "secretKey"
     );
-     
-    res.json({token,id:student.id})
+
+    res.json({ token, id: student.id });
   } catch (err) {
     console.log(err);
     res.status(500).json("Error creating user");
@@ -109,7 +109,7 @@ export const SignIn = async (req: Request, res: Response) => {
         "secretKey"
       );
 
-      res.json({ token,id:user.id });
+      res.json({ token, id: user.id });
     } else {
       res.status(401).json({ error: "Invalid Credentials" });
     }
@@ -399,5 +399,57 @@ export const CompanyCreate = async (req: Request, res: Response) => {
     res.json("email has been set");
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const getStudentProfile = async (req: Request, res: Response) => {
+  const { limit = 10 } = req.query;
+
+  try {
+    const result = await prisma.user.findMany({
+      include: { Specialty: true },
+      where: {
+        role: "STUDENT",
+      },
+      take: Number(limit),
+    });
+
+    res.status(200).send(result);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+export const getCompanyProfile = async (req: Request, res: Response) => {
+  const { limit = 10 } = req.query;
+
+  try {
+    const result = await prisma.user.findMany({
+      include: { Specialty: true },
+      where: {
+        role: "COMPANY",
+      },
+      take: Number(limit),
+    });
+
+    res.status(200).send(result);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+export const getAdvisorProfile = async (req: Request, res: Response) => {
+  const { limit = 10 } = req.query;
+
+  try {
+    const result = await prisma.user.findMany({
+      include: { Specialty: true },
+      where: {
+        role: "ADVISOR",
+      },
+      take: Number(limit),
+    });
+
+    res.status(200).send(result);
+  } catch (err) {
+    res.status(400).send(err);
   }
 };

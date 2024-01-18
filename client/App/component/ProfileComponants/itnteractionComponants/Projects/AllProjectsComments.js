@@ -52,8 +52,7 @@ const CommentItem = ({ comment, refetchProjectComments }) => {
   const [replyInput, setReplyInput] = useState(false);
   const [showAllReplies, setShowAllReplies] = useState(false);
 
-  const { refetchProject, setRefetchProject, userId } =
-    useContext(ProfileContext);
+  const { refetchPosts, userId } = useContext(ProfileContext);
 
   // ================LIKE COMMENT==================
   const { data: projectsReplyComments, refetch: refetchReplyComments } =
@@ -83,11 +82,8 @@ const CommentItem = ({ comment, refetchProjectComments }) => {
   // =================LIKE COMMENT===================
 
   // =================SHOW MORE COMMENTS===================
-  if (refetchProject) {
+  if (refetchPosts) {
     refetchReplyComments();
-    setTimeout(() => {
-      setRefetchProject(false);
-    }, 2000);
   }
   const visibleReplies = showAllReplies
     ? projectsReplyComments

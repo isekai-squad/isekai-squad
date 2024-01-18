@@ -52,7 +52,9 @@ const SearchHeader = ({ value, onChangeText }) => {
 
   return (
     <View style={styles.searchContainer}>
-    <TouchableOpacity style={styles.iconContainer} onPress={handleMenuPress}>
+     
+
+      <TouchableOpacity style={styles.iconContainer} onPress={handleMenuPress}>
         {checkOurServices ? (
           <Animated.View style={{ transform: [{ scale: spin }] }}>
             <Ionicons name="menu" size={25} color={STYLES.COLORS.Priamary} />
