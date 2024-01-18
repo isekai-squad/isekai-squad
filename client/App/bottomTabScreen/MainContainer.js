@@ -16,13 +16,12 @@ import NotificationBell from "../component/Notifications/NotificationBell";
 import Notification from "../component/Notifications/NotificationPage";
 import { Badge, BadgeText, Box, VStack } from "@gluestack-ui/themed";
 const Tab = createBottomTabNavigator();
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
 const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`);
 
 export const MainContainer = () => {
   const { activeMiddleTab } = useContext(ProfileContext);
-
 
   return (
     <Tab.Navigator
@@ -41,7 +40,6 @@ export const MainContainer = () => {
           let iconName;
           let iconColor;
           iconColor = focused ? "#8244CB" : "black";
-
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
             return <Ionicons name={iconName} size={size} color={iconColor} />;
@@ -64,24 +62,28 @@ export const MainContainer = () => {
           } else if (route.name === "Notifications") {
             return (
               <Box alignItems="center">
-              <VStack>
-                <Badge
-                     h={22}
-                     w={22}
-                     bg="$red600"
-                     borderRadius="$full"
-                     mb={-12}
-                     mr={-12}
-                     zIndex={1}
-                     variant="solid"
-                     alignSelf="flex-end"
-                     >
-              <BadgeText color="$white">0</BadgeText>
-                </Badge>
-            <NotificationBell focused={focused} size={size} iconColor={iconColor} />
-              </VStack>
-                  </Box>
-            )
+                <VStack>
+                  <Badge
+                    h={22}
+                    w={22}
+                    bg="$red600"
+                    borderRadius="$full"
+                    mb={-12}
+                    mr={-12}
+                    zIndex={1}
+                    variant="solid"
+                    alignSelf="flex-end"
+                  >
+                    <BadgeText color="$white">0</BadgeText>
+                  </Badge>
+                  <NotificationBell
+                    focused={focused}
+                    size={size}
+                    iconColor={iconColor}
+                  />
+                </VStack>
+              </Box>
+            );
           }
         },
       })}
@@ -122,9 +124,14 @@ export const MainContainer = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-      name="Notifications"
-      component={Notification}
-      options={{headerRight : ()=> <Ionicons name="settings-outline" size={26} /> , headerTitleStyle:{fontSize : 26 , fontWeight : '600'} , headerStyle : {height : 80} , headerLeft : () => <Ionicons name="arrow-back" size={40}/>}}
+        name="Notifications"
+        component={Notification}
+        options={{
+          headerRight: () => <Ionicons name="settings-outline" size={26} />,
+          headerTitleStyle: { fontSize: 26, fontWeight: "600" },
+          headerStyle: { height: 80 },
+          headerLeft: () => <Ionicons name="arrow-back" size={40} />,
+        }}
       />
     </Tab.Navigator>
   );

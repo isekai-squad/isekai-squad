@@ -8,44 +8,20 @@ import {
   useFetchStudentProjects,
   useFetchUserPosts,
 } from "../../Context/ProfileContext";
-import { VisitProfileContext } from "../../Context/VisitProfileContext";
 
 const Activity = () => {
-  const { userId, ProfileData } = useContext(ProfileContext);
+  const { userId, ProfileData, refetchPosts } = useContext(ProfileContext);
 
-  let data, isLoading, hasNextPage, fetchNextPage, refetchPosts;
+  const {
+    data,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    refetch: refetchAllPosts,
+  } = ProfileData.role !== "STUDENT"
+    ? useFetchUserPosts(userId)
+    : useFetchStudentProjects(userId);
 
-  if (ProfileData.role !== "STUDENT") {
-    const {
-      data: posts,
-      isLoading: userPostsLoading,
-      hasNextPage: userPostsHasNextPage,
-      fetchNextPage: userPostsFetchNextPage,
-      refetch: userPostsRefetch,
-    } = useFetchUserPosts(userId);
-
-    data = posts;
-    isLoading = userPostsLoading;
-    hasNextPage = userPostsHasNextPage;
-    fetchNextPage = userPostsFetchNextPage;
-    refetchPosts = userPostsRefetch;
-  } else {
-    const {
-      data: projects,
-      isLoading: projectsLoading,
-      hasNextPage: projectsHasNextPage,
-      fetchNextPage: projectsFetchNextPage,
-      refetch: projectsRefetch,
-    } = useFetchStudentProjects(userId);
-
-    data = projects;
-    isLoading = projectsLoading;
-    hasNextPage = projectsHasNextPage;
-    fetchNextPage = projectsFetchNextPage;
-    refetchPosts = projectsRefetch;
-  }
-
-  const posts = data?.pages?.map((page) => page).flat();
 
   const loadNextPageData = () => {
     if (hasNextPage) {
@@ -54,18 +30,19 @@ const Activity = () => {
   };
 
   // render componants
-
-  const keyExtractor = (_, index) => index.toString();
+  if (refetchPosts) {
+    refetchAllPosts();
+  }
 
   //map into data
   return (
     <View style={styles.container}>
       <FlatList
-        keyExtractor={keyExtractor}
-        data={posts}
+        keyExtractor={(item, index) => index.toString()}
+        data={data?.pages?.map((page) => page).flat() ?? []}
         onEndReached={loadNextPageData}
         renderItem={({ item }) => (
-          <RenderPost refetchPosts={refetchPosts} item={item} />
+          <RenderPost refetchPosts={refetchAllPosts} item={item} />
         )}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
