@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -18,7 +19,6 @@ const AboutScreen = () => {
   const [input, setInput] = useState("");
   const [qrValue, setQrValue] = useState("");
   const [user, setUser] = useState({
-    name: "John Doe",
     profileImageUrl: "https://example.com/profile.jpg",
     qrCodeUrl: "https://example.com/qrcode.jpg",
   });
@@ -30,29 +30,24 @@ const AboutScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.Arrowleft}>
-        <Text style={styles.text}>Isekai QR code</Text>
-        <AntDesign
-          name="arrowleft"
-          size={25}
+        <FontAwesome5
+          name="arrow-alt-circle-left"
+          
+          size={30}
           color={"#8244CB"}
           onPress={() => navigation.navigate("Home")}
         />
+        <Text style={styles.text}>Isekai QR code</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("QRCode")}>
+          <AntDesign name="scan1" size={40}  color={"#8244CB"} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.codeSection}>
         <Text style={styles.code}>My code</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("QRCode")}>
-          <Text style={styles.scanText}>Scan</Text>
-        </TouchableOpacity>
 
         <View style={styles.backgroundcodeQR}>
           <View style={styles.profileImgContainer}>
-            <Image
-              source={{
-                uri: user.profileImageUrl,
-              }}
-              style={styles.profileImg}
-            />
             <Text style={styles.profileName}>{user.name}</Text>
           </View>
           <QRCode
@@ -75,13 +70,13 @@ const AboutScreen = () => {
         </View>
 
         <View style={styles.shareContainer}>
-          <Text style={styles.share}>Share my code</Text>
           <AntDesign
             name="sharealt"
             size={18}
             color={"black"}
             style={styles.antDesign}
           />
+          <Text style={styles.share}>Share my code</Text>
         </View>
       </View>
     </SafeAreaView>
@@ -122,7 +117,7 @@ const styles = StyleSheet.create({
   },
   backgroundcodeQR: {
     width: 300,
-    height: 300,
+    height: 350,
     borderRadius: 20,
     backgroundColor: "white",
     justifyContent: "center",

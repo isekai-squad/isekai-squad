@@ -29,9 +29,9 @@ const FavoriteList = () => {
     }
   };
 
-  const deleteFromFavorites = async (itemId) => {
+  const deleteFromFavorites = async (serviceId) => {
     try {
-      await axios.delete(`http://${API}:4070/favorit/${userId}/${itemId}`);
+      await axios.delete(`http://${API}:4070/favorit/${userId}/${serviceId}`);
       fetchFavoriteList();
     } catch (error) {
       console.error("Error deleting from favorites:", error);
@@ -47,7 +47,7 @@ const FavoriteList = () => {
         
         <Text style={styles.createdAt}>{item.Service.created_at}</Text>
       </View>
-      <TouchableOpacity onPress={() => deleteFromFavorites(item.id)}>
+      <TouchableOpacity onPress={() => deleteFromFavorites(item.serviceId)}>
         <Ionicons name="heart-dislike-sharp" size={30} color="red" />
       </TouchableOpacity>
     </View>
