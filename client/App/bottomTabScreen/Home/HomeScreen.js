@@ -24,6 +24,7 @@ function HomeScreen({ navigation }) {
         }}
       >
         <StartCover />
+
         <PremiumRecommendation />
         <StudentProfiles />
         <CompanyProfile />
@@ -37,6 +38,8 @@ function HomeScreen({ navigation }) {
         {ProfileData.role === "COMPANY" && <CompanyProfile />}
         {ProfileData.role === "COMPANY" && <AdvisorProfile/>} */}
       </SafeAreaView>
+
+
     </ScrollView>
   );
 }

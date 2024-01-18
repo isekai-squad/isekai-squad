@@ -4,6 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default UserChatRoom = ({navigation}) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -77,16 +78,19 @@ export default UserChatRoom = ({navigation}) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-
+<TouchableOpacity onPress={()=>navigation.goBack()}><Ionicons size={50} name="arrow-back"/></TouchableOpacity>
     <View style={{ flex: 1 }}>
-      <FlatList
+      {convos.length> 0 ? <FlatList
         extraData={convos}
         data={convos}
         keyExtractor={item => {
           return item.id
         }}
         renderItem={renderItem}
-        />
+        /> : 
+        <View style={{width:"100%",height:"100%", backgroundColor:"white", justifyContent:"center",alignItems:"center"}}>
+          <Image width={500} height={300} source={{uri:"https://cdn.dribbble.com/users/99954/screenshots/6669081/no_messages_blank_state.png?resize=800x600&vertical=center"}}/>
+          </View>}
     </View>
 </SafeAreaView>
   )
