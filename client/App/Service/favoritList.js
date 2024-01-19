@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useContext } from "react";
 import {
   View,
   Text,
@@ -7,19 +7,20 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
+import { useFocusEffect } from "@react-navigation/native"; 
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { ProfileContext } from "../Context/ProfileContext";
 
 const FavoriteList = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const API = process.env.EXPO_PUBLIC_IP_KEY;
-
+  const { userId } = useContext(ProfileContext);
   const fetchFavoriteList = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://${API}:4070/favorit/1`);
+      const response = await axios.get(`http://${API}:4070/favorit/${userId}`);
       setFavoriteItems(response.data);
     } catch (error) {
       console.error("Error fetching favorites:", error);
@@ -28,9 +29,9 @@ const FavoriteList = () => {
     }
   };
 
-  const deleteFromFavorites = async (itemId) => {
+  const deleteFromFavorites = async (serviceId) => {
     try {
-      await axios.delete(`http://${API}:4070/favorit/1/${itemId}`);
+      await axios.delete(`http://${API}:4070/favorit/${userId}/${serviceId}`);
       fetchFavoriteList();
     } catch (error) {
       console.error("Error deleting from favorites:", error);
@@ -46,13 +47,13 @@ const FavoriteList = () => {
         
         <Text style={styles.createdAt}>{item.Service.created_at}</Text>
       </View>
-      <TouchableOpacity onPress={() => deleteFromFavorites(item.id)}>
+      <TouchableOpacity onPress={() => deleteFromFavorites(item.serviceId)}>
         <Ionicons name="heart-dislike-sharp" size={30} color="red" />
       </TouchableOpacity>
     </View>
   );
 
-  // useFocusEffect will execute the provided function when the component gains focus
+  
   useFocusEffect(
     React.useCallback(() => {
       fetchFavoriteList();
@@ -81,6 +82,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 7,
+    backgroundColor: "white",
   },
   refetchButton: {
     padding: 10,
@@ -98,6 +100,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   itemContainer: {
+  
     flexDirection: "row",
     alignItems: "center",
     padding: 19,

@@ -27,7 +27,7 @@ import Basket from "./App/Screens/Basket/basket";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
-
+ 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from "expo-secure-store";
@@ -42,6 +42,9 @@ import commentsDetails from "./App/component/Posts/CommentsDetails";
 import { io } from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 import InterviewRequest from "./App/component/Interviews/InterviewRequest";
+import Code from "./App/Service/Code";
+// import Servicee from "./App/Component/Service"
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
@@ -75,6 +78,20 @@ const DrawerNavigator = ({ params }) => {
       <Drawer.Screen
         name="Home"
         component={MainContainer}
+        options={{
+          headerShown: false,
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="home"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
+        <Drawer.Screen
+        name="code"
+        component={Code}
         options={{
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
@@ -129,6 +146,7 @@ const DrawerNavigator = ({ params }) => {
           ),
         })}
       />
+  
 
       <Drawer.Screen
         name="rooms"
