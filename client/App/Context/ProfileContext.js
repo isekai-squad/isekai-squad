@@ -27,11 +27,11 @@ export const ProfileProvider = ({ children }) => {
   const linkedInRef = useRef("");
   const githHubRef = useRef("");
   const [userId, setUserId] = useState();
+  const [showTabBar, setShowTabBar] = useState(true);
 
   const getCurrentUser = async () => {
     const res = await SecureStore.getItemAsync("Token");
     const decodeResult = jwtDecode(res);
-    console.log(decodeResult);
 
     setUserId(decodeResult.id);
   };
@@ -186,9 +186,10 @@ export const ProfileProvider = ({ children }) => {
         userId,
         refetchPosts,
         setRefetchPosts,
-
         checkOurServices,
         setCheckOurServices,
+        showTabBar,
+        setShowTabBar,
       }}
     >
       {children}

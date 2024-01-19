@@ -12,12 +12,15 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { useNavigation } from "@react-navigation/native";
 import { VisitProfileContext } from "../../../Context/VisitProfileContext";
+import axios from "axios";
+import { ProfileContext } from "../../../Context/ProfileContext";
 
 const RenderProfile = ({ AllProfiles }) => {
   const [followedProfile, setFollowedProfile] = useState(null);
   const { setVisitedProfileId } = useContext(VisitProfileContext);
+  const { userId } = useContext(ProfileContext);
   const navigation = useNavigation();
-
+  const [other,setOther]=useState()
   const handleFollowPress = (profile) => {
     setFollowedProfile(profile.id === followedProfile ? null : profile.id);
   };
@@ -25,6 +28,32 @@ const RenderProfile = ({ AllProfiles }) => {
   const submit = async (id) => {
     setVisitedProfileId(id);
     navigation.navigate("Visited Profile", { id: id });
+  };
+
+
+  const CreateRoom = async (user2Id) => {
+    try {
+      const { data } = await axios.post(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/chat/room/create`,
+        {
+          user1Id: userId,
+          user2Id: user2Id,
+        }
+      );
+
+   
+     
+      const other = data.users.find((user) => user.id !== userId);
+
+
+      navigation.navigate("chat", {
+        userId:userId,
+        roomId: data.rooms[0].roomId,
+        other: other,
+      });
+    } catch (err) {
+      throw err;
+    }
   };
 
   return (
@@ -81,6 +110,7 @@ const RenderProfile = ({ AllProfiles }) => {
                     flexDirection: "row",
                     marginTop: 20,
                   }}
+                  onPress={() => CreateRoom(profile.id)}
                 >
                   <AntDesign
                     name="message1"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import {
   View,
@@ -10,17 +10,18 @@ import {
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from "react-native-vector-icons/Entypo";
-const API = process.env.EXPO_PUBLIC_IP_KEY;
+import { ProfileContext } from "../Context/ProfileContext";
 
 const ServiceDetaite = ({ navigation, route }) => {
+  const {userId}=useContext(ProfileContext)
   const item = route.params.item;
 
   const handleAddToBasket = async (serviceId) => {
     const API = process.env.EXPO_PUBLIC_IP_KEY;
     try {
       const response = await axios.post(`http://${API}:4070/baskets`, {
-        userId: "1",
-        serviceId: "1",
+        userId: userId,
+        serviceId: item
       });
 
       console.log("UpVote successful:", response.data);

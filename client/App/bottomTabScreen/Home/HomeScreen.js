@@ -9,33 +9,38 @@ import RecentProjects from "./Componants/RecentProjects";
 import StudentProfiles from "./Componants/Profiles/StudentProfiles";
 import CompanyProfile from "./Componants/Profiles/CompanyProfile";
 import AdvisorProfile from "./Componants/Profiles/AdvisorProfile";
+import AllServecies from "./Componants/AllServecies";
+import Footer from "./Componants/Footer";
 
 function HomeScreen({ navigation }) {
-  const { ProfileData } = useContext(ProfileContext);
-
+  const { ProfileData, setShowTabBar } = useContext(ProfileContext);
+  const handleScroll = function (event) {
+    if (event.nativeEvent.contentOffset.y >= 2000) {
+      setShowTabBar(false);
+    } else {
+      setShowTabBar(true);
+    }
+  };
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }} onScroll={handleScroll}>
       <SafeAreaView
         style={{
           backgroundColor: "white",
           flex: 1,
           height: "100%",
-          paddingBottom: 100,
+          // paddingBottom: 100,
         }}
       >
         <StartCover />
-        <PremiumRecommendation />
-        <StudentProfiles />
+        {ProfileData.role === "COMPANY" && <PremiumRecommendation />}
+        {ProfileData.role === "STUDENT" && <AllServecies />}
+        {ProfileData.role !== "STUDENT" && <StudentProfiles />}
         <CompanyProfile />
         <RecentProjects />
         <AdvisorProfile />
-        {/*
-
-        {/* {ProfileData.role === "COMPANY" && <PremiumRecommendation />}
-        {ProfileData.role === "COMPANY" && <StudentProfiles />}
-        <RecentProjects />
-        {ProfileData.role === "COMPANY" && <CompanyProfile />}
-        {ProfileData.role === "COMPANY" && <AdvisorProfile/>} */}
+        {ProfileData.role === "STUDENT" && <StudentProfiles />}
+        {ProfileData.role !== "STUDENT" && <AllServecies />}
+        <Footer />
       </SafeAreaView>
     </ScrollView>
   );

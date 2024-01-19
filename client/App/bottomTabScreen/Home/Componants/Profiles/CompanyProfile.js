@@ -10,7 +10,7 @@ import RenderProfile from "../RenderProfile";
 const fetchCompanyProfile = async () => {
   try {
     const { data } = await axios.get(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/company`
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/company?limit=10`
     );
     return data;
   } catch (err) {

@@ -17,7 +17,7 @@ import RenderProfile from "../RenderProfile";
 const fetchStudentProfile = async () => {
   try {
     const { data } = await axios.get(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/students`
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/students?limit=10`
     );
     return data;
   } catch (err) {

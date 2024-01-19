@@ -47,7 +47,6 @@ const DrawerNavigator = ({ params }) => {
     await SecureStore.deleteItemAsync("Token");
     setToken(null);
   };
-  // logout();
   return (
     <Drawer.Navigator
       initialRouteName="Home"
@@ -84,6 +83,9 @@ const DrawerNavigator = ({ params }) => {
         component={UserProfile}
         options={{
           headerLeft: false,
+          drawerItemStyle: {
+            height: 0,
+          },
           headerTitle: () => (
             <SearchHeader
               onChangeText={(text) => console.log("Search:", text)}
