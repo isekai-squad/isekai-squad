@@ -114,7 +114,7 @@ const CreateComment = ({ post,user , refetch }) => {
       <Box style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-            <Suspense fallback={() => <ActivityIndicator color='##674188'/>}>
+            {/* <Suspense fallback={() => <ActivityIndicator color='##674188'/>}>
             <Avatar size="md">
               <AvatarFallbackText>SS</AvatarFallbackText>
               <AvatarImage
@@ -124,7 +124,7 @@ const CreateComment = ({ post,user , refetch }) => {
               }}
               />
             </Avatar>
-            </Suspense>
+            </Suspense> */}
             <Box
               style={{
                 flexDirection: "row",

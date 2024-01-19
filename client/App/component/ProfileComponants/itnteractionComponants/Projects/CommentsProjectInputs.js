@@ -21,6 +21,8 @@ import {
   PostProjectReplyComment,
   ProfileContext,
 } from "../../../../Context/ProfileContext";
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
 const CommentsInputs = ({
   refetchProjectComments,
@@ -28,8 +30,9 @@ const CommentsInputs = ({
   commentType,
   replyCommentId,
   showReplyInput,
+  postOwner
 }) => {
-  const { userId, setRefetchPosts } = useContext(ProfileContext);
+  const { userId, setRefetchPosts,ProfileData } = useContext(ProfileContext);
   const [commentText, setCommentText] = useState("");
   const [selectedImageComment, setSelectedImageComment] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -114,6 +117,13 @@ const CommentsInputs = ({
         };
 
         await PostPostReply(reply);
+        socket.emit("sendNotification", {
+          sender: userId,
+          receiver: postOwner,
+          content: `${ProfileData.name} has Reply your Comment`,
+          type: "Project",
+          postId: projectId,
+        });
       } else {
         const comment = {
           userId: userId,
@@ -123,6 +133,13 @@ const CommentsInputs = ({
         };
 
         await PostComment(comment);
+        socket.emit("sendNotification", {
+          sender: userId,
+          receiver: postOwner,
+          content: `${ProfileData.name} has Comment your Project`,
+          type: "Project",
+          postId: projectId,
+        });
       }
     } catch (error) {
       console.error("Error during submission:", error);

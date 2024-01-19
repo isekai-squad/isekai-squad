@@ -157,6 +157,7 @@ const CommentItem = ({ comment, refetchProjectComments }) => {
             key={index}
             comment={replyComment}
             refetchReplyComments={refetchReplyComments}
+            
           />
         ))}
       {/* ===================== */}
