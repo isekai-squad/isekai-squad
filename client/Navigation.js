@@ -37,11 +37,18 @@ import service from "./App/Service/service";
 
 import postServices from "./App/component/PostServices.js";
 import ServiceDetails from "./App/Service/ServiceDetatUser";
+import CreateForumPost from "./App/component/Posts/CreateForumPost";
+import commentsDetails from "./App/component/Posts/CommentsDetails";
+import { io } from "socket.io-client";
+import { jwtDecode } from "jwt-decode";
+import InterviewRequest from "./App/component/Interviews/InterviewRequest";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
 import SeeAll from "./App/Screens/SeeAll/SeeAll";
 const DrawerNavigator = ({ params }) => {
+  const [user , setUser] = useState()
   const route = useRoute();
   const { setToken } = route.params;
   const logout = async () => {
@@ -224,16 +231,28 @@ const DrawerNavigator = ({ params }) => {
           ),
         }}
       />
+      <Drawer.Screen 
+         name="Requests"
+         component={InterviewRequest}
+         options={{headerShown : false ,
+        drawerIcon: ({ focused, size }) => (
+          <Ionicons
+            name="nuclear"
+            size={size}
+            color={focused? STYLES.COLORS.Priamary : "black"}/>)}}      
+      />
     </Drawer.Navigator>
   );
 };
 export const Navigation = () => {
   const [Token, setToken] = useState();
   const [auth, setAuth] = useState();
+  const [user, setUser] = useState();
   const getCurrentUser = async () => {
     const res = await SecureStore.getItemAsync("Token");
     setAuth(res);
   };
+
 
   useEffect(() => {
     getCurrentUser();
@@ -319,7 +338,18 @@ export const Navigation = () => {
                   drawerLockMode: "",
                 }}
               />
-             
+              <Drawer.Screen 
+                name="CreateForumPost"
+                component={CreateForumPost}
+                options={{
+                  headerShown : false
+                }}
+              />
+              <Drawer.Screen
+              name='CommentsDetails'
+              component={commentsDetails}
+              options={{headerShown : false}}
+              />
             </Drawer.Navigator>
           </VisitProfileProvider>
         </ProfileProvider>
@@ -329,16 +359,16 @@ export const Navigation = () => {
             options={{
               headerShown: false,
             }}
-            name="signIn"
-            component={SignIn}
+            name="signup"
+            component={Signup}
             initialParams={{ setToken: setToken }}
           />
           <Stack.Screen
             options={{
               headerShown: false,
             }}
-            name="signup"
-            component={Signup}
+            name="signIn"
+            component={SignIn}
             initialParams={{ setToken: setToken }}
           />
           <Stack.Screen name="forgotPassword" component={ForgotPassword} />

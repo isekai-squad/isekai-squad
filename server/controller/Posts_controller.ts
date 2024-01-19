@@ -464,3 +464,29 @@ export const getMostLikedProject = async (req: Request, res: Response) => {
     res.status(400).send(err);
   }
 };
+
+export const getOneProject = async (req : Request , res : Response) => {
+  let { projectId } = req.params;
+  try {
+    const project = await prisma.project.findFirst({
+      where: { id: projectId }
+    });
+    res.status(200).send(project)
+  }catch(err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+export const getOnePost = async (req : Request, res : Response) => {
+  let {postId} = req.params
+  try {
+    const post = await prisma.post.findFirst({
+      where: { id: postId }
+    });
+    res.status(200).send(post)
+  }catch (err) {
+    console.log(err)
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,6 +7,9 @@ import { Navigation } from "./Navigation";
 import { config } from "@gluestack-ui/config";
 import { AuthProvider } from "./App/Context/AuthContext";
 import { ForumContext, ForumProvider } from "./App/Context/ForumContext";
+import { io } from "socket.io-client";
+import { jwtDecode } from "jwt-decode";
+import * as SecureStore from "expo-secure-store";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,6 +23,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
 export default function App() {
   return (

@@ -10,5 +10,5 @@ route.put("/:userId/:serviceId" , ServicesController.updateService)
 route.post("/UpVote/:userId/:serviceId", ServicesController.upVoteService)
 route.post("/DownVote/:userId/:serviceId", ServicesController.downVoteService)
 route.get("/Likes" , ServicesController.getAllLikesService)
-
+route.get('/oneService/:serviceId' , ServicesController.getOneService)
 export default route;
