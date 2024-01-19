@@ -70,6 +70,7 @@ const Notification = () => {
           console.log(err)
         }
       },
+      refetchOnMount : true
     })
     
     if(isLoading) {
@@ -80,6 +81,15 @@ const Notification = () => {
     )
   }
 
+  socket.on('newNotification', ({notifications , receiver}) => {
+    if(user.id === receiver)
+    refetch()
+  })
+  socket.on('updateNotification' , ({receiver , count}) => {
+    if(user.id === receiver) {
+      refetch()
+    }
+  })
   
   return (
     <View style={{ height : '100%'}}>

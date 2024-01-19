@@ -46,6 +46,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
+import SeeAll from "./App/Screens/SeeAll/SeeAll";
 const DrawerNavigator = ({ params }) => {
   const [user , setUser] = useState()
   const route = useRoute();
@@ -54,25 +55,6 @@ const DrawerNavigator = ({ params }) => {
     await SecureStore.deleteItemAsync("Token");
     setToken(null);
   };
-
-  const getCurrentUser = async () => {
-    try {
-      const res = await SecureStore.getItemAsync("Token");
-      const decodeResult = jwtDecode(res);
-      setUser(decodeResult);
-    }catch (err) {
-      console.log(err)
-    }
-    }
-
-    useEffect(() => {
-      getCurrentUser();
-      socket.emit('userConnected' , user)
-      return () => {
-        socket.off('disconnect')
-      }
-    },[])
-  // logout();
   return (
     <Drawer.Navigator
       initialRouteName="Home"
@@ -109,6 +91,9 @@ const DrawerNavigator = ({ params }) => {
         component={UserProfile}
         options={{
           headerLeft: false,
+          drawerItemStyle: {
+            height: 0,
+          },
           headerTitle: () => (
             <SearchHeader
               onChangeText={(text) => console.log("Search:", text)}
@@ -232,6 +217,20 @@ const DrawerNavigator = ({ params }) => {
           ),
         }}
       />
+      <Drawer.Screen
+        name="SeeAll"
+        component={SeeAll}
+        options={{
+          headerShown: false,
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="information-circle"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
       <Drawer.Screen 
          name="Requests"
          component={InterviewRequest}
@@ -320,6 +319,17 @@ export const Navigation = () => {
               <Stack.Screen
                 name="EditProfile"
                 component={EditProfile}
+                options={{
+                  // drawerItemStyle: {
+                  //   height: 0,
+                  // },
+                  headerShown: false,
+                  drawerLockMode: "",
+                }}
+              />
+              <Stack.Screen
+                name="SeeAll"
+                component={SeeAll}
                 options={{
                   // drawerItemStyle: {
                   //   height: 0,

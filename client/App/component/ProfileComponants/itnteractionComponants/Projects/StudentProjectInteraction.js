@@ -52,6 +52,7 @@ const StudentPostsInteraction = ({ projectId }) => {
 
   const upVoteHandle = async () => {
     await upVote();
+    
     refetchAllLikes();
     refetchUserLikes();
 

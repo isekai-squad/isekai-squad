@@ -93,7 +93,6 @@ export const getRoomsForUser = async (req: Request, res: Response): Promise<void
       };
     });
     
-    console.log(formattedData);
 
     res.json(formattedData);
   } catch (error) {

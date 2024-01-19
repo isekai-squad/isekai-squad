@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {
   View,
@@ -7,14 +7,16 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
+  Text,
 } from "react-native";
 import { STYLES } from "../../GlobalCss";
 import { useNavigation } from "@react-navigation/native";
 import { ProfileContext } from "../Context/ProfileContext";
-
+import { Modalize } from "react-native-modalize";
+import Searched from "./searched";
 const SearchHeader = ({ value, onChangeText }) => {
   const { checkOurServices } = useContext(ProfileContext);
-
+  const [searched,setSearched]=useState()
   const navigation = useNavigation();
   const spinValue = useRef(new Animated.Value(0)).current;
 
@@ -26,6 +28,15 @@ const SearchHeader = ({ value, onChangeText }) => {
     }
   }, [checkOurServices]);
 
+  useEffect(()=>{
+    if (searched){
+      modalizeRef.current?.open();
+
+    } else {
+      modalizeRef.current?.close();
+
+    }
+  },[searched])
   const startAnimation = () => {
     Animated.loop(
       Animated.timing(spinValue, {
@@ -49,10 +60,27 @@ const SearchHeader = ({ value, onChangeText }) => {
   const handleMenuPress = () => {
     navigation.openDrawer();
   };
+  const modalizeRef = useRef(true);
 
+  const onOpen = () => {
+    modalizeRef.current?.open('top');
+  };
   return (
+    <View>
+
+      <View style={{   position:"absolute",top:65,width:400,height:'30%'}}>
+  
+    
+      <Modalize 
+   
+  modalHeight={580}
+ handleStyle={{backgroundColor:STYLES.COLORS.Priamary}}
+  modalStyle={{position:'absolute',width:370,right:44}}  ref={modalizeRef}>
+        <Searched searched={searched}/>
+        </Modalize>
+
+      </View>
     <View style={styles.searchContainer}>
-     
 
       <TouchableOpacity style={styles.iconContainer} onPress={handleMenuPress}>
         {checkOurServices ? (
@@ -61,7 +89,7 @@ const SearchHeader = ({ value, onChangeText }) => {
           </Animated.View>
         ) : (
           <Ionicons name="menu" size={25} color={STYLES.COLORS.Priamary} />
-        )}
+          )}
       </TouchableOpacity>
       <View style={styles.inputContainer}>
         <Ionicons
@@ -69,21 +97,22 @@ const SearchHeader = ({ value, onChangeText }) => {
           size={20}
           color={STYLES.COLORS.Priamary}
           style={styles.searchIcon}
-        />
+          />
         <TextInput
           style={styles.searchInput}
           placeholder="Search Company Student..."
           value={value}
-          onChangeText={onChangeText}
-        />
+          onChangeText={(text)=>setSearched(text)}
+          />
       </View>
       <TouchableOpacity
         style={styles.iconContainer}
         onPress={() => navigation.navigate("AboutScreen")}
-      >
+        >
         <Ionicons name="qr-code" size={25} color={STYLES.COLORS.Priamary} />
       </TouchableOpacity>
     </View>
+</View>
   );
 };
 
@@ -117,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchHeader;
+export default SearchHeader

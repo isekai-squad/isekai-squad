@@ -9,7 +9,8 @@ const HeaderPhoto = () => {
   const route = useRoute();
   const { visitedProfileData } = useContext(VisitProfileContext);
   const { ProfileData } = useContext(ProfileContext);
-
+  const randomFollowerCount = Math.floor(Math.random() * 1000);
+  const randomFollowingCount = Math.floor(Math.random() * 1000);
   let role, active, posts, cover, pdp;
 
   if (route.name === "Profile") {
@@ -59,12 +60,12 @@ const HeaderPhoto = () => {
           {role !== "STUDENT" && (
             <>
               <View style={styles.descriptionDetails}>
-                <Text style={styles.detailText}>62</Text>
+                <Text style={styles.detailText}>{randomFollowerCount}</Text>
                 <Text style={styles.detailLabel}>Followers</Text>
               </View>
 
               <View style={styles.descriptionDetails}>
-                <Text style={styles.detailText}>23</Text>
+                <Text style={styles.detailText}>{randomFollowingCount}</Text>
                 <Text style={styles.detailLabel}>Following</Text>
               </View>
             </>

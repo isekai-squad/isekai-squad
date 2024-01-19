@@ -5,12 +5,13 @@ import { STYLES } from "../../../../../GlobalCss";
 import axios from "axios";
 import { ProfileContext } from "../../../../Context/ProfileContext";
 import RenderProfile from "../RenderProfile";
+import { useNavigation } from "@react-navigation/native";
 // ===============================FETCH=======================
 
 const fetchAdvisorProfile = async () => {
   try {
     const { data } = await axios.get(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/advisor`
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/advisor?limit=10`
     );
     return data;
   } catch (err) {
@@ -21,6 +22,7 @@ const fetchAdvisorProfile = async () => {
 
 // ===============================FETCH=======================
 const AdvisorProfile = () => {
+  const navigation = useNavigation();
   const { userId } = useContext(ProfileContext);
   const { data: AllCompanyProfiles } = useQuery({
     queryKey: ["advisorProfiles"],
@@ -51,7 +53,7 @@ const AdvisorProfile = () => {
           Advisors Profile
         </Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("SeeAll")}>
           <Text
             style={{
               color: STYLES.COLORS.Priamary,

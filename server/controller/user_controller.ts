@@ -1,4 +1,4 @@
-import { $Enums, Prisma } from "@prisma/client";
+import { $Enums, Prisma, Role } from "@prisma/client";
 import { Request, Response } from "express";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -273,19 +273,40 @@ export const ChangePassword = async (req: Request, res: Response) => {
 };
 
 export const getAllUser = async (req: Request, res: Response) => {
+    const {role}=req.body
   try {
-    const user = await prisma.user.findMany({
-      include: {
+     if (role){
+
+       const user = await prisma.user.findMany({
+         include: {
         userTechnology: true,
         Specialty: { select: { name: true, id: true } },
       },
+      where:{role:role}
+      
     });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
+    
     res.send(user);
+  } else {
+    const user = await prisma.user.findMany({
+      include: {
+     userTechnology: true,
+     Specialty: { select: { name: true, id: true } },
+   },
+   
+ });
+
+ if (!user) {
+   return res.status(404).json({ error: "User not found" });
+ }
+ 
+ res.send(user);
+    
+  }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
@@ -453,3 +474,39 @@ export const getAdvisorProfile = async (req: Request, res: Response) => {
     res.status(400).send(err);
   }
 };
+
+
+export const findUser = async(req:Request,res:Response)=>{
+    const {searched,role}= req.body
+    
+  try {
+    if (!role){
+
+      const users = await prisma.user.findMany({
+        where: {
+          name: {
+            contains: searched,
+            
+          },
+        },
+      });
+      res.json(users);
+    } else {
+      
+      const users = await prisma.user.findMany({
+        where: {
+          name: {
+            contains: searched,
+            
+          },
+          role:role as Role,
+        },
+      });
+      res.json(users);
+    }
+  } catch (error) {
+    console.error('Error searching users:', error);
+    throw new Error('Failed to search users');
+  }
+}
+
