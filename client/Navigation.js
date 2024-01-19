@@ -40,6 +40,7 @@ import ServiceDetails from "./App/Service/ServiceDetatUser";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+import SeeAll from "./App/Screens/Authentication/SeeAll";
 const DrawerNavigator = ({ params }) => {
   const route = useRoute();
   const { setToken } = route.params;
@@ -207,6 +208,20 @@ const DrawerNavigator = ({ params }) => {
           ),
         }}
       />
+      <Drawer.Screen
+        name="SeeAll"
+        component={SeeAll}
+        options={{
+          headerShown: false,
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="information-circle"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 };
@@ -283,6 +298,17 @@ export const Navigation = () => {
               <Stack.Screen
                 name="EditProfile"
                 component={EditProfile}
+                options={{
+                  // drawerItemStyle: {
+                  //   height: 0,
+                  // },
+                  headerShown: false,
+                  drawerLockMode: "",
+                }}
+              />
+              <Stack.Screen
+                name="SeeAll"
+                component={SeeAll}
                 options={{
                   // drawerItemStyle: {
                   //   height: 0,

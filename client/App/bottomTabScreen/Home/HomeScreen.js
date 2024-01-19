@@ -26,10 +26,10 @@ function HomeScreen({ navigation }) {
         <StartCover />
 
         <PremiumRecommendation />
-        <StudentProfiles />
-        <CompanyProfile />
+        {/* <StudentProfiles /> */}
+        {/* <CompanyProfile /> */}
         <RecentProjects />
-        <AdvisorProfile />
+        {/* <AdvisorProfile /> */}
         {/*
 
         {/* {ProfileData.role === "COMPANY" && <PremiumRecommendation />}

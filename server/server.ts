@@ -127,12 +127,11 @@ io.on("connection", (socket) => {
     io.to(data.target).emit('ice-candidate', data);
   });
 
-});
+
 
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
-    delete userNotifications[socket.id];
   });
   socket.on("newMessage", () => socket.emit("newMessage"));
 });

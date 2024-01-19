@@ -126,10 +126,11 @@ const Bio = () => {
           <View style={styles.interestingContainer}>
             {userTechnology.length > 0 &&
               userTechnology?.map((technologie, i) => {
+                console.log(technologie);
                 return (
                   <TouchableOpacity key={i} style={styles.interestingTag}>
                     <Image
-                      source={{ uri: technologie.Technologies.image }}
+                      source={{ uri: technologie.Technologies?.image }}
                       style={styles.tagImage}
                     />
 
