@@ -40,12 +40,15 @@ import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Swiper from "react-native-swiper";
 import io from 'socket.io-client';
+import { jwtDecode } from "jwt-decode";
+import * as SecureStore from "expo-secure-store";
 
-const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`)
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
 const PostDetails = ({ route }) => {
   const [liked , setLiked] = useState(false)
   const [disliked , setDisliked] = useState(false)
+  const [currentUser , setCurrentUser] = useState()
   const navigation = useNavigation();
   const { post, user, posts, category } = route.params;
 
@@ -72,7 +75,7 @@ const PostDetails = ({ route }) => {
     queryFn: async () =>
       await axios
         .get(
-          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/likes/${post.id}`
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/likes/${post.id}`
         )
         .then((res) => res.data)
         .catch((err) => console.error(err)),
@@ -82,6 +85,7 @@ const PostDetails = ({ route }) => {
       return Nlikes?.length - Ndislikes?.length;
     },
   });
+
 
   // if (isLoading){
 
@@ -96,7 +100,7 @@ const PostDetails = ({ route }) => {
     mutationFn: async () =>
       await axios
         .post(
-          `http://${process.env.EXPO_PUBLIC_API_URL}:4070/forumPost/increment/${post.id}/${user.id}`
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/increment/${post.id}/${user.id}`
         )
         .then((res) => console.log("liked"))
         .then(() => socket.emit('') )
@@ -220,7 +224,7 @@ const PostDetails = ({ route }) => {
                 name={liked ? 'arrow-up-bold' : 'arrow-up-bold-outline'}
                 color="#674188"
                 size={36}
-                onPress={() =>{ mutation.mutate() ; setLiked(true)}}
+                onPress={() =>{ mutation.mutate() ; setLiked(!liked)}}
               />
             </TouchableOpacity>
             <Text>{data}</Text>
@@ -253,7 +257,7 @@ const PostDetails = ({ route }) => {
           <Text style={{ fontSize: 24, fontWeight: "bold" }}>
             More Blogs like this
           </Text>
-          <Icon name="arrow-right-thin" size={36} color="#674188" />
+          <Icon name="arrow-right-thin" size={36} color="#674188" onPress={navigation.navigate('ForumCategory')} />
         </View>
         <ScrollView horizontal={true} style={{ padding: 10, marginTop: 10 }}>
           {posts?.map((post) => (

@@ -48,7 +48,7 @@ const Post = ({post , posts , category}) => {
 
   const {data , isLoading , error} = useQuery({
     queryKey : ["forumUser", post.userId],
-    queryFn : async () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/api/user/${id}`).then(res => res.data),
+    queryFn : async () => axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/${id}`).then(res => res.data),
   })
   if(isLoading) return <Center>
   <ActivityIndicator size="large" color='#674188' />

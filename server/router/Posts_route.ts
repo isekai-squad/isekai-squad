@@ -20,8 +20,9 @@ route.post("/Posts/DownVote/:userId/:postId" , PostController.downVotePost)
 route.get("/Projects/Likes/:projectId", PostController.getAlllLikesProject)
 route.get("/:userId/Likes", PostController.getUserLikes)
 route.get("/Posts/Likes/:postId", PostController.getAllLikesPosts)
-
+route.get("/oneProject/:projectId", PostController.getOneProject)
 route.get("/Posts/take/WithLimit/:specialtyId",PostController.getLimitPosts)
 route.get("/Projects/take/WithLimit/:specialtyId",PostController.getLimitProjects)
+route.get("/onePost/:postId" , PostController.getOnePost)
 
 export default route;
