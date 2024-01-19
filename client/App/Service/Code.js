@@ -1,32 +1,36 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { StatusBar } from "expo-status-bar";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Linking,
+} from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 import axios from "axios";
 import { ProfileContext } from "../Context/ProfileContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Code() {
   const [authenticationResult, setAuthenticationResult] = useState(null);
-
   const { userId } = useContext(ProfileContext);
-
   const [BaybasketItems, setBaybasketItems] = useState([]);
   const API = process.env.EXPO_PUBLIC_IP_KEY;
 
-  // useEffect(() => {
-  //   fetchBayBasket();
-  // }, []);
-
   const fetchBayBasket = async () => {
     try {
-      const response = await axios.get(
-        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/${userId} `
+      const { data } = await axios.get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/payed/${userId}`
       );
-      setBaybasketItems(response.data);
+
+      setBaybasketItems(data);
     } catch (error) {
       console.error("Error fetching basket:", error);
     }
   };
+
   useEffect(() => {
     async function authenticate() {
       try {
@@ -38,6 +42,7 @@ export default function Code() {
         setAuthenticationResult(result);
         if (result.success) {
           console.log("Authentication successful");
+          fetchBayBasket();
         } else {
           console.log("Authentication failed");
         }
@@ -45,24 +50,26 @@ export default function Code() {
         console.error("Authentication error:", error.message);
       }
     }
-    fetchBayBasket();
+
     authenticate();
   }, []);
 
   return (
     <View style={styles.container}>
-      {authenticationResult && (
-        <Text style={styles.resultText}>
-          {authenticationResult.success
-            ? "Authentication successful"
-            : "Authentication failed"}
+      {authenticationResult && !authenticationResult.success && (
+        <Text style={styles.errorText}>
+          Authentication failed. You can still view limited content.
         </Text>
       )}
       <View style={styles.container}>
         <Text style={styles.heading}>Purchases :</Text>
         <View style={styles.itemsContainer}>
           {BaybasketItems.map((item) => (
-            <View style={styles.itemContainer} key={item.Service.id}>
+            <TouchableOpacity
+              onPress={() => Linking.openURL("https://www.w3.org/WAI/WCAG20/quickref/pdfspec-pdf-accessible.pdf")}
+              style={styles.itemContainer}
+              key={item.Service.id}
+            >
               <Image
                 style={styles.image}
                 source={{ uri: item.Service.image }}
@@ -75,7 +82,7 @@ export default function Code() {
                 </Text>
                 <Text style={styles.createdAt}>{item.Service.created_at}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>
@@ -142,5 +149,11 @@ const styles = StyleSheet.create({
   createdAt: {
     fontSize: 12,
     color: "#777",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 10,
   },
 });

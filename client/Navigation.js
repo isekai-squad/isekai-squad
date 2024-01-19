@@ -28,8 +28,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
  
-import Bayservice from "./App/Service/Bayservice";
-
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from "expo-secure-store";
@@ -132,26 +130,7 @@ const DrawerNavigator = ({ params }) => {
           ),
         })}
       />
-        <Drawer.Screen
-        name="Bayservice"
-        component={Bayservice}
-        options={({ navigation }) => ({
-          headerLeft: false,
-          headerTitle: () => (
-            <SearchHeader
-              onChangeText={(text) => console.log("Search:", text)}
-            />
-          ),
-          headerTitleContainerStyle: { width: "100%" },
-          drawerIcon: ({ focused, size }) => (
-            <Ionicons
-              name="basket"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
-            />
-          ),
-        })}
-      />
+  
 
       <Drawer.Screen
         name="rooms"

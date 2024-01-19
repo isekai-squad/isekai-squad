@@ -62,7 +62,7 @@ const AllServices = ({ navigation }) => {
     const filteredProducts = category
       ? services.filter(
           (product) =>
-            (product.category || "").replace(/['"]+/g, "") === category
+            (product.category || "").replace(/['"]+/g, "") === category 
         )
       : services;
 

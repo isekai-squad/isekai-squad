@@ -44,18 +44,17 @@ export const getBasket = async (req: Request, res: Response) => {
 export const getBayBasket = async (req: Request, res: Response) => {
   try {
     const baskets = await prisma.basket.findMany({
-      where: { userId: req.params.id, payed: true },
-      include: {
-        User: false,
-        Service: false,
-      },
+      where: { userId: req.params.userId, payed: true },
+      include:{
+        Service: true,
+      }
     });
+    
     res.send(baskets);
   } catch (error) {
     res.status(404).send(error);
   }
 };
-
 
 export const payedBasket = async (
   req: Request,
@@ -87,4 +86,3 @@ export const deleteBasket = async (
     res.status(400).json({ error: err });
   }
 };
-

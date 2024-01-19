@@ -4,7 +4,7 @@ const router = Router();
 
 router.post("/:userId/:serviceId", basketController.addToBasket)
 router.get("/:id", basketController.getBasket)
-router.get("/:idUser", basketController.getBayBasket)
+router.get("/payed/:userId", basketController.getBayBasket)
 router.patch("/payedBasket", basketController.payedBasket)
 router.delete("/:idUser/:idItem", basketController.deleteBasket)
 
