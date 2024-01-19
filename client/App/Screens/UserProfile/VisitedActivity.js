@@ -1,71 +1,47 @@
+import React, { useContext } from "react";
 import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
-
-import { VisitProfileContext } from "../../Context/VisitProfileContext";
+import { useRoute } from "@react-navigation/native";
 
 import { STYLES } from "../../../GlobalCss";
 import RenderPost from "../../component/ProfileComponants/Render_Posts_Project/RenderPost";
-import { useContext } from "react";
-import { useRoute } from "@react-navigation/native";
+
 import {
   ProfileContext,
   useFetchStudentProjects,
   useFetchUserPosts,
 } from "../../Context/ProfileContext";
+import { VisitProfileContext } from "../../Context/VisitProfileContext";
 
 const Activity = () => {
-  const route = useRoute();
-  const { visitedProfileId, visitedProfileData } =
+  const { visitedProfileData, refetchVisitedPosts } =
     useContext(VisitProfileContext);
+  const route = useRoute();
+  const id = route.params.id;
 
-  let data, isLoading, hasNextPage, fetchNextPage, refetchPosts;
+  const {
+    data,
+    isLoading,
+    hasNextPage,
+    fetchNextPage,
+    refetch: refetchPosts,
+  } = visitedProfileData.role !== "STUDENT"
+    ? useFetchUserPosts(id)
+    : useFetchStudentProjects(id);
 
-  if (visitedProfileData.role !== "STUDENT") {
-    const {
-      data: posts,
-      isLoading: userPostsLoading,
-      hasNextPage: userPostsHasNextPage,
-      fetchNextPage: userPostsFetchNextPage,
-      refetch: userPostsRefetch,
-    } = useFetchUserPosts(visitedProfileId);
-
-    data = posts;
-    isLoading = userPostsLoading;
-    hasNextPage = userPostsHasNextPage;
-    fetchNextPage = userPostsFetchNextPage;
-    refetchPosts = userPostsRefetch;
-  } else {
-    const {
-      data: projects,
-      isLoading: projectsLoading,
-      hasNextPage: projectsHasNextPage,
-      fetchNextPage: projectsFetchNextPage,
-      refetch: projectsRefetch,
-    } = useFetchStudentProjects(visitedProfileId);
-
-    data = projects;
-    isLoading = projectsLoading;
-    hasNextPage = projectsHasNextPage;
-    fetchNextPage = projectsFetchNextPage;
-    refetchPosts = projectsRefetch;
-  }
-  const posts = data?.pages?.map((page) => page).flat();
   const loadNextPageData = () => {
     if (hasNextPage) {
       fetchNextPage();
     }
   };
-
-  // render componants
-
-  const keyExtractor = (_, index) => index.toString();
-
-  //map into data
+  if (refetchVisitedPosts) {
+    refetchPosts();
+  }
 
   return (
     <View style={styles.container}>
       <FlatList
-        keyExtractor={keyExtractor}
-        data={posts}
+        keyExtractor={(item, index) => index.toString()}
+        data={data?.pages?.map((page) => page).flat() ?? []}
         onEndReached={loadNextPageData}
         renderItem={({ item }) => (
           <RenderPost refetchPosts={refetchPosts} item={item} />
@@ -97,6 +73,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingBottom: 100,
+  },
+  loadingIndicator: {
+    marginTop: 20,
   },
 });
 

@@ -19,7 +19,7 @@ import Report from "../../component/ProfileComponants/Report";
 import { VisitProfileContext } from "../../Context/VisitProfileContext";
 import { ProfileContext } from "../../Context/ProfileContext";
 
-function UserProfile() {
+function UserProfile({ route }) {
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../../../assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Bold": require("../../../assets/fonts/Roboto-Bold.ttf"),
@@ -27,22 +27,22 @@ function UserProfile() {
     "Roboto-Medium": require("../../../assets/fonts/Roboto-Medium.ttf"),
   });
 
-  const { activeMiddleTab, LoadingVisitedProfile } =
-    useContext(VisitProfileContext);
-  const { refetchProfile, setRefetchPosts, setRefetchProject } =
-    useContext(ProfileContext);
+  const {
+    activeMiddleTab,
+    LoadingVisitedProfile,
+    visitedProfileData,
+    setRefetchVisitedPosts,
+    refetchVisitedProfile,
+  } = useContext(VisitProfileContext);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setRefetchPosts(true);
-    setRefetchProject(true);
-    refetchProfile();
+    setRefetchVisitedPosts(true);
+    refetchVisitedProfile();
     setTimeout(() => {
       setRefreshing(false);
-      setRefreshing(false);
-      setRefetchPosts(false);
-      setRefetchProject(false);
+      setRefetchVisitedPosts(false);
     }, 2000);
   }, []);
 
@@ -69,7 +69,9 @@ function UserProfile() {
         </View>
         <MiddelTab />
         {activeMiddleTab === "About" && <AboutProfile />}
-        {activeMiddleTab === "Activity" && <VisitedActivity />}
+        {activeMiddleTab === "Activity" && visitedProfileData && (
+          <VisitedActivity id={route.params.id} />
+        )}
       </ScrollView>
     </SafeAreaView>
   );

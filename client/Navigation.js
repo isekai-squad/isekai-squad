@@ -40,6 +40,7 @@ import ServiceDetails from "./App/Service/ServiceDetatUser";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+import SeeAll from "./App/Screens/Authentication/SeeAll";
 const DrawerNavigator = ({ params }) => {
   const route = useRoute();
   const { setToken } = route.params;
@@ -83,7 +84,13 @@ const DrawerNavigator = ({ params }) => {
         name="Visited Profile"
         component={UserProfile}
         options={{
-          // headerShown: false,
+          headerLeft: false,
+          headerTitle: () => (
+            <SearchHeader
+              onChangeText={(text) => console.log("Search:", text)}
+            />
+          ),
+          headerTitleContainerStyle: { width: "100%" },
           drawerIcon: ({ focused, size }) => (
             <Ionicons
               name="person"
@@ -201,6 +208,20 @@ const DrawerNavigator = ({ params }) => {
           ),
         }}
       />
+      <Drawer.Screen
+        name="SeeAll"
+        component={SeeAll}
+        options={{
+          headerShown: false,
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="information-circle"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 };
@@ -221,33 +242,33 @@ export const Navigation = () => {
         <ProfileProvider>
           <VisitProfileProvider>
             <Drawer.Navigator>
-              <Drawer.Screen
+              <Stack.Screen
                 name="Home"
                 component={DrawerNavigator}
                 options={{ headerShown: false }}
                 initialParams={{ setToken: setToken }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="QRCode"
                 component={QR_code}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="Posts"
                 component={Posts}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="PostDetails"
                 component={PostDetails}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="ServiceDetails"
                 component={ServiceDetails}
                 // options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="chat"
                 component={ChatScreen}
                 options={{
@@ -264,19 +285,30 @@ export const Navigation = () => {
                   ),
                 }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="Forum"
                 component={ForumCategories}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="Post"
                 component={CreatePost}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="EditProfile"
                 component={EditProfile}
+                options={{
+                  // drawerItemStyle: {
+                  //   height: 0,
+                  // },
+                  headerShown: false,
+                  drawerLockMode: "",
+                }}
+              />
+              <Stack.Screen
+                name="SeeAll"
+                component={SeeAll}
                 options={{
                   // drawerItemStyle: {
                   //   height: 0,

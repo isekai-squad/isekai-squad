@@ -1,13 +1,16 @@
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { VisitProfileContext } from '../Context/VisitProfileContext';
-
-const Searched = ({ name, role,pdp}) =>{ 
-    const {setVistedProfile} = useContext(VisitProfileContext)
-    console.log(setVistedProfile,'hhhhhh');
+const Searched = ({ name, role,id,pdp}) =>{ 
+    const navigation = useNavigation()
+    const {setVisitedProfileId    } = useContext(VisitProfileContext)
     return(
-    <TouchableOpacity >
+    <TouchableOpacity onPress={()=>
+      {  setVisitedProfileId(id)
+    navigation.navigate("Visited Profile",{id: id});}
+    } >
 
   <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBlockColor: '#d3d3d3', alignContent: 'center', alignItems: 'center', gap: 10, width: '100%', paddingHorizontal: 20,height:80 }}>
     <Image source={{ uri: pdp }} style={{ width: 50, height: 50,borderRadius:50 }} />
@@ -38,7 +41,7 @@ const SearchResults = ({ searched }) => {
     <FlatList
       data={users}
       keyExtractor={(item) => item.id.toString()} // Replace 'id' with your item's unique identifier
-      renderItem={({ item }) => <Searched name={item.name} role={item.role} pdp={item.pdp}  />} // Pass individual item properties to the component
+      renderItem={({ item }) => <Searched name={item.name} role={item.role} pdp={item.pdp} id={item.id}  />} // Pass individual item properties to the component
     />
   );
 };

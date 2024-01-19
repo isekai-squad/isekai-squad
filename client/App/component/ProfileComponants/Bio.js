@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 import { STYLES } from "../../../GlobalCss";
 import { VisitProfileContext } from "../../Context/VisitProfileContext";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -52,10 +52,11 @@ const Bio = () => {
 
         <Text style={styles.username}>@ {userName}</Text>
       </View>
+
       <View style={styles.detailsContainer}>
         <Text style={styles.detailText}>{location}</Text>
         <Text style={styles.detailText}>|</Text>
-        <Text style={styles.detailText}>{Specialty.name}</Text>
+        <Text style={styles.detailText}>{Specialty?.name}</Text>
       </View>
 
       {route.name === "Visited Profile" && role !== "COMPANY" && (
@@ -85,7 +86,7 @@ const Bio = () => {
               color: "white",
             }}
           >
-            Send Message
+            Contact
           </Text>
         </TouchableOpacity>
       )}
@@ -125,10 +126,11 @@ const Bio = () => {
           <View style={styles.interestingContainer}>
             {userTechnology.length > 0 &&
               userTechnology?.map((technologie, i) => {
+                console.log(technologie);
                 return (
                   <TouchableOpacity key={i} style={styles.interestingTag}>
                     <Image
-                      source={{ uri: technologie.Technologies.image }}
+                      source={{ uri: technologie.Technologies?.image }}
                       style={styles.tagImage}
                     />
 
@@ -141,7 +143,7 @@ const Bio = () => {
           </View>
         </ScrollView>
       )}
-      
+
       {(Linkedin || GitHub) && (
         <View style={styles.socialContainer}>
           <Text style={{ fontWeight: STYLES.FONTS.Large }}>Social Links:</Text>
@@ -228,11 +230,12 @@ const styles = {
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
-    paddingVertical: 3,
+    paddingBottom: 3,
   },
   interestingContainer: {
     flexDirection: "row",
     gap: 5,
+    marginBottom: 5,
   },
   interestingTag: {
     flexDirection: "row",

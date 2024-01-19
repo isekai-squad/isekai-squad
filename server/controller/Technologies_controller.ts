@@ -115,7 +115,6 @@ export const addUserTechnology = async (req: Request, res: Response) => {
 };
 
 export const getAllSpecialties = async (req: Request, res: Response) => {
-  const { specialtyId } = req.params;
   try {
     const result = await prisma.specialty.findMany();
     res.status(200).send(result);
