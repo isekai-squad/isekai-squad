@@ -47,7 +47,7 @@ export default UserChatRoom = ({navigation}) => {
 
 
   const renderItem = ({ item }) => {
-    
+    var other 
     if (item.user1.id === currentUser.id){
               other = item.user2
            } else {

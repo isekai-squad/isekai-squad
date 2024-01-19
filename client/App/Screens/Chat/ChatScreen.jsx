@@ -26,7 +26,7 @@ const getCurrentUser = async () => {
 };
 
 const ChatRoom = ({ route }) => {
-  const { roomId, userId, other } = useMemo(() => route.params, [route.params]);
+  const { roomId, userId, other } =  route.params
   const [conversation, setConversation] = useState(() => []);
   const [currentUser, setCurrentUser] = useState();
 
