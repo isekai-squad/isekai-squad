@@ -16,7 +16,7 @@ const Posts = ({route}) => {
 console.log(category)
   const {data , isLoading , error , refetch} = useQuery({
     queryKey:["forumPosts" , category],
-    queryFn : () => axios.get(`http://${process.env.EXPO_PUBLIC_API_URL}:4070/Category/${category.id}`).then((res) => res.data),
+    queryFn : () => axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Category/${category.id}`).then((res) => res.data),
     
   })
 

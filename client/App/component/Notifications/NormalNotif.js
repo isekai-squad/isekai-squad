@@ -1,9 +1,11 @@
 import {
   Avatar,
+  AvatarBadge,
   AvatarFallbackText,
   AvatarImage,
   Button,
   ButtonText,
+  Center,
   Divider,
   GripVerticalIcon,
   HStack,
@@ -17,13 +19,15 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import moment from "moment";
-import React from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, { useRef, useState } from "react";
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Modalize } from "react-native-modalize";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const NormalNotif = ({data}) => {
-
+const NormalNotif = ({ data, onOpen }) => {
   const formatTimeDifference = (createdAt) => {
     const now = moment();
     const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
@@ -41,12 +45,35 @@ const NormalNotif = ({data}) => {
       return days === 1 ? "one day" : `${days} days`;
     }
   };
-  
-  const navigation = useNavigation()
+
+  const navigation = useNavigation();
 
   const exactTime = (createdAt) => {
-    const postDate = new Date(createdAt)
-    return postDate.toLocaleTimeString()
+    const postDate = new Date(createdAt);
+    return postDate.toLocaleTimeString();
+  };
+
+  const {data : post , isLoading , error , refetch} = useQuery({
+    queryKey : ['postType'],
+    queryFn : async () => {
+      if (data.type === 'Forum') {
+        return await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/${data.postId}`).then(res => res.data).catch(err => console.log(err))
+      }else if (data.type === 'Project'){
+        return await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/oneProject/${data.postId}`).then(res => res.data).catch(err => console.log(err))
+      } else if (data.type === 'Posts') {
+        return await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/onePost/${data.postId}`).then(res => res.data).catch(err => console.log(err)) 
+      } else if (data.type === 'Service') {
+        return await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/oneService/${data.postId}`).then(res => res.data).catch(err => console.log(err))
+      }
+    }
+  })
+
+  if(isLoading) {
+    return (
+      <Center>
+        <ActivityIndicator size="large" color="#674188" />
+      </Center>
+    )
   }
 
   return (
@@ -59,39 +86,36 @@ const NormalNotif = ({data}) => {
             uri: data.sender.pdp,
           }}
         />
+        {data.seen === false ? (
+          <AvatarBadge $dark-borderColor="$black" bgColor="#674188" />
+        ) : (
+          ""
+        )}
       </Avatar>
       <VStack w="$1/2" space="md">
-        <Heading size="md" onPress={() => navigation.navigate('ForumCategories')}>{data.content}</Heading>
+        <Heading
+          size="md"
+          onPress={() => navigation.navigate("ForumCategories")}
+        >
+          {data.content}
+        </Heading>
         <HStack space="md">
           <Text>{formatTimeDifference(data.created_at)}</Text>
           <Divider orientation="vertical" />
           <Text>{exactTime(data.created_at)}</Text>
         </HStack>
       </VStack>
-       <Image
+      <Image
         alt="404"
         source={{
-          uri: "https://media.auchan.fr/A0220140206000628731PRIMARY_2048x2048/B2CD/",
+          uri: post.images[0],
         }}
         size="md"
         borderRadius={10}
       />
-      <Menu
-      placement="bottom"
-      trigger={({...triggerProps})=>{
-        return  (<Button {...triggerProps} size="md" variant="link">
-            <MaterialCommunityIcons name="dots-vertical" size={26} />
-        </Button>)
-    }}
-    >
-        <MenuItem key='Report' textValue="Report">
-            <MaterialCommunityIcons name="trash-can-outline" style={{marginRight : 2}} color='red'/>
-        <MenuItemLabel size="sm" color="$red500">Report</MenuItemLabel>
-        </MenuItem>
-        <MenuItem key='da' textValue="da">
-        <MenuItemLabel size="sm">Mark as Read</MenuItemLabel>
-        </MenuItem>
-      </Menu>
+      <TouchableOpacity onPress={() => onOpen(data.id)}>
+        <MaterialCommunityIcons name="dots-vertical" size={24} />
+      </TouchableOpacity>
     </HStack>
   );
 };

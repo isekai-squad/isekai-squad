@@ -159,3 +159,16 @@ export const getAllLikesService = async (req : Request , res:Response) => {
         res.status(400).send(err)
     }
 }
+
+export const getOneService = async (req: Request, res: Response) => {
+    let {serviceId} = req.params
+    try {
+        const result = await prisma.service.findFirst({
+            where : {id : serviceId}
+        })
+        res.status(200).json(result)
+    }catch (err) {
+        console.log(err)
+        res.status(400).send(err)
+    }
+}
