@@ -26,39 +26,32 @@ const getCurrentUser = async () => {
 };
 
 const ChatRoom = ({ route }) => {
-  const { roomId, userId, other } = route.params
+  const { roomId, userId, other } = route.params;
 
-  const [conversation, setConversation] = useState(() => []);
+  const [conversation, setConversation] = useState([]);
   const [currentUser, setCurrentUser] = useState();
 
-  const retriveMessages = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/chat/room/messages/get/${roomId}`
       );
-    
 
-     
-        const all = response.data.map((e) => ({
-          _id: e.id,
-          createdAt: e.createdAt,
-          text: e.text,
-          user: {
-            _id: e.sender.id,
-            name: e.sender.userName,
-          },
-        }));
-        setConversation(all.reverse());
-      
-      socket.emit("newMessage", "a message");
+      const all = response.data.map((e) => ({
+        _id: e.id,
+        createdAt: e.createdAt,
+        text: e.text,
+        user: {
+          _id: e.sender.id,
+          name: e.sender.userName,
+        },
+      }));
+      setConversation(all.reverse());
     } catch (err) {
       console.log(err);
     }
   }, [roomId]);
-useEffect(()=>{
-  retriveMessages()
 
-},[roomId])
   const onSend = useCallback(
     async (newMessage) => {
       const data = {
@@ -77,22 +70,25 @@ useEffect(()=>{
     },
     [roomId, userId]
   );
+
   useEffect(() => {
-    socket.emit("joinRoom", roomId);
-    retriveMessages();
-    getCurrentUser().then((user) => setCurrentUser(user));
+    const fetchDataAndJoinRoom = async () => {
+      await fetchData();
+      socket.emit("joinRoom", roomId);
+      getCurrentUser().then((user) => setCurrentUser(user));
+    };
+
+    fetchDataAndJoinRoom();
 
     // Listen for new messages
     socket.on("newMessage", () => {
-      retriveMessages(); // Refetch messages when a new message is received
+      fetchData(); 
     });
 
-    // Clean up the event listener on component unmount
     return () => {
       socket.off("newMessage");
     };
-  }, [roomId, retriveMessages]);
-
+  }, [roomId, fetchData]);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>

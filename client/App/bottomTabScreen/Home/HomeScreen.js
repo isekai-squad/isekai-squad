@@ -42,6 +42,8 @@ function HomeScreen({ navigation }) {
         {ProfileData.role !== "STUDENT" && <AllServecies />}
         <Footer />
       </SafeAreaView>
+
+
     </ScrollView>
   );
 }

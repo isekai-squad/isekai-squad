@@ -20,7 +20,6 @@ const RenderProfile = ({ AllProfiles }) => {
   const { setVisitedProfileId } = useContext(VisitProfileContext);
   const { userId } = useContext(ProfileContext);
   const navigation = useNavigation();
-  const [other,setOther]=useState()
   const handleFollowPress = (profile) => {
     setFollowedProfile(profile.id === followedProfile ? null : profile.id);
   };
@@ -29,7 +28,6 @@ const RenderProfile = ({ AllProfiles }) => {
     setVisitedProfileId(id);
     navigation.navigate("Visited Profile", { id: id });
   };
-
 
   const CreateRoom = async (user2Id) => {
     try {
@@ -41,13 +39,10 @@ const RenderProfile = ({ AllProfiles }) => {
         }
       );
 
-   
-     
       const other = data.users.find((user) => user.id !== userId);
 
-
       navigation.navigate("chat", {
-        userId:userId,
+        userId: userId,
         roomId: data.rooms[0].roomId,
         other: other,
       });
@@ -58,124 +53,126 @@ const RenderProfile = ({ AllProfiles }) => {
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View style={{ flexDirection: "row", paddingTop: 10, gap: 10 }}>
-        {AllProfiles &&
-          AllProfiles.map((profile) => (
-            <TouchableOpacity
-              key={profile.id}
-              style={{
-                backgroundColor: "white",
-                borderColor: "#eee",
-                borderWidth: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                height: 250,
-                width: 180,
-                elevation: 5,
-                borderRadius: 10,
-                shadowColor: STYLES.COLORS.ShadowColor,
-              }}
-              onPress={() => submit(profile.id)}
-            >
-              <Image
-                source={{ uri: profile.pdp }}
-                style={{ borderRadius: 50, width: 90, height: 90 }}
-              />
-              <Text
+      {AllProfiles && (
+        <View style={{ flexDirection: "row", paddingTop: 10, gap: 10 }}>
+          {AllProfiles &&
+            AllProfiles.map((profile) => (
+              <TouchableOpacity
+                key={profile.id}
                 style={{
-                  fontSize: STYLES.SIZES.sizeL,
-                  fontWeight: STYLES.FONTS.Large,
-                  letterSpacing: 1,
+                  backgroundColor: "white",
+                  borderColor: "#eee",
+                  borderWidth: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 250,
+                  width: 180,
+                  elevation: 5,
+                  borderRadius: 10,
+                  shadowColor: STYLES.COLORS.ShadowColor,
                 }}
+                onPress={() => submit(profile.id)}
               >
-                {profile.name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: "500",
-                  textTransform: "capitalize",
-                }}
-              >
-                {profile.Specialty.name}
-              </Text>
-
-              {profile.role !== "COMPANY" && (
-                <TouchableOpacity
+                <Image
+                  source={{ uri: profile.pdp }}
+                  style={{ borderRadius: 50, width: 90, height: 90 }}
+                />
+                <Text
                   style={{
-                    borderRadius: 20,
-                    backgroundColor: STYLES.COLORS.Priamary,
-                    paddingHorizontal: 25,
-                    paddingVertical: 8,
-                    flexDirection: "row",
-                    marginTop: 20,
+                    fontSize: STYLES.SIZES.sizeL,
+                    fontWeight: STYLES.FONTS.Large,
+                    letterSpacing: 1,
                   }}
-                  onPress={() => CreateRoom(profile.id)}
                 >
-                  <AntDesign
-                    name="message1"
-                    size={20}
-                    color={"white"}
-                    style={{ paddingRight: 10 }}
-                  />
-                  <Text
+                  {profile.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: "500",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {profile.Specialty.name}
+                </Text>
+
+                {profile.role !== "COMPANY" && (
+                  <TouchableOpacity
+                    onPress={() => CreateRoom(profile.id)}
                     style={{
-                      fontWeight: STYLES.FONTS.Large,
-                      letterSpacing: 1,
-                      color: "white",
+                      borderRadius: 20,
+                      backgroundColor: STYLES.COLORS.Priamary,
+                      paddingHorizontal: 25,
+                      paddingVertical: 8,
+                      flexDirection: "row",
+                      marginTop: 20,
                     }}
                   >
-                    Contact
-                  </Text>
-                </TouchableOpacity>
-              )}
+                    <AntDesign
+                      name="message1"
+                      size={20}
+                      color={"white"}
+                      style={{ paddingRight: 10 }}
+                    />
+                    <Text
+                      style={{
+                        fontWeight: STYLES.FONTS.Large,
+                        letterSpacing: 1,
+                        color: "white",
+                      }}
+                    >
+                      Contact
+                    </Text>
+                  </TouchableOpacity>
+                )}
 
-              {profile.role === "COMPANY" && (
-                <TouchableOpacity
-                  onPress={() => handleFollowPress(profile)}
-                  style={{
-                    borderRadius: 20,
-                    paddingHorizontal: 25,
-                    paddingVertical: 8,
-                    flexDirection: "row",
-                    marginTop: 20,
-                    backgroundColor:
-                      followedProfile === profile.id
-                        ? "#eee"
-                        : STYLES.COLORS.Priamary,
-                  }}
-                >
-                  <SimpleLineIcons
-                    name={
-                      followedProfile === profile.id
-                        ? "user-unfollow"
-                        : "user-follow"
-                    }
-                    size={17}
-                    color={
-                      followedProfile === profile.id
-                        ? STYLES.COLORS.Priamary
-                        : "white"
-                    }
-                    style={{ paddingRight: 10 }}
-                  />
-                  <Text
+                {profile.role === "COMPANY" && (
+                  <TouchableOpacity
+                    onPress={() => handleFollowPress(profile)}
                     style={{
-                      fontWeight: STYLES.FONTS.Large,
-                      letterSpacing: 1,
-                      color:
+                      borderRadius: 20,
+                      paddingHorizontal: 25,
+                      paddingVertical: 8,
+                      flexDirection: "row",
+                      marginTop: 20,
+                      backgroundColor:
+                        followedProfile === profile.id
+                          ? "#eee"
+                          : STYLES.COLORS.Priamary,
+                    }}
+                  >
+                    <SimpleLineIcons
+                      name={
+                        followedProfile === profile.id
+                          ? "user-unfollow"
+                          : "user-follow"
+                      }
+                      size={17}
+                      color={
                         followedProfile === profile.id
                           ? STYLES.COLORS.Priamary
-                          : "white",
-                    }}
-                  >
-                    {followedProfile === profile.id ? "Unfollow" : "Follow"}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
-          ))}
-      </View>
+                          : "white"
+                      }
+                      style={{ paddingRight: 10 }}
+                    />
+                    <Text
+                      style={{
+                        fontWeight: STYLES.FONTS.Large,
+                        letterSpacing: 1,
+                        color:
+                          followedProfile === profile.id
+                            ? STYLES.COLORS.Priamary
+                            : "white",
+                      }}
+                    >
+                      {followedProfile === profile.id ? "Unfollow" : "Follow"}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </TouchableOpacity>
+            ))}
+        </View>
+      )}
     </ScrollView>
   );
 };

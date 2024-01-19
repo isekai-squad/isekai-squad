@@ -1,17 +1,25 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Linking,
+} from "react-native";
 import { STYLES } from "../../../GlobalCss";
 import { VisitProfileContext } from "../../Context/VisitProfileContext";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ProfileContext } from "../../Context/ProfileContext";
-import { useRoute } from "@react-navigation/native";
-
+import { useRoute, useNavigation } from "@react-navigation/native";
+import axios from "axios";
 const Bio = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const { visitedProfileData } = useContext(VisitProfileContext);
-  const { ProfileData } = useContext(ProfileContext);
+  const { ProfileData, userId } = useContext(ProfileContext);
 
   let role,
     profileName,
@@ -41,6 +49,28 @@ const Bio = () => {
     GitHub = visitedProfileData.GitHub;
     userTechnology = visitedProfileData.userTechnology;
   }
+
+  const CreateRoom = async (user2Id) => {
+    try {
+      const { data } = await axios.post(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/chat/room/create`,
+        {
+          user1Id: userId,
+          user2Id: user2Id,
+        }
+      );
+
+      const other = data.users.find((user) => user.id !== userId);
+
+      navigation.navigate("chat", {
+        userId: userId,
+        roomId: data.rooms[0].roomId,
+        other: other,
+      });
+    } catch (err) {
+      throw err;
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -74,6 +104,7 @@ const Bio = () => {
             marginBottom: 5,
             width: "50%",
           }}
+          onPress={() => CreateRoom(visitedProfileData.id)}
         >
           <AntDesign
             name="message1"
@@ -126,10 +157,11 @@ const Bio = () => {
           <View style={styles.interestingContainer}>
             {userTechnology.length > 0 &&
               userTechnology?.map((technologie, i) => {
+                console.log(technologie);
                 return (
                   <TouchableOpacity key={i} style={styles.interestingTag}>
                     <Image
-                      source={{ uri: technologie.Technologies.image }}
+                      source={{ uri: technologie.Technologies?.image }}
                       style={styles.tagImage}
                     />
 

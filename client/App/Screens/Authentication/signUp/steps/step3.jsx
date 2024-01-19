@@ -1,4 +1,4 @@
-    import React from 'react'
+    import React, { useEffect } from 'react'
     import  { useState,useContext } from 'react'
     import FontAwesome from 'react-native-vector-icons/FontAwesome'
     import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -24,12 +24,15 @@
     import { useFonts } from 'expo-font'
     import { STYLES } from '../../../../../GlobalCss'
     import { axios } from 'axios'
-    function Step3({setStep}) {
+    function Step3({setStep,setLocation}) {
         const [shown,setShown]=useState(true)
         const [shown2,setShown2]=useState(true)
         const [country,setCountry]=useState(null)
         const [visible, setVisible] = useState(false)
 
+        useEffect(()=>{
+            setLocation(country)
+        },[country])
         const onSelect = (country) => {
             setCountry(country)
             console.log(country.name,country.flag);
@@ -43,7 +46,7 @@
             <Image source={{uri:'https://i.imgur.com/KyAazUD.png'}} style={{width:200,height:200}}/>
         </View>
             <View style={{marginLeft:40, marginTop:10}} >
-                            <Text style={Styles.SignUp}>SignUp</Text>
+                            <Text style={Styles.SignUp}>Location</Text>
                             <Text style={{ fontFamily: "Roboto-Light", fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>Select A Country & Region</Text>
 
 

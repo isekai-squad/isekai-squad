@@ -16,7 +16,7 @@ const Pass2 = ({setStep,setEmail,email}) => {
         const data = {email:email,code:code}
         try {
 
-           const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/forgotPassword/code`,data)
+           const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/forgotPassword/code`,data)
             setSent(true)
             setError('')
             setStep(3)
