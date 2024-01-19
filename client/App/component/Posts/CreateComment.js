@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   TextInput,
   TouchableOpacity,
@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import {
   Avatar,
@@ -32,13 +33,16 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { storage } from "../../../FirebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
-const CreateComment = ({ post, user , refetch }) => {
+
+const CreateComment = ({ post,user , refetch }) => {
   const [images, setImages] = useState([]);
   const [content, setContent] = useState("");
-  const [percent , setPercent] = useState(0)
+  const [percent, setPercent] = useState(0);
+  // const [user, setUser] = useState("");
+  
 
 
   const fireBaseComment = async (image) => {
@@ -47,7 +51,7 @@ const CreateComment = ({ post, user , refetch }) => {
       const blob = await response.blob();
       const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
       const storageRef = ref(storage, `Forum/${post.id}/${user.name}`);
-      const imageRef = ref(storageRef , filename)
+      const imageRef = ref(storageRef, filename);
       const uploadTask = uploadBytesResumable(imageRef, blob);
       uploadTask.on(
         "state_changed",
@@ -59,7 +63,7 @@ const CreateComment = ({ post, user , refetch }) => {
         },
         (err) => console.log(err),
         async () => {
-        await  getDownloadURL(uploadTask.snapshot.ref).then((url) =>
+          await getDownloadURL(uploadTask.snapshot.ref).then((url) =>
             setImages((prev) => [...prev, url])
           );
         }
@@ -75,48 +79,52 @@ const CreateComment = ({ post, user , refetch }) => {
       allowsMultipleSelection: true,
     });
     if (!result.canceled) {
-      console.log(result)
-      result.assets.map( async (image) => await fireBaseComment(image));
+      console.log(result);
+      result.assets.map(async (image) => await fireBaseComment(image));
     }
   };
 
   const addComment = useMutation({
-    mutationFn : async () => {
+    mutationFn: async () => {
       if (images.length === 0) {
         alert("Please select an image");
       } else if (content.length === 0) {
         alert("Please enter a comment");
       } else {
-       await axios
-        .post(
-          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumComment/1/${post.id}/comments`,
-          { content, images }
+        await axios
+          .post(
+            `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumComment/${user.id}/${post.id}/comments`,
+            { content, images }
           )
           .then((res) => console.log("comment added successfully"))
-          .then(() => {setContent("") ; setImages([])})
+          .then(() => {
+            setContent("");
+            setImages([]);
+          })
           .catch((err) => console.log(err));
-        } 
-      },
-      onSuccess : () => refetch()
-  })
-    
-    
-  
+      }
+    },
+    onSuccess: () => refetch(),
+  });
+
+
 
   return (
     <View style={styles.container}>
       <Box style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+            <Suspense fallback={() => <ActivityIndicator color='##674188'/>}>
             <Avatar size="md">
               <AvatarFallbackText>SS</AvatarFallbackText>
               <AvatarImage
               alt="404"
-                source={{
-                  uri: user.pdp,
-                }}
+              source={{
+                uri: user.pdp,
+              }}
               />
             </Avatar>
+            </Suspense>
             <Box
               style={{
                 flexDirection: "row",
@@ -153,8 +161,8 @@ const CreateComment = ({ post, user , refetch }) => {
                   name="send"
                   size={24}
                   color="#674188"
-                  onPress={ async () => {
-                   addComment.mutate()
+                  onPress={async () => {
+                    addComment.mutate();
                   }}
                 />
               </TouchableOpacity>

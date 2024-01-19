@@ -18,11 +18,12 @@ import { Badge, BadgeText, Box, VStack } from "@gluestack-ui/themed";
 const Tab = createBottomTabNavigator();
 import io from 'socket.io-client';
 
-const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`);
+
 
 export const MainContainer = () => {
-  const { activeMiddleTab } = useContext(ProfileContext);
+  const { activeMiddleTab , userId } = useContext(ProfileContext);
 
+ 
 
   return (
     <Tab.Navigator
@@ -63,24 +64,7 @@ export const MainContainer = () => {
             return <Ionicons name={iconName} size={size} color={iconColor} />;
           } else if (route.name === "Notifications") {
             return (
-              <Box alignItems="center">
-              <VStack>
-                <Badge
-                     h={22}
-                     w={22}
-                     bg="$red600"
-                     borderRadius="$full"
-                     mb={-12}
-                     mr={-12}
-                     zIndex={1}
-                     variant="solid"
-                     alignSelf="flex-end"
-                     >
-              <BadgeText color="$white">0</BadgeText>
-                </Badge>
             <NotificationBell focused={focused} size={size} iconColor={iconColor} />
-              </VStack>
-                  </Box>
             )
           }
         },

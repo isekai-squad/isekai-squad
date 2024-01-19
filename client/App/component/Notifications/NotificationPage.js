@@ -6,7 +6,7 @@ import {
   Heading,
   VStack,
 } from "@gluestack-ui/themed";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -16,22 +16,47 @@ import InterviewNotif from "./InterviewNotif";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { jwtDecode } from "jwt-decode";
+import * as SecureStore from "expo-secure-store";
+
 
 const Notification = () => {
   const [focused, setFocused] = useState("General");
   const [data, setData] = useState([]);
+  const [user , setUser] = useState({})
   const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
-  const retreiveNotifications = async () => {
-  await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/notification/2`).then(res => [...res.data].sort((a , b) => new Date(b.created_at) - new Date(a.created_at))).then(data => setData(data)).catch(err => console.log(err)) 
+  const retreiveNotifications =  async () => {
+    try {
+      await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/notification/${user.id}`).then(res => setData(res.data)).catch(err => console.log(err)) 
+    }catch(err) {
+      console.log(err)
+    }
   }
+  // console.log(data)
+
+
+  const getCurrentUser = async () => {
+    try {
+      const res = await SecureStore.getItemAsync("Token");
+      const decodeResult = jwtDecode(res);
+      setUser(decodeResult);
+    }catch (err) {
+      console.log(err)
+    }
+    }
+
 
   useEffect(() => {
+    getCurrentUser();
     retreiveNotifications();
     socket.on('newNotification' , () => {
       retreiveNotifications();
-    }, [data, focused])
-  })
+    });
+      return () => {
+        socket.disconnect()
+      }
+     } , [])
   return (
     <ScrollView style={{ backgroundColor: "white", marginBottom: 40 }}>
       <View
@@ -84,7 +109,7 @@ const Notification = () => {
             />
           </Center>
         </HStack>
-        {!data ? (
+        {data.length === 0 ? (
           <Center h="$96">
             <VStack space="lg" alignItems="center">
               <MaterialCommunityIcons
@@ -120,7 +145,7 @@ const Notification = () => {
       </View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({});
 

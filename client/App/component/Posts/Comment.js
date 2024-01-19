@@ -29,11 +29,14 @@ import ImageLayouts from "react-native-image-layouts";
 import Lightbox from "react-native-lightbox-v2";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import { io } from "socket.io-client";
 
 const layoutPattern = [1, 2, 3, 2, 1];
 
-const Comment = ({ user, comment }) => {
-  const [liked , setLiked] = useState(false)
+const Comment = ({ comment, user }) => {
+  const [liked, setLiked] = useState(false);
+  // const [user , setUser] = useState('')
+  const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
   const formatTimeDifference = (createdAt) => {
     const now = moment();
     const postTime = moment(createdAt, "YYYY-MM-DD HH:mm");
@@ -97,6 +100,10 @@ const Comment = ({ user, comment }) => {
       .catch((err) => console.error(err));
   };
 
+  // useEffect(() => {
+  //   getUser();
+  // }, [])
+
   return (
     <View style={styles.container}>
       <Box style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -106,7 +113,7 @@ const Comment = ({ user, comment }) => {
             <AvatarImage
               alt="404"
               source={{
-                uri: user.pdp,
+                uri: comment.User.pdp,
               }}
             />
           </Avatar>
@@ -119,7 +126,7 @@ const Comment = ({ user, comment }) => {
             }}
           >
             {" "}
-            {user.name}
+            {comment.User.name}
           </Text>
         </View>
 
@@ -153,10 +160,19 @@ const Comment = ({ user, comment }) => {
       >
         <TouchableOpacity>
           <MaterialCommunityIcons
-            name={liked ? 'arrow-up-bold' : 'arrow-up-bold-outline'}
+            name={liked ? "arrow-up-bold" : "arrow-up-bold-outline"}
             color="#674188"
             size={30}
-            onPress={() => {addLike() ; setLiked(!liked)}}
+            onPress={() => {
+              addLike();
+              setLiked(!liked);
+              socket.emit("sendNotification", {
+                sender: user.id,
+                receiver: comment.userId,
+                content: `${user.name} has liked your Comment`,
+                type: "Forum",
+              });
+            }}
           />
         </TouchableOpacity>
         <Text>{data}</Text>

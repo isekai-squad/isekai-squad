@@ -9,7 +9,7 @@ import {
   TextareaInput,
   VStack,
 } from "@gluestack-ui/themed";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -27,7 +27,8 @@ import axios from "axios";
 import { storage } from "../../../FirebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
-import { v4 as uuidv4 } from 'uuid';
+import { jwtDecode } from "jwt-decode";
+import * as SecureStore from "expo-secure-store";
 
 const CreateForumPost = ({ route }) => {
   const [value, setValue] = useState(null);
@@ -35,6 +36,7 @@ const CreateForumPost = ({ route }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [percent, setPercent] = useState(0);
+  const [user , setUser] = useState('')
 
   const { category , refetch } = route.params;
   const navigation = useNavigation()
@@ -78,7 +80,7 @@ const CreateForumPost = ({ route }) => {
   };
   const addPost = async () => {
     await axios
-      .post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/1`, {
+      .post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/${user.id}`, {
         title,
         content: description,
         images,
@@ -88,6 +90,16 @@ const CreateForumPost = ({ route }) => {
       .then(() => refetch())
       .catch((err) => console.log(err));
   };
+
+  const getCurrentUser = async () => {
+    const res = await SecureStore.getItemAsync("Token");
+    const decodeResult = jwtDecode(res);
+    setUser(decodeResult);
+    }
+
+    useEffect(() => {
+      getCurrentUser();
+    }, [])
 
   return (
     <ScrollView>

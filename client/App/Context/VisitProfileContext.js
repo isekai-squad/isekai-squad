@@ -11,11 +11,11 @@ export const VisitProfileProvider = ({ children }) => {
   const [visitedProfileData, setVisitedProfileData] = useState({});
   const [activeMiddleTab, setActiveMiddleTab] = useState("Activity");
 
-  const visitedProfileId = "2";
+  const visitedProfileId = "66d2756e-1c15-4e45-871e-a8d0c0da64fd";
 
   // ===========================REFETCH PART===========================
-  const [refetchPosts, setRefetchPosts] = useState("");
-  const [refetchReplyComment, setRefetchReplyComment] = useState(false);
+  const [refetchPosts, setRefetchPosts] = useState(false);
+  const [refetchProject, setRefetchProject] = useState(false);
   // ================================REFETCH PART======================
 
   const {
@@ -47,6 +47,8 @@ export const VisitProfileProvider = ({ children }) => {
         setReportPop,
         refetchPosts,
         setRefetchPosts,
+        refetchProject,
+        setRefetchProject,
       }}
     >
       {children}

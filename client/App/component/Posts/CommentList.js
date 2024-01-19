@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -6,16 +6,28 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Box, Center } from "@gluestack-ui/themed";
 import Comment from "./Comment";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { ForumContext } from "../../Context/ForumContext";
 import CreateComment from "./CreateComment";
+import { jwtDecode } from "jwt-decode";
+import * as SecureStore from "expo-secure-store";
 
-const CommentList = ({ post, user }) => {
+const CommentList = ({ post }) => {
+  const navigation = useNavigation()
+  const [user , setUser] = useState('')
+  const getCurrentUser = async () => {
+    const res = await SecureStore.getItemAsync("Token");
+    const decodeResult = jwtDecode(res);
+    setUser(decodeResult);
+  };
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["Comments", post],
     queryFn: async () =>
@@ -33,7 +45,6 @@ const CommentList = ({ post, user }) => {
       </Center>
     );
   }
-
   return (
     <View style={styles.container}>
       <Box
@@ -44,10 +55,10 @@ const CommentList = ({ post, user }) => {
         }}
       >
         <Text>Comments ({data.length})</Text>
-        <Icon name="arrow-right-thin" size={24} color="#674188" />
+        <Icon name="arrow-right-thin" size={24} color="#674188" onPress={() => navigation.navigate('CommentsDetails' , {post})} />
       </Box>
       {data.map((comment) => (
-        <Comment comment={comment} user={user} key={comment.id} />
+        <Comment comment={comment} key={comment.id} user={user} />
       ))}
       <CreateComment post={post} user={user} refetch={refetch} />
     </View>

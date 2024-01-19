@@ -32,7 +32,7 @@ console.log(category)
             uri: category.image,
           }}
           alt="404"
-          style={{ width: 400, height: 200 }}
+          style={{ width: 400, height: 230 }}
         >
           <View style={styles.shadowOverlay}/>
                 <Icon name='arrow-left-thin' size={50} style={{position : 'absolute' , top : 30 , left : 10}} color="#674188" onPress={() => {
