@@ -40,7 +40,7 @@ import ServiceDetails from "./App/Service/ServiceDetatUser";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-import SeeAll from "./App/Screens/SeeAll.jsx/SeeAll";
+import SeeAll from "./App/Screens/SeeAll/SeeAll";
 const DrawerNavigator = ({ params }) => {
   const route = useRoute();
   const { setToken } = route.params;
@@ -48,7 +48,6 @@ const DrawerNavigator = ({ params }) => {
     await SecureStore.deleteItemAsync("Token");
     setToken(null);
   };
-  // logout();
   return (
     <Drawer.Navigator
       initialRouteName="Home"
@@ -85,6 +84,9 @@ const DrawerNavigator = ({ params }) => {
         component={UserProfile}
         options={{
           headerLeft: false,
+          drawerItemStyle: {
+            height: 0,
+          },
           headerTitle: () => (
             <SearchHeader
               onChangeText={(text) => console.log("Search:", text)}

@@ -1,9 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import HomeScreen from "./Home/HomeScreen";
-import AboutScreen from "./About/AboutScreen";
 import ProfileScreen from "./Profile/ProfileScreen";
-import code from "../component/QR_code";
-import basket from "../Screens/Basket/basket";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -21,7 +18,8 @@ import io from "socket.io-client";
 const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`);
 
 export const MainContainer = () => {
-  const { activeMiddleTab } = useContext(ProfileContext);
+  const { activeMiddleTab, showTabBar } =
+    useContext(ProfileContext);
 
   return (
     <Tab.Navigator
@@ -98,6 +96,12 @@ export const MainContainer = () => {
         name="Home"
         component={HomeScreen}
         options={({ navigation }) => ({
+          tabBarVisible: false,
+          tabBarStyle: { display: showTabBar ? "flex" : "none" 
+         , height: 70,
+        
+        },
+
           headerTitle: () => (
             <SearchHeader
               onChangeText={(text) => console.log("Search:", text)}

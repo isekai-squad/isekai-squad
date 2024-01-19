@@ -11,13 +11,14 @@ import { STYLES } from "../../../../../GlobalCss";
 import axios from "axios";
 import { ProfileContext } from "../../../../Context/ProfileContext";
 import RenderProfile from "../RenderProfile";
+import { useNavigation } from "@react-navigation/native";
 
 // ===============================FETCH=======================
 
 const fetchStudentProfile = async () => {
   try {
     const { data } = await axios.get(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/students`
+      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/users/students?limit=10`
     );
     return data;
   } catch (err) {
@@ -29,6 +30,7 @@ const fetchStudentProfile = async () => {
 // ===============================FETCH=======================
 
 const StudentProfiles = () => {
+  const navigation =useNavigation()
   const { userId } = useContext(ProfileContext);
   const { data: AllStudentProfiles } = useQuery({
     queryKey: ["studentProfiles"],
@@ -59,7 +61,7 @@ const StudentProfiles = () => {
           Students Profile
         </Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("SeeAll")}>
           <Text
             style={{
               color: STYLES.COLORS.Priamary,
