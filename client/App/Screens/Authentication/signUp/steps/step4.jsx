@@ -18,6 +18,9 @@ const Step4 = ({ setStep ,setSpeciality}) => {
   const getAllSpecialities = async () => {
     try {
       const res = await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/technologie/speciality/all`);
+      console.log('====================================');
+      console.log('res');
+      console.log('====================================');
       setExpertise(res.data);
     } catch (err) {
       console.log(err);
@@ -26,6 +29,7 @@ const Step4 = ({ setStep ,setSpeciality}) => {
 
   useEffect(() => {
     getAllSpecialities();
+
   }, []);
 
   const { width } = useWindowDimensions();
