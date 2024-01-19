@@ -117,7 +117,7 @@ export default Step6 = ({ setPdp, pdp, createAccount,setStep,navigation }) => {
             </View> 
              </View>
             }
-            <TouchableOpacity
+           {!pdp && <TouchableOpacity
                 onPress={()=>setStep(7)}
                 style={{
                   backgroundColor: STYLES.COLORS.Priamary,
@@ -126,12 +126,13 @@ export default Step6 = ({ setPdp, pdp, createAccount,setStep,navigation }) => {
                   borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
+                  bottom:50,
 
                 }}>
            <Text 
            style={{ color: 'white', fontFamily: 'Roboto-Bold', fontSize: STYLES.SIZES.sizeL }}>Skip</Text>
 
-              </TouchableOpacity>
+              </TouchableOpacity>}
 
           </View>
         </View>

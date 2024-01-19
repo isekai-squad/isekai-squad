@@ -27,11 +27,12 @@ export const ProfileProvider = ({ children }) => {
   const linkedInRef = useRef("");
   const githHubRef = useRef("");
   const [userId, setUserId] = useState();
+  const [showTabBar, setShowTabBar] = useState(true);
 
   const getCurrentUser = async () => {
     const res = await SecureStore.getItemAsync("Token");
     const decodeResult = jwtDecode(res);
-    console.log(decodeResult);
+
     setUserId(decodeResult.id);
   };
   useEffect(() => {
@@ -41,7 +42,7 @@ export const ProfileProvider = ({ children }) => {
   // ===========================REFETCH PART===========================
 
   const [refetchPosts, setRefetchPosts] = useState(false);
-  const [refetchProject, setRefetchProject] = useState(false);
+
   // ================================REFETCH PART======================
 
   const {
@@ -51,6 +52,7 @@ export const ProfileProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["profile", userId],
     queryFn: () => fetchProfile(userId),
+    enabled: Boolean(userId),
   });
 
   const { mutateAsync: mutateAsyncInfo } = useMutation({
@@ -119,9 +121,6 @@ export const ProfileProvider = ({ children }) => {
           technologiesId,
         })
       );
-      console.log('====================================');
-      console.log(updatedMainSkills);
-      console.log('====================================');
 
       const Info = {
         name: nameRef.current.value || ProfileData.name,
@@ -187,10 +186,10 @@ export const ProfileProvider = ({ children }) => {
         userId,
         refetchPosts,
         setRefetchPosts,
-        refetchProject,
-        setRefetchProject,
         checkOurServices,
         setCheckOurServices,
+        showTabBar,
+        setShowTabBar,
       }}
     >
       {children}
@@ -200,7 +199,7 @@ export const ProfileProvider = ({ children }) => {
 //convert time
 export const formatTimeDifference = (createdAt) => {
   const now = moment();
-  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm:ss");
+  const postTime = moment(createdAt, "YYYY-MM-DD HH:mm:ss.SSS");
   const duration = moment.duration(now.diff(postTime));
 
   if (duration.asMinutes() < 60) {
@@ -275,20 +274,29 @@ export async function updateProfileTechnologie(data, userId) {
 
 export const useFetchStudentProjects = (userId) => {
   const userProjects = async ({ pageParam = 1 }) => {
-    const { data } = await axios.get(
-      `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/${userId}?limit=6&page=${pageParam}`
-    );
-    return data;
+    try {
+      const { data } = await axios.get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Projects/${userId}?limit=3&page=${pageParam}`
+      );
+      return data;
+    } catch (err) {
+      console.error(err, "Error fetching student projects");
+      throw err;
+    }
   };
-  return useInfiniteQuery({
-    queryKey: ["projects"],
+  const data = useInfiniteQuery({
+    queryKey: ["projes", userId],
     queryFn: userProjects,
-
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length === 0) return undefined;
+      if (!lastPage) return 1; // Handle initial fetch
+      if (lastPage.length === 0) return undefined; // No more pages
       return allPages.length + 1;
     },
   });
+  console.log("====================================");
+  console.log(data);
+  console.log("====================================");
+  return data;
 };
 
 export async function getAllLikesProject(projectId) {
@@ -427,23 +435,23 @@ export function useFetchUserPosts(userId) {
 
       return data;
     } catch (err) {
-      console.error(err);
+      console.error(err, "Error fetching student projects");
       throw err;
     }
   };
-  console.log("====================================");
-  console.log(userPosts);
-  console.log("====================================");
-  return useInfiniteQuery({
-    queryKey: ["posts"],
+
+  const data = useInfiniteQuery({
+    queryKey: ["Posts", userId],
     queryFn: userPosts,
+
     getNextPageParam: (lastPage, allPages) => {
-      if (lastPage?.length === 0) return undefined;
+      if (!lastPage) return 1; // Handle initial fetch
+      if (lastPage.length === 0) return undefined; // No more pages
       return allPages.length + 1;
     },
   });
+  return data;
 }
-
 export async function getAllLikesPosts(postId) {
   try {
     const response = await fetch(

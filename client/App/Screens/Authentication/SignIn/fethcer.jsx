@@ -2,14 +2,12 @@ import { useContext } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
 import axios from "axios";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SignInFetch =  async (data,navigation,setToken,pre)=>{
   const {email,password}=data
     try {
      var response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/signin/`,data)
      await setToken(response.data)
-      console.log(response.data.token);
       await AsyncStorage.setItem('Token',response.data.token).then(()=>{
         navigation.navigate('Home')
       })

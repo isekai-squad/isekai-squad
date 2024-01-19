@@ -121,6 +121,35 @@ export const getAllProject = async (req: Request, res: Response) => {
     res.status(400).send(err);
   }
 };
+export const getLimitProjects = async (req: Request, res: Response) => {
+  const { limit } = req.query;
+  const { specialtyId } = req.params;
+
+  try {
+    const result = await prisma.user.findMany({
+      where: {
+        specialtyId: specialtyId,
+      },
+
+      include: {
+        project: {
+          orderBy: { created_at: "desc" },
+          take: Number(1),
+        },
+      },
+      take: Number(3),
+    });
+
+    const filteredResult = result.filter((user) => {
+      return user.project.length > 0;
+    });
+
+    res.status(200).json(filteredResult);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+};
 
 export const getAllProjectOneUser = async (req: Request, res: Response) => {
   try {
@@ -168,6 +197,33 @@ export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const result = await prisma.project.findMany();
     res.status(200).json(result);
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+};
+export const getLimitPosts = async (req: Request, res: Response) => {
+  const { limit } = req.query;
+  const { specialtyId } = req.params;
+
+  try {
+    const result = await prisma.user.findMany({
+      where: {
+        specialtyId: specialtyId,
+      },
+      include: {
+        posts: {
+          orderBy: { created_at: "desc" },
+          take: Number(1),
+        },
+      },
+      take: Number(3),
+    });
+
+    const filteredResult = result.filter((user) => {
+      return user.posts.length > 0;
+    });
+    res.status(200).json(filteredResult);
   } catch (err) {
     console.log(err);
     res.status(400).send(err);
@@ -241,9 +297,7 @@ export const upVotePost = async (req: Request, res: Response) => {
           userId,
         },
       });
-      console.log("====================================");
-      console.log(result);
-      console.log("====================================");
+
       res.status(201).json(result);
     }
   } catch (err) {

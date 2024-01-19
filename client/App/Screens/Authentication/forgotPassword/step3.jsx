@@ -39,7 +39,7 @@ const Pass3 = ({ setStep, setEmail, email, navigation }) => {
     const data = { email: email, newPassword: password };
     try {
       const response = await axios.post(
-        `http://${process.env.EXPO_PUBLIC_IP}:4070/api/user/changePassword`,
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/changePassword`,
         data
       );
       setSuccess(true);

@@ -9,19 +9,18 @@ const HeaderPhoto = () => {
   const route = useRoute();
   const { visitedProfileData } = useContext(VisitProfileContext);
   const { ProfileData } = useContext(ProfileContext);
-
-  let role, active, project, posts, cover, pdp;
+  const randomFollowerCount = Math.floor(Math.random() * 1000);
+  const randomFollowingCount = Math.floor(Math.random() * 1000);
+  let role, active, posts, cover, pdp;
 
   if (route.name === "Profile") {
     role = ProfileData.role;
-    project = ProfileData.project;
     posts = ProfileData.posts;
     cover = ProfileData.cover;
     pdp = ProfileData.pdp;
   } else {
     role = visitedProfileData.role;
     active = visitedProfileData.active;
-    project = visitedProfileData.project;
     posts = visitedProfileData.posts;
     cover = visitedProfileData.cover;
     pdp = visitedProfileData.pdp;
@@ -51,26 +50,26 @@ const HeaderPhoto = () => {
           )}
         </View>
         <View style={styles.descriptionContainer}>
-          <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>
-              {}
+          {role !== "STUDENT" && (
+            <View style={styles.descriptionDetails}>
+              <Text style={styles.detailText}>{posts?.length}</Text>
+              <Text style={styles.detailLabel}>Posts</Text>
+            </View>
+          )}
 
-              {role == "STUDENT" ? project?.length : posts?.length}
-            </Text>
-            <Text style={styles.detailLabel}>
-              {role == "STUDENT" ? "Projects" : "Posts"}
-            </Text>
-          </View>
+          {role !== "STUDENT" && (
+            <>
+              <View style={styles.descriptionDetails}>
+                <Text style={styles.detailText}>{randomFollowerCount}</Text>
+                <Text style={styles.detailLabel}>Followers</Text>
+              </View>
 
-          <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>62</Text>
-            <Text style={styles.detailLabel}>Followers</Text>
-          </View>
-
-          <View style={styles.descriptionDetails}>
-            <Text style={styles.detailText}>23</Text>
-            <Text style={styles.detailLabel}>Following</Text>
-          </View>
+              <View style={styles.descriptionDetails}>
+                <Text style={styles.detailText}>{randomFollowingCount}</Text>
+                <Text style={styles.detailLabel}>Following</Text>
+              </View>
+            </>
+          )}
         </View>
       </View>
     </View>
@@ -102,7 +101,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: "100%",
-    height: 180,
+    height: 170,
   },
   darkOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -119,8 +118,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   profileImage: {
-    height: 90,
-    width: 90,
+    height: 100,
+    width: 100,
     borderColor: "white",
     borderWidth: 3,
     borderRadius: 100,
@@ -134,6 +133,7 @@ const styles = StyleSheet.create({
   descriptionDetails: {
     justifyContent: "center",
     alignItems: "center",
+    alignSelf: "center",
   },
   detailText: {
     color: "white",

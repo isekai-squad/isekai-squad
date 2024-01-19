@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-import http from 'http';
-import { Server } from 'socket.io';
-import { PrismaClient } from '@prisma/client';
+import http from "http";
+import { Server } from "socket.io";
+import { PrismaClient } from "@prisma/client";
 config();
 
 import { userRoutes } from "./router/user_router";
@@ -33,7 +33,7 @@ app.use("/payment", payment);
 import { chatRoutes } from "./router/chat_route";
 app.use("/api", userRoutes);
 app.use("/technologie", technoRoute);
-app.use("/chat",chatRoutes)
+app.use("/chat", chatRoutes);
 // //===============================Adam=====================================
 // //===============================Ameur====================================
 
@@ -47,15 +47,15 @@ app .use("/Baybaskets",Baybaskets)
 
 //===============================Ameur=====================================
 //===============================Hasan====================================
-app.use('/Posts' , postsRoute);
-app.use('/Services', servicesRoute);
-app.use('/Reports' , reportsRoute)
-import technologiesRoute from "./router/Technologies_route"
-import postsCommentsRoute from "./router/PostsComment_route"
-app.use('/Expertise', technologiesRoute);
-app.use('/Comments', postsCommentsRoute);
-import CategoryRoute from './router/Category_route'
-app.use('/Category', CategoryRoute)
+app.use("/Posts", postsRoute);
+app.use("/Services", servicesRoute);
+app.use("/Reports", reportsRoute);
+import technologiesRoute from "./router/Technologies_route";
+import postsCommentsRoute from "./router/PostsComment_route";
+app.use("/Expertise", technologiesRoute);
+app.use("/Comments", postsCommentsRoute);
+import CategoryRoute from "./router/Category_route";
+app.use("/Category", CategoryRoute);
 
 //===============================Hasan=====================================
 
@@ -64,10 +64,10 @@ const server = http.createServer(app);
 const io = new Server(server);
 const prisma = new PrismaClient();
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
+io.on("connection", (socket) => {
+  console.log("a user connected");
 
-  socket.on('message', async (data) => {
+  socket.on("message", async (data) => {
     const { roomId, text, userId } = data;
     const message = await prisma.messages.create({
       data: {
@@ -76,42 +76,66 @@ io.on('connection', (socket) => {
         roomId,
       },
     });
-    
-    
-    io.to(roomId).emit('newMessage', message);
+
+
+    // Emit the new message to the room
+    io.to(roomId).emit("newMessage", message);
+
   });
-  
-  socket.on('joinRoom', (roomId) => {
+
+  socket.on("joinRoom", (roomId) => {
     socket.join(roomId);
     console.log(`User joined room: ${roomId}`);
   });
-  
-  const userNotifications :any = {}
-  socket.on('userConnected' , (userId) => {
-    userNotifications[userId] = 0
-  })
-  socket.on('sendNotification' ,async ({sender , receiver , content , type}) => {
+
+  const userNotifications: any = {};
+  socket.on("userConnected", (userId) => {
+    userNotifications[userId] = 0;
+  });
+  socket.on("sendNotification", async ({ sender, receiver, content, type }) => {
     const notification = await prisma.notifications.create({
       data: {
         sender,
         receiver,
         content,
-        type
+        type,
       },
     });
-    io.to(receiver).emit('newNotification', notification);
-   userNotifications[receiver] +=1 ;
-   io.emit('updateNotification', {receiver , count : userNotifications[receiver]});
-  }) 
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-    delete userNotifications[socket.id]
+    io.to(receiver).emit("newNotification", notification);
+    userNotifications[receiver] += 1;
+    io.emit("updateNotification", {
+      receiver,
+      count: userNotifications[receiver],
+    });
   });
+
   socket.on('newMessage',()=> socket.emit('newMessage')
   )
-});
 
+  socket.on('offer', (data) => {
+    // Broadcast the offer to the recipient
+    io.to(data.target).emit('offer', data);
+  });
+  socket.on('answer', (data) => {
+    io.to(data.target).emit('answer', data);
+  });
+
+  socket.on('reject', (data) => {
+    io.to(data.target).emit('reject', data);
+  });
+
+  socket.on('ice-candidate', (data) => {
+    io.to(data.target).emit('ice-candidate', data);
+  });
+
+
+
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+  socket.on("newMessage", () => socket.emit("newMessage"));
+});
 
 server.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);

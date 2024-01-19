@@ -16,7 +16,6 @@ import { STYLES } from "../../../../../GlobalCss";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../../../FirebaseConfig";
 import { useMutation } from "@tanstack/react-query";
-import { ToastAndroid } from "react-native";
 import {
   PostProjectComment,
   PostProjectReplyComment,
@@ -30,11 +29,10 @@ const CommentsInputs = ({
   replyCommentId,
   showReplyInput,
 }) => {
-  const { userId, setRefetchReplyComment } = useContext(ProfileContext);
+  const { userId, setRefetchPosts } = useContext(ProfileContext);
   const [commentText, setCommentText] = useState("");
   const [selectedImageComment, setSelectedImageComment] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState(false);
   // ================================================
   const { mutateAsync: PostComment } = useMutation({
     mutationFn: (data) => PostProjectComment(userId, projectId, data),
@@ -133,7 +131,7 @@ const CommentsInputs = ({
       setLoading(false);
       setSelectedImageComment(null);
       setCommentText(null);
-      setRefetchReplyComment(true);
+      setRefetchPosts(true);
       refetchProjectComments && refetchProjectComments();
     }
   };
@@ -142,13 +140,6 @@ const CommentsInputs = ({
 
   return (
     <View style={styles.commentContainer}>
-      {alert &&
-        ToastAndroid.showWithGravity(
-          "should post Image or comment",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER
-        )}
-
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         keyboardVerticalOffset={70}

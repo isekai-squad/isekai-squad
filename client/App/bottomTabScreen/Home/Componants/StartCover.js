@@ -64,11 +64,11 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     overflow: "hidden",
-    marginTop: 50,
+    marginTop: 30,
   },
   darkOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#b9b3b340",
+    backgroundColor: STYLES.COLORS.ShadowColor,
   },
   imageBackground: {
     width: "100%",
@@ -77,24 +77,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   quoteText: {
-    fontWeight: STYLES.FONTS.bold,
+    fontWeight: STYLES.FONTS.Large,
     color: "white",
-    fontSize: 18,
-    textAlign: "start",
+    fontSize: 16,
+    textAlign: "center",
     marginBottom: 20,
+    letterSpacing: 2,
   },
   readMoreButton: {
     backgroundColor: "white",
-    borderRadius: 50,
+    borderRadius: 10,
     paddingHorizontal: 20,
     width: "60%",
     paddingVertical: 10,
+    alignSelf: "center",
   },
   readMoreButtonText: {
     fontWeight: STYLES.FONTS.bold,
     textAlign: "center",
     color: STYLES.COLORS.Priamary,
-    fontSize: 18,
+    fontSize: 16,
   },
 });
 

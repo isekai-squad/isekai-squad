@@ -12,9 +12,11 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ProfileContext } from "../Context/ProfileContext";
 
+
 const ServiceDetaite = ({ navigation, route }) => {
+  const {userId}=useContext(ProfileContext)
   const item = route.params.item;
-  const { userId } = useContext(ProfileContext);
+ 
 
   const handleAddToBasket = async (serviceId) => {
     try {

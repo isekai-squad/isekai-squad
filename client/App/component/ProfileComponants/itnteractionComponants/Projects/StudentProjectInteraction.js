@@ -16,7 +16,7 @@ import CommentsInputs from "./CommentsProjectInputs";
 import AllComments from "./AllProjectsComments";
 
 const StudentPostsInteraction = ({ projectId }) => {
-  const { userId, refetchProject } = useContext(ProfileContext);
+  const { userId, refetchPosts } = useContext(ProfileContext);
 
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
@@ -52,6 +52,7 @@ const StudentPostsInteraction = ({ projectId }) => {
 
   const upVoteHandle = async () => {
     await upVote();
+    
     refetchAllLikes();
     refetchUserLikes();
 
@@ -75,12 +76,10 @@ const StudentPostsInteraction = ({ projectId }) => {
       setDownvoted(false);
     }
   };
-  if (refetchProject) {
+  if (refetchPosts) {
     refetchProjectComments();
     refetchUserLikes();
     refetchAllLikes();
-
-    refetchProjectComments();
   }
 
   useEffect(() => {
