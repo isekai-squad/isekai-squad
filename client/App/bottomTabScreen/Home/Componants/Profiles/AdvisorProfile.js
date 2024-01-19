@@ -5,6 +5,7 @@ import { STYLES } from "../../../../../GlobalCss";
 import axios from "axios";
 import { ProfileContext } from "../../../../Context/ProfileContext";
 import RenderProfile from "../RenderProfile";
+import { useNavigation } from "@react-navigation/native";
 // ===============================FETCH=======================
 
 const fetchAdvisorProfile = async () => {
@@ -21,6 +22,7 @@ const fetchAdvisorProfile = async () => {
 
 // ===============================FETCH=======================
 const AdvisorProfile = () => {
+  const navigation = useNavigation();
   const { userId } = useContext(ProfileContext);
   const { data: AllCompanyProfiles } = useQuery({
     queryKey: ["advisorProfiles"],
@@ -51,7 +53,7 @@ const AdvisorProfile = () => {
           Advisors Profile
         </Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("SeeAll")}>
           <Text
             style={{
               color: STYLES.COLORS.Priamary,

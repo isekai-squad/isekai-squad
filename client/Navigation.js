@@ -40,7 +40,7 @@ import ServiceDetails from "./App/Service/ServiceDetatUser";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-import SeeAll from "./App/Screens/Authentication/SeeAll";
+import SeeAll from "./App/Screens/SeeAll/SeeAll";
 const DrawerNavigator = ({ params }) => {
   const route = useRoute();
   const { setToken } = route.params;
