@@ -1,21 +1,21 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useQuery, useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
-import moment from "moment";
 
 export const VisitProfileContext = createContext();
 
 export const VisitProfileProvider = ({ children }) => {
-  const [reportPop, setReportPop] = useState(false);
   const [visitedProfileData, setVisitedProfileData] = useState({});
   const [activeMiddleTab, setActiveMiddleTab] = useState("Activity");
 
-  const visitedProfileId = "66d2756e-1c15-4e45-871e-a8d0c0da64fd";
+  const [visitedProfileId, setVisitedProfileId] = useState("");
+
+  const modalRef = useRef(null);
+  const openModal = () => modalRef?.current?.open();
 
   // ===========================REFETCH PART===========================
-  const [refetchPosts, setRefetchPosts] = useState(false);
-  const [refetchProject, setRefetchProject] = useState(false);
+
+  const [refetchVisitedPosts, setRefetchVisitedPosts] = useState(false);
+
   // ================================REFETCH PART======================
 
   const {
@@ -25,6 +25,7 @@ export const VisitProfileProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["profile", visitedProfileId],
     queryFn: () => fetchProfile(visitedProfileId),
+    enabled: Boolean(visitedProfileId),
   });
 
   useEffect(() => {
@@ -37,18 +38,17 @@ export const VisitProfileProvider = ({ children }) => {
     <VisitProfileContext.Provider
       value={{
         visitedProfileId,
+        setVisitedProfileId,
         LoadingVisitedProfile,
         refetchVisitedProfile,
         visitedProfileData,
         setVisitedProfileData,
         activeMiddleTab,
         setActiveMiddleTab,
-        reportPop,
-        setReportPop,
-        refetchPosts,
-        setRefetchPosts,
-        refetchProject,
-        setRefetchProject,
+        refetchVisitedPosts,
+        setRefetchVisitedPosts,
+        modalRef,
+        openModal,
       }}
     >
       {children}

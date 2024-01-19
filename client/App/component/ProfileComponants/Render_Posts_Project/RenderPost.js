@@ -86,7 +86,7 @@ const RenderPost = ({ item, refetchPosts }) => {
           </Text>
         </View>
 
-        {route.name === "Profile" && (
+        {route.name !== "Visited Profile" && (
           <View style={styles.actionButtons}>
             <TouchableOpacity onPress={showConfirmAlert}>
               <AntDesign name={"delete"} size={STYLES.SIZES.sizeL} />
@@ -100,7 +100,7 @@ const RenderPost = ({ item, refetchPosts }) => {
         <Text style={styles.projectDescription}>{item.description}</Text>
       </View>
 
-      {role === "STUDENT" && item.content.length > 0 && (
+      {role === "STUDENT" && item.content.length && (
         <View style={styles.fileContainer}>
           {item.content.map((fileUrl, index) => (
             <TouchableOpacity
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   postContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
     elevation: 3,

@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Animated,
+  KeyboardAvoidingView,
   FlatList,
   useWindowDimensions,
 } from "react-native";
@@ -33,6 +34,7 @@ import { useRoute } from '@react-navigation/native';
     const [password,setPassword]=useState()
     const [conPassword,setConPassword]=useState()
     const [role,setRole]=useState()
+    const [location,setLocation]=useState()
     const [pdp,setPdp]=useState()
     const [speciality,setSpeciality]=useState()
     const [technologies,setTechnologies]=useState()
@@ -67,6 +69,7 @@ await SecureStore.setItemAsync('Token',data)
     slideAnim.setValue(0);
   }, [step]);
 
+
     const createCompanyAcc = async()=>{
       const companyData = {
         name,
@@ -75,6 +78,7 @@ await SecureStore.setItemAsync('Token',data)
         password,
         pdp,
         role,
+        location:location.name,
         confirmed:false
       };
       try{
@@ -82,7 +86,8 @@ await SecureStore.setItemAsync('Token',data)
          const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/create`,companyData)
          await createUserWithEmailAndPassword(auth,email,password)
          saveCurrentUser(response.data.token)
-         console.log(response.data.id,'IIIIIIIIIIIIIIIIIIIID');
+         await addTechnologies(response.data.id)
+         await addSpeciality(response.data.id)
          await setToken(response.data.token)
         
       }catch(err){
@@ -100,13 +105,13 @@ await SecureStore.setItemAsync('Token',data)
         email :email,
         password,
         pdp,
+        location:location.name,
         role,
       };
       try {
         const response = await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/create`,userData)
         await  createUserWithEmailAndPassword(auth,email,password)
 
-        console.log(response.data.id,'IIIIIIIIIIIIIIIIIIIID');
        await setToken(response.data.token)
        saveCurrentUser(response.data.token).then(async() =>{
       await addTechnologies(response.data.id)
@@ -137,11 +142,8 @@ console.log(err);
 
   const addTechnologies = async (id) => {
     const data = technologies.map((e) => ({ technologiesId: e.id, userId: id }));
-  
     try {
-      console.log(data, "THIS IS DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATA");
-      // Assuming the server accepts the array directly
-      await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/technologie/user/Technology/${id}`, data);
+      await axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/technologie/user/Technology/${id}`, {data:data});
       console.log('Technologies added successfully');
     } catch (err) {
       console.error('Error adding technologies:', err);
@@ -149,6 +151,12 @@ console.log(err);
   };
   
   return (
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    // keyboardVerticalOffset={1000}
+    behavior={Platform.OS == "ios" ? "padding" : undefined}
+  >
+
     <SafeAreaView style={{}}>
       <View>
         {step !== 1 && (
@@ -172,12 +180,12 @@ console.log(err);
              { step === 1 &&<Step1 navigation={navigation} setName={setName} name={name} userName={userName} setUserName={setUserName} role={role} setRole={setRole} setStep={setStep} />}
             { step===2 &&<Step2 password={password}  setPassword={setPassword}  setEmail={setEmail} email={email}
           setConPassword={setConPassword} conPassword={conPassword}   setStep={setStep} />}
-            { step=== 3 &&<Step3 setStep={setStep} />}
-            { step === 4 && <Step4 setSpeciality={setSpeciality} setStep={setStep} />}
+            { step=== 3 &&<Step3  setLocation={setLocation} setStep={setStep} />}
+            { step === 4 && <Step4  setSpeciality={setSpeciality} setStep={setStep} />}
             { step=== 5 && <Step5 speciality={speciality} technologies={technologies} setTechnologies={setTechnologies}  setStep={setStep} />}
            { step === 6 && <Step6 createAccount={createAccount} pdp={pdp} setPdp={setPdp} setStep={setStep}/>} 
           
-{ step===7 &&<Step7 createAccount={createAccount} role={role}/>
+{ step=== 7 && <Step7 createAccount={createAccount} role={role}/>
 }            
 </Animated.View>
 
@@ -186,6 +194,7 @@ console.log(err);
       
          </View>
        </SafeAreaView>
+                    </KeyboardAvoidingView>
     );
   };
 

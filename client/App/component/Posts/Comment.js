@@ -171,6 +171,7 @@ const Comment = ({ comment, user }) => {
                 receiver: comment.userId,
                 content: `${user.name} has liked your Comment`,
                 type: "Forum",
+                postId : comment.forum_PostsId
               });
             }}
           />

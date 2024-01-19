@@ -31,12 +31,12 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <StripeProvider publishableKey={process.env.EXPO_PUBLIC_PUBLISH_KEY}>
         <AuthProvider>
-              <ForumProvider>
-      <GluestackUIProvider config={config}>
-            <Navigation />
-          </GluestackUIProvider>
-              </ForumProvider>
-    </AuthProvider>
+          <ForumProvider>
+            <GluestackUIProvider config={config}>
+              <Navigation />
+            </GluestackUIProvider>
+          </ForumProvider>
+        </AuthProvider>
       </StripeProvider>
     </QueryClientProvider>
   );

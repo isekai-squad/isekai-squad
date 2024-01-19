@@ -32,7 +32,7 @@ const ForumCategories = () => {
     <ActivityIndicator size="large" color='#674188' />
   </Center>
   return (
-    <ScrollView>
+    <ScrollView style={{height : '100%' , backgroundColor : 'white'}}>
       <View as={SafeAreaView} style={styles.container}>
         <Center
           style={{
@@ -60,6 +60,7 @@ const ForumCategories = () => {
             flexWrap: "wrap",
             gap: 20,
           }}
+          paddingVertical={10}
         >
           {data?.map((category) => (
             <TouchableOpacity onPress={() => navigation.navigate("Posts", {category})} key={category.id}>

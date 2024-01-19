@@ -12,9 +12,9 @@ const ForgotPassword = ({navigation}) => {
       
       <View >
         <SafeAreaView>
-      {/* {step === 1 &&  <Pass1 setStep={setStep} setEmail={setEmail} email={email}/>}
-      {step === 2 &&  <Pass2 setStep={setStep}setEmail={setEmail} email={email}/>} */}
-      {  <Pass3 navigation={navigation} setStep={setStep}setEmail={setEmail} email={email}/>}
+      {step === 1 &&  <Pass1 setStep={setStep} setEmail={setEmail} email={email}/>}
+      {step === 2 &&  <Pass2 setStep={setStep}setEmail={setEmail} email={email}/>}
+      { step === 3 &&  <Pass3 navigation={navigation} setStep={setStep}setEmail={setEmail} email={email}/>}
     </SafeAreaView>
     </View>
   )

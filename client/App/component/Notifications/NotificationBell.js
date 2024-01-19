@@ -42,7 +42,8 @@ const NotificationBell = ({focused , iconColor , size}) => {
 
   return (
     <Box alignItems="center">
-   {notificationCount ? <VStack>
+   {notificationCount ?
+    <VStack>
       <Badge
            h={22}
            w={22}

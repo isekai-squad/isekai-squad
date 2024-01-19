@@ -12,7 +12,7 @@ import { VisitProfileContext } from "../../Context/VisitProfileContext";
 function MiddelTab() {
   const navigation = useNavigation();
   const route = useRoute();
-  let activeMiddleTab, setActiveMiddleTab, setReportPop;
+  let activeMiddleTab, setActiveMiddleTab, setReportPop,openModal;
 
   if (route.name === "Profile") {
     const profileContext = useContext(ProfileContext);
@@ -23,6 +23,7 @@ function MiddelTab() {
     activeMiddleTab = visitProfileContext.activeMiddleTab;
     setActiveMiddleTab = visitProfileContext.setActiveMiddleTab;
     setReportPop = visitProfileContext.setReportPop;
+    openModal = visitProfileContext.openModal;
   }
 
   const renderTabButton = (tabName, iconComponent) => (
@@ -89,7 +90,8 @@ function MiddelTab() {
             padding: 12,
             alignSelf: "center",
           }}
-          onPress={() => setReportPop((pop) => !pop)}
+          // onPress={() => setReportPop((pop) => !pop)}
+          onPress={openModal}
         >
           <Entypo name="dots-three-horizontal" color={"black"} />
         </TouchableOpacity>

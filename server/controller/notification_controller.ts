@@ -20,7 +20,11 @@ export const getAllNotificationsForUser = async (
           },
         },
       },
+      orderBy : {
+        created_at : 'desc'
+      } , 
     });
+
 
     res.status(200).send(notifications);
   } catch (error) {

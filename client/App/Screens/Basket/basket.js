@@ -52,9 +52,7 @@ const Basket = () => {
       }
     },
   });
-  console.log('====================================');
-  console.log(userId);
-  console.log('====================================');
+
   const deleteFromBasket = async (serviceId) => {
     try {
       await axios.delete(

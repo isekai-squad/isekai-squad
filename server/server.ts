@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
-import http from 'http';
-import { Server } from 'socket.io';
-import { PrismaClient } from '@prisma/client';
+import http from "http";
+import { Server } from "socket.io";
+import { PrismaClient } from "@prisma/client";
 config();
 
 import { userRoutes } from "./router/user_router";
@@ -33,7 +33,7 @@ app.use("/payment", payment);
 import { chatRoutes } from "./router/chat_route";
 app.use("/api", userRoutes);
 app.use("/technologie", technoRoute);
-app.use("/chat",chatRoutes)
+app.use("/chat", chatRoutes);
 // //===============================Adam=====================================
 // //===============================Ameur====================================
 
@@ -95,13 +95,14 @@ io.on('connection', (socket) => {
     
     
     
-    socket.on('sendNotification' ,async ({sender , receiver , content , type}) => {
+    socket.on('sendNotification' ,async ({sender , receiver , content , type , postId}) => {
        await prisma.notifications.create({
         data: {
           from : sender,
           to : receiver,
           content,
-          type
+          type,
+          postId
         },
       });
       // userNotifications[receiver] = 0
@@ -118,12 +119,29 @@ io.on('connection', (socket) => {
        io.emit('updateNotification', {receiver , count : notifications});
     }) 
     
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-    // delete userNotifications[socket.id]
+
+  socket.on('offer', (data) => {
+    // Broadcast the offer to the recipient
+    io.to(data.target).emit('offer', data);
   });
-  socket.on('newMessage',()=> socket.emit('newMessage')
-  )
+  socket.on('answer', (data) => {
+    io.to(data.target).emit('answer', data);
+  });
+
+  socket.on('reject', (data) => {
+    io.to(data.target).emit('reject', data);
+  });
+
+  socket.on('ice-candidate', (data) => {
+    io.to(data.target).emit('ice-candidate', data);
+  });
+
+  
+  
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+  socket.on("newMessage", () => socket.emit("newMessage"));
 });
 
 

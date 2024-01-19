@@ -18,12 +18,10 @@ import { Badge, BadgeText, Box, VStack } from "@gluestack-ui/themed";
 const Tab = createBottomTabNavigator();
 import io from 'socket.io-client';
 
-
+const socket = io(`http://${process.env.EXPO_PUBLIC_API_URL}:4070`);
 
 export const MainContainer = () => {
-  const { activeMiddleTab , userId } = useContext(ProfileContext);
-
- 
+  const { activeMiddleTab } = useContext(ProfileContext);
 
   return (
     <Tab.Navigator
@@ -42,7 +40,6 @@ export const MainContainer = () => {
           let iconName;
           let iconColor;
           iconColor = focused ? "#8244CB" : "black";
-
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
             return <Ionicons name={iconName} size={size} color={iconColor} />;
@@ -64,8 +61,12 @@ export const MainContainer = () => {
             return <Ionicons name={iconName} size={size} color={iconColor} />;
           } else if (route.name === "Notifications") {
             return (
-            <NotificationBell focused={focused} size={size} iconColor={iconColor} />
-            )
+                  <NotificationBell
+                    focused={focused}
+                    size={size}
+                    iconColor={iconColor}
+                  />
+            );
           }
         },
       })}
@@ -106,9 +107,14 @@ export const MainContainer = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-      name="Notifications"
-      component={Notification}
-      options={{headerRight : ()=> <Ionicons name="settings-outline" size={26} /> , headerTitleStyle:{fontSize : 26 , fontWeight : '600'} , headerStyle : {height : 80} , headerLeft : () => <Ionicons name="arrow-back" size={40}/>}}
+        name="Notifications"
+        component={Notification}
+        options={{
+          headerRight: () => <Ionicons name="settings-outline" size={26} />,
+          headerTitleStyle: { fontSize: 26, fontWeight: "600" },
+          headerStyle: { height: 80 },
+          headerLeft: () => <Ionicons name="arrow-back" size={40} />,
+        }}
       />
     </Tab.Navigator>
   );

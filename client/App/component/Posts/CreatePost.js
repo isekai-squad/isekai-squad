@@ -1,8 +1,11 @@
 import {
+  Avatar,
+  AvatarFallbackText,
   Box,
   Button,
   ButtonText,
   Center,
+  HStack,
   Image,
   Input,
   InputField,
@@ -31,28 +34,8 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../Context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 import * as SecureStore from "expo-secure-store";
-
-const data = [
-  { label: "Item 1", value: "1" },
-  { label: "Item 2", value: "2" },
-  { label: "Item 3", value: "3" },
-  { label: "Item 4", value: "4" },
-  { label: "Item 5", value: "5" },
-  { label: "Item 6", value: "6" },
-  { label: "Item 7", value: "7" },
-  { label: "Item 8", value: "8" },
-];
-
-const Expertise = [
-  { label: "Web Dev", value: "1" },
-  { label: "Data Science", value: "2" },
-  { label: "Economics", value: "3" },
-  { label: "Mechanics", value: "4" },
-  { label: "Electrics", value: "5" },
-  { label: "Music", value: "6" },
-  { label: "Chimics", value: "7" },
-  { label: "Art", value: "8" },
-];
+import { AvatarImage } from "@gluestack-ui/themed";
+import Swiper from "react-native-swiper";
 
 const CreatePost = () => {
   const [selected, setSelected] = useState([]);
@@ -64,15 +47,45 @@ const CreatePost = () => {
   const [role, setRole] = useState("STUDENT");
   const [user, setUser] = useState("");
   const [percent, setPercent] = useState(0);
+  const [specialities, setSpecialities] = useState([]);
+  const [technologies, setTechnologies] = useState([]);
+  const [files, setFiles] = useState([]);
 
   const renderItem = (item) => {
     return (
       <View style={styles.item}>
-        <Text style={styles.selectedTextStyle}>{item.label}</Text>
-        <AntDesign style={styles.icon} color="black" name="tagso" size={20} />
+        <Text style={styles.selectedTextStyle}>{item.name}</Text>
+        <Avatar size="sm">
+          <AvatarFallbackText>SS</AvatarFallbackText>
+          <AvatarImage
+            alt="404"
+            source={{
+              uri: item.image,
+            }}
+          />
+        </Avatar>
       </View>
     );
   };
+
+  const getSpecialities = async () => {
+    await axios
+      .get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Expertise/speciality/all`
+      )
+      .then((res) => setSpecialities(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const getTechnologies = async (id) => {
+    await axios
+      .get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Expertise/speciality/techno/${id}`
+      )
+      .then((res) => setTechnologies(res.data))
+      .catch((err) => console.log(err));
+  };
+
   const navigation = useNavigation();
   const fireBasePostImage = async (image) => {
     return new Promise(async (resolve, reject) => {
@@ -105,9 +118,9 @@ const CreatePost = () => {
       const result = await DocumentPicker.getDocumentAsync({
         multiple: true,
       });
-      result.assets.map((file) =>{
-      console.log(file)
-        setFileResponse((prev) => [...prev, file.uri])
+      result.assets.map((file) => {
+        setFiles((prev) => [...prev, file]);
+        setFileResponse((prev) => [...prev, file.uri]);
       });
     } catch (err) {
       console.log(err);
@@ -137,13 +150,23 @@ const CreatePost = () => {
         .catch((err) => console.log(err));
     } else if (role === "COMPANY") {
       await axios
-        .post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Posts/${user.id}`, {
-          title,
-          content: description,
-          images: Images,
-        })
+        .post(
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Posts/Posts/${user.id}`,
+          {
+            title,
+            content: description,
+            images: Images,
+          }
+        )
         .then((res) => console.log("added successfully"))
-        .then(() => {setTitle("") ; setDescription('') ; setImages([]) ; setFileResponse([])})
+        .then(() => {
+          setTitle("");
+          setDescription("");
+          setImages([]);
+          setFileResponse([]);
+          setTechnologies([])
+          setSpecialities([])
+        })
         .catch((err) => console.log(err));
     }
   };
@@ -154,16 +177,17 @@ const CreatePost = () => {
       const decodeResult = jwtDecode(res);
       console.log(decodeResult);
       setUser(decodeResult);
-      setRole(user.role)
-    }catch (err) {
+      setRole(user.role);
+    } catch (err) {
       console.log(err);
     }
   };
   useEffect(() => {
     // console.log(user)
     getCurrentUser();
-  }, []);
-
+    getSpecialities();
+  }, [role]);
+  // console.log(technologies)
   return (
     <ScrollView>
       <View style={{ paddingVertical: 40, backgroundColor: "white" }}>
@@ -180,52 +204,55 @@ const CreatePost = () => {
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>Create Post</Text>
           <TouchableOpacity>
-          <Button
-            borderRadius={50}
-            variant="outline"
-            borderColor="#674188"
-            onPress={() => addPost()}
+            <Button
+              borderRadius={50}
+              variant="outline"
+              borderColor="#674188"
+              onPress={() => addPost()}
             >
-            <ButtonText color="#674188">Publish</ButtonText>
-          </Button>
-            </TouchableOpacity>
+              <ButtonText color="#674188">Publish</ButtonText>
+            </Button>
+          </TouchableOpacity>
         </Box>
-{ Images.length === 0 ? (
-
-  <View style={{ alignItems: "center", paddingVertical: 30 }}>
-          <Center
-            bgColor="#fafafa"
-            h={300}
-            w={300}
-            borderRadius={15}
-            borderWidth={0.5}
-            borderColor="#ede6f0"
-            >
-            <Icon
-              name="image-outline"
-              size={50}
-              color="#dbcde2"
-              onPress={handleImageSelection}
-              />
-
-            <Text
-              style={{ color: "#dbcde2", paddingVertical: 10, fontWeight: 600 }}
-              >
-              Add Article Cover Image
-            </Text>
-          </Center>
-        </View>
-          ) : 
           <View style={{ alignItems: "center", paddingVertical: 30 }}>
-              <Image
-              size="2xl"
-              source={{uri : Images[0]}}
-              borderRadius={5}
-              resizeMode="stretch"
+            <Center
+              bgColor="#fafafa"
+              h={300}
+              w={300}
+              borderRadius={15}
+              borderWidth={0.5}
+              borderColor="#ede6f0"
+            >
+              <Icon
+                name="image-outline"
+                size={50}
+                color="#dbcde2"
+                onPress={handleImageSelection}
               />
-              </View>
-          
-        }
+
+              <Text
+                style={{
+                  color: "#dbcde2",
+                  paddingVertical: 10,
+                  fontWeight: 600,
+                }}
+              >
+                Add Article Cover Image
+              </Text>
+            </Center>
+          </View>
+          {Images.length === 0 ? "" :
+                <HStack space="md" alignItems="center" flexWrap="wrap" paddingHorizontal={50} paddingVertical={40} >
+              {Images.map((image) => (
+                <Image
+                  size="xl"
+                  source={{ uri: image }}
+                  borderRadius={10}
+                  resizeMode="stretch"
+                  />
+                  ))}
+                  </HStack>
+               }
         <Box style={{ paddingHorizontal: 20, padding: 20 }}>
           <VStack space="lg">
             <Text style={{ fontSize: 22, fontWeight: 600 }}>Title</Text>
@@ -272,6 +299,21 @@ const CreatePost = () => {
                       Add Article Cover Image
                     </Text>
                   </Center>
+                  {files === 0
+                    ? ""
+                    : files.map((file) => (
+                        <View style={styles.item}>
+                          <Text style={styles.selectedTextStyle}>
+                            {file.name}
+                          </Text>
+                          <AntDesign
+                            name="file1"
+                            size={24}
+                            color="#674188"
+                            style={{ marginLeft: 10 }}
+                          />
+                        </View>
+                      ))}
                 </Box>
               </>
             ) : (
@@ -303,17 +345,18 @@ const CreatePost = () => {
                     selectedTextStyle={styles.selectedTextStyle}
                     inputSearchStyle={styles.inputSearchStyle}
                     iconStyle={styles.iconStyle}
-                    data={Expertise}
+                    data={specialities}
                     search
                     itemTextStyle={{ color: "#674188" }}
                     maxHeight={300}
-                    labelField="label"
-                    valueField="value"
+                    labelField="name"
+                    valueField="id"
                     placeholder="Select Expertise"
                     searchPlaceholder="Search..."
                     value={value}
-                    onChange={(item) => {
-                      setValue(item.value);
+                    onChange={async (item) => {
+                      setValue(item.name);
+                      getTechnologies(item.id);
                     }}
                   />
                 </View>
@@ -328,9 +371,9 @@ const CreatePost = () => {
                     selectedTextStyle={styles.selectedTextStyle}
                     inputSearchStyle={styles.inputSearchStyle}
                     iconStyle={styles.iconStyle}
-                    data={data}
-                    labelField="label"
-                    valueField="value"
+                    data={technologies}
+                    labelField="name"
+                    valueField="id"
                     placeholder="Select Technology"
                     value={selected}
                     search
@@ -345,8 +388,17 @@ const CreatePost = () => {
                       >
                         <View style={styles.selectedStyle}>
                           <Text style={styles.textSelectedStyle}>
-                            {item.label}
+                            {item.name}
                           </Text>
+                          <Avatar size="sm">
+                            <AvatarFallbackText>SS</AvatarFallbackText>
+                            <AvatarImage
+                              alt="404"
+                              source={{
+                                uri: item.image,
+                              }}
+                            />
+                          </Avatar>
                         </View>
                       </TouchableOpacity>
                     )}
@@ -381,6 +433,7 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 14,
+    color : '#674188'
   },
   iconStyle: {
     width: 20,

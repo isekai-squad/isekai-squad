@@ -108,7 +108,13 @@ const DrawerNavigator = ({ params }) => {
         name="Visited Profile"
         component={UserProfile}
         options={{
-          // headerShown: false,
+          headerLeft: false,
+          headerTitle: () => (
+            <SearchHeader
+              onChangeText={(text) => console.log("Search:", text)}
+            />
+          ),
+          headerTitleContainerStyle: { width: "100%" },
           drawerIcon: ({ focused, size }) => (
             <Ionicons
               name="person"
@@ -195,6 +201,9 @@ const DrawerNavigator = ({ params }) => {
           ),
         }}
       />
+     
+  
+
       <Drawer.Screen
         name="Post Services"
         component={postServices}
@@ -255,33 +264,33 @@ export const Navigation = () => {
         <ProfileProvider>
           <VisitProfileProvider>
             <Drawer.Navigator>
-              <Drawer.Screen
+              <Stack.Screen
                 name="Home"
                 component={DrawerNavigator}
                 options={{ headerShown: false }}
                 initialParams={{ setToken: setToken }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="QRCode"
                 component={QR_code}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="Posts"
                 component={Posts}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="PostDetails"
                 component={PostDetails}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="ServiceDetails"
                 component={ServiceDetails}
                 // options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="chat"
                 component={ChatScreen}
                 options={{
@@ -298,17 +307,17 @@ export const Navigation = () => {
                   ),
                 }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="Forum"
                 component={ForumCategories}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="Post"
                 component={CreatePost}
                 options={{ headerShown: false }}
               />
-              <Drawer.Screen
+              <Stack.Screen
                 name="EditProfile"
                 component={EditProfile}
                 options={{
