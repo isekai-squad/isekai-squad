@@ -8,6 +8,8 @@ import {
 import { STYLES } from "../../../../../GlobalCss";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useMutation } from "@tanstack/react-query";
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
 const AllReplyComments = ({ comment, refetchReplyComments }) => {
   const { id, content, created_at, likes, User, image } = comment;
@@ -25,6 +27,7 @@ const AllReplyComments = ({ comment, refetchReplyComments }) => {
 
   const likeReplyComment = async () => {
     await upLikeReplyComment(id);
+    
     setActiveLikeReplyComment((prev) => !prev);
     refetchReplyComments();
   };

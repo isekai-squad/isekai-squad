@@ -9,15 +9,19 @@ import {
   getUserLikes,
   upVoteProject,
 } from "../../../../Context/ProfileContext";
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { STYLES } from "../../../../../GlobalCss";
 import CommentsInputs from "./CommentsProjectInputs";
 import AllComments from "./AllProjectsComments";
 
-const StudentPostsInteraction = ({ projectId }) => {
-  const { userId, refetchPosts } = useContext(ProfileContext);
-
+const StudentPostsInteraction = ({ projectId, postOwner }) => {
+  const { userId, refetchPosts, ProfileData } = useContext(ProfileContext);
+  console.log("====================================");
+  console.log(postOwner);
+  console.log("====================================");
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
 
@@ -52,7 +56,15 @@ const StudentPostsInteraction = ({ projectId }) => {
 
   const upVoteHandle = async () => {
     await upVote();
-    
+
+    socket.emit("sendNotification", {
+      sender: userId,
+      receiver: postOwner,
+      content: `${ProfileData.name} has liked your Project`,
+      type: "Project",
+      postId: projectId,
+    });
+
     refetchAllLikes();
     refetchUserLikes();
 
@@ -127,6 +139,7 @@ const StudentPostsInteraction = ({ projectId }) => {
         <CommentsInputs
           projectId={projectId}
           refetchProjectComments={refetchProjectComments}
+          postOwner={postOwner}
         />
       </View>
       <AllComments

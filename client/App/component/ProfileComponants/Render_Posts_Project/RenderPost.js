@@ -134,7 +134,7 @@ const RenderPost = ({ item, refetchPosts }) => {
         </Swiper>
       )}
 
-      <Interaction postId={item.id} />
+      <Interaction postId={item.id} postOwner={item.userId} />
 
       <AwesomeAlert
         show={confirmAlert}
