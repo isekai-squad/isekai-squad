@@ -7,10 +7,10 @@ export const addToBasket = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
     const serviceId = req.params.serviceId;
-
     const checkService = await prisma.basket.findFirst({
       where: { userId: userId, serviceId: serviceId },
     });
+
     if (!checkService) {
       const item = await prisma.basket.create({
         data: {
@@ -36,6 +36,20 @@ export const getBasket = async (req: Request, res: Response) => {
         Service: true,
       },
     });
+    res.send(baskets);
+  } catch (error) {
+    res.status(404).send(error);
+  }
+};
+export const getBayBasket = async (req: Request, res: Response) => {
+  try {
+    const baskets = await prisma.basket.findMany({
+      where: { userId: req.params.userId, payed: true },
+      include:{
+        Service: true,
+      }
+    });
+    
     res.send(baskets);
   } catch (error) {
     res.status(404).send(error);
