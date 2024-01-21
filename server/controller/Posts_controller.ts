@@ -130,24 +130,27 @@ export const getLimitProjects = async (req: Request, res: Response) => {
       where: {
         specialtyId: specialtyId,
       },
-
       include: {
         project: {
           orderBy: { created_at: "desc" },
           take: Number(1),
         },
       },
-      take: Number(3),
+      take: Number(limit),
     });
 
-    const filteredResult = result.filter((user) => {
-      return user.project.length > 0;
+    const filteredResult = result.filter((user) => user.project.length > 0);
+
+    filteredResult.sort((a, b) => {
+      const timeA = new Date(a.project[0].created_at).getTime();
+      const timeB = new Date(b.project[0].created_at).getTime();
+      return timeB - timeA;
     });
 
     res.status(200).json(filteredResult);
   } catch (err) {
-    console.log(err);
-    res.status(400).send(err);
+    console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -217,12 +220,17 @@ export const getLimitPosts = async (req: Request, res: Response) => {
           take: Number(1),
         },
       },
-      take: Number(3),
+      take: Number(limit),
     });
 
-    const filteredResult = result.filter((user) => {
-      return user.posts.length > 0;
+    const filteredResult = result.filter((user) => user.posts.length > 0);
+
+    filteredResult.sort((a, b) => {
+      const timeA = new Date(a.posts[0].created_at).getTime();
+      const timeB = new Date(b.posts[0].created_at).getTime();
+      return timeB - timeA;
     });
+
     res.status(200).json(filteredResult);
   } catch (err) {
     console.log(err);
@@ -465,28 +473,28 @@ export const getMostLikedProject = async (req: Request, res: Response) => {
   }
 };
 
-export const getOneProject = async (req : Request , res : Response) => {
+export const getOneProject = async (req: Request, res: Response) => {
   let { projectId } = req.params;
   try {
     const project = await prisma.project.findFirst({
-      where: { id: projectId }
+      where: { id: projectId },
     });
-    res.status(200).send(project)
-  }catch(err) {
+    res.status(200).send(project);
+  } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
-export const getOnePost = async (req : Request, res : Response) => {
-  let {postId} = req.params
+export const getOnePost = async (req: Request, res: Response) => {
+  let { postId } = req.params;
   try {
     const post = await prisma.post.findFirst({
-      where: { id: postId }
+      where: { id: postId },
     });
-    res.status(200).send(post)
-  }catch (err) {
-    console.log(err)
+    res.status(200).send(post);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};

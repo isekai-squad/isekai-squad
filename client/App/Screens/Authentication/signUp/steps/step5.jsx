@@ -1,133 +1,169 @@
-import React, { useEffect, useState } from 'react';
-import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
-import CheckBox from 'expo-checkbox';
-import { STYLES } from '../../../../../GlobalCss';
-import { ScrollView } from 'react-native-gesture-handler';
-import axios from 'axios';
-const Step5 = ({setStep,speciality,setTechnologies}) => {
+import React, { useEffect, useState } from "react";
+import Feather from "react-native-vector-icons/Feather";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  Image,
+} from "react-native";
+import CheckBox from "expo-checkbox";
+import { STYLES } from "../../../../../GlobalCss";
+import { ScrollView } from "react-native-gesture-handler";
+import axios from "axios";
+const Step5 = ({ setStep, speciality, setTechnologies }) => {
   const [checkedItems, setCheckedItems] = useState([]);
-  const [Expertise,setExpertise]=useState([])
-  const handleCheckBoxChange = async(item) => {
+  const [Expertise, setExpertise] = useState([]);
+  const handleCheckBoxChange = async (item) => {
     const isChecked = await checkedItems.includes(item);
     setCheckedItems((prevItems) =>
       isChecked
         ? prevItems.filter((prevItem) => prevItem !== item)
         : [...prevItems, item]
     );
-    setTechnologies(checkedItems)
-    
+    setTechnologies(checkedItems);
   };
 
-  const getAllSpecialities =async ()=>{
-try {
-      const res = await axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/technologie/speciality/techno/${speciality.id}`);
-setExpertise(res.data)
-}catch(err){
-  console.log(err);
-}
-  }
-  useEffect(()=>{
-    getAllSpecialities()
-  },[])
+  const getAllSpecialities = async () => {
+    try {
+      const res = await axios.get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/technologie/speciality/techno/${speciality.id}`
+      );
+      setExpertise(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    getAllSpecialities();
+  }, []);
 
-  const {width} = useWindowDimensions()
+  const { width } = useWindowDimensions();
 
   return (
-   <View style={{width}}>
-     <View style={{ justifyContent: 'center', alignItems: 'center',gap:40,marginTop:40}}>
-      <View>
-      <Text style={Styles.SignUp}>Technologies</Text>
-          <Text style={{ fontFamily: 'Roboto-Light', fontSize: STYLES.SIZES.sizeL, fontWeight: '100' }}>
+    <View style={{ width }}>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 40,
+          marginTop: 40,
+        }}
+      >
+        <View>
+          <Text style={Styles.SignUp}>Technologies</Text>
+          <Text
+            style={{
+              fontFamily: "Roboto-Light",
+              fontSize: STYLES.SIZES.sizeL,
+              fontWeight: "100",
+            }}
+          >
             Select some technologies
           </Text>
-      </View>
-      <ScrollView style={{height:400}}>
+        </View>
 
-      <View style={Styles.loginContainer}>
-        {Expertise.map((item, index) => (
-          <TouchableOpacity key={index} onPress={() => handleCheckBoxChange(item)}>
-            <View style={Styles.loginInput}>
-              <CheckBox  size={20} value={checkedItems.includes(item)} onValueChange={() => {}} />
-              <View style={{flexDirection:'row' , gap:10 , justifyContent:"center",alignItems:'center',left:20}}>
-
-              <Image width={25} height={25} source={{uri:item.image}}/>
-              <Text style={Styles.checkboxLabel}>{item.name}</Text>
+        <ScrollView style={{ height: 300 }}>
+          {Expertise.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleCheckBoxChange(item)}
+            >
+              <View style={Styles.loginInput}>
+                <CheckBox
+                  size={20}
+                  value={checkedItems.includes(item)}
+                  onValueChange={() => {}}
+                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    left: 20,
+                  }}
+                >
+                  <Image width={25} height={25} source={{ uri: item.image }} />
+                  <Text style={Styles.checkboxLabel}>{item.name}</Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
+
         <TouchableOpacity
-                    
-                onPress={()=>setStep(6)}
-                     style={{
-                        backgroundColor: STYLES.COLORS.Priamary,
-                        width: 150,
-                        height: 50,
-                        borderRadius: 10,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      //  top:40,
-                      //  right:18
-                        
-                    }}>
-                   <Text style={{color:'white', fontFamily:'Roboto-bold', fontSize: STYLES.SIZES.sizeL}}>Next Step <Feather size={20} name='arrow-right'/></Text>
-                    </TouchableOpacity>
-    
+          onPress={() => setStep(6)}
+          style={{
+            backgroundColor: STYLES.COLORS.Priamary,
+            width: 150,
+            height: 50,
+            borderRadius: 10,
+            justifyContent: "center",
+            alignItems: "center",
+            // top: 40,
+            // right: 18,
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontFamily: "Roboto-bold",
+              fontSize: STYLES.SIZES.sizeL,
+            }}
+          >
+            Next Step <Feather size={20} name="arrow-right" />
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
-   </View>
   );
 };
 
 const Styles = StyleSheet.create({
   SignUp: {
     color: STYLES.COLORS.Priamary,
-    fontFamily: 'Roboto-Bold',
+    fontFamily: "Roboto-Bold",
     fontSize: STYLES.SIZES.sizeXXL,
     marginBottom: 10,
   },
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 10,
   },
   checkboxLabel: {
     marginLeft: 10,
-    fontFamily: 'Roboto-Light',
+    fontFamily: "Roboto-Light",
     fontSize: STYLES.SIZES.sizeM,
   },
   loginContainer: {
     // flexDirection: 'row', // Change this to 'row' if you want checkboxes in a row
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    width: '90%',
-    
-    marginTop: 20,
-  }, loginInput: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: "90%",
+    height: 400,
+    // marginTop: 20,
+  },
+  loginInput: {
     height: 60,
     width: 300,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    justifyContent: "flex-start",
+    alignItems: "center",
 
-    flexDirection: 'row',
+    flexDirection: "row",
     borderColor: "#dbdbdb",
     borderWidth: 1,
     borderRadius: 8,
     paddingLeft: 40,
     color: "#000",
-},
+  },
 });
 
 export default Step5;
-
-
-
-
-
 
 // import React, { useEffect, useState } from 'react';
 // import Feather from 'react-native-vector-icons/Feather';
@@ -223,7 +259,7 @@ export default Step5;
 //     justifyContent: 'center',
 //     alignItems: 'flex-start',
 //     width: '90%',
-    
+
 //     marginTop: 20,
 //   }, loginInput: {
 //     height: 60,

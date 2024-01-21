@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { STYLES } from "../../GlobalCss";
+import { STYLES } from "../../../GlobalCss";
 // STEP 1
 const checkout = async (data) => {
   try {

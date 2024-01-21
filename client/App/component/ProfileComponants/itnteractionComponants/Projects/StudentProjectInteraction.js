@@ -19,9 +19,7 @@ import AllComments from "./AllProjectsComments";
 
 const StudentPostsInteraction = ({ projectId, postOwner }) => {
   const { userId, refetchPosts, ProfileData } = useContext(ProfileContext);
-  console.log("====================================");
-  console.log(postOwner);
-  console.log("====================================");
+
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
 
@@ -57,18 +55,19 @@ const StudentPostsInteraction = ({ projectId, postOwner }) => {
   const upVoteHandle = async () => {
     await upVote();
 
-    socket.emit("sendNotification", {
-      sender: userId,
-      receiver: postOwner,
-      content: `${ProfileData.name} has liked your Project`,
-      type: "Project",
-      postId: projectId,
-    });
-
     refetchAllLikes();
     refetchUserLikes();
 
     if (!upvoted) {
+      if (userId !== postOwner) {
+        socket.emit("sendNotification", {
+          sender: userId,
+          receiver: postOwner,
+          content: `${ProfileData.name} has liked your Project`,
+          type: "Project",
+          postId: projectId,
+        });
+      }
       setUpvoted(true);
       setDownvoted(false);
     } else {
@@ -143,8 +142,10 @@ const StudentPostsInteraction = ({ projectId, postOwner }) => {
         />
       </View>
       <AllComments
+        projectId={projectId}
         projectsComments={projectsComments}
         refetchProjectComments={refetchProjectComments}
+        // postOwner={postOwner}
       />
     </View>
   );

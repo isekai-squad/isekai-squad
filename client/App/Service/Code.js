@@ -32,26 +32,26 @@ export default function Code() {
   };
 
   useEffect(() => {
-    async function authenticate() {
-      try {
-        const result = await LocalAuthentication.authenticateAsync({
-          promptMessage: "Authenticate to access your data",
-          cancelLabel: "Cancel",
-        });
+    //   async function authenticate() {
+    //     try {
+    //       const result = await LocalAuthentication.authenticateAsync({
+    //         promptMessage: "Authenticate to access your data",
+    //         cancelLabel: "Cancel",
+    //       });
 
-        setAuthenticationResult(result);
-        if (result.success) {
-          console.log("Authentication successful");
-          fetchBayBasket();
-        } else {
-          console.log("Authentication failed");
-        }
-      } catch (error) {
-        console.error("Authentication error:", error.message);
-      }
-    }
+    //       setAuthenticationResult(result);
+    //       if (result.success) {
+    //         console.log("Authentication successful");
+    fetchBayBasket();
+    //       } else {
+    //         console.log("Authentication failed");
+    //       }
+    //     } catch (error) {
+    //       console.error("Authentication error:", error.message);
+    //     }
+    //   }
 
-    authenticate();
+    //   authenticate();
   }, []);
 
   return (
@@ -66,7 +66,11 @@ export default function Code() {
         <View style={styles.itemsContainer}>
           {BaybasketItems.map((item) => (
             <TouchableOpacity
-              onPress={() => Linking.openURL("https://www.w3.org/WAI/WCAG20/quickref/pdfspec-pdf-accessible.pdf")}
+              onPress={() =>
+                Linking.openURL(
+                  "https://www.w3.org/WAI/WCAG20/quickref/pdfspec-pdf-accessible.pdf"
+                )
+              }
               style={styles.itemContainer}
               key={item.Service.id}
             >

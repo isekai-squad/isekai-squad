@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { ProfileContext } from "../../Context/ProfileContext";
-import CheckoutScreen from "../../component/Stripe";
+import CheckoutScreen from "./Stripe";
 import { STYLES } from "../../../GlobalCss";
 import { useQuery } from "@tanstack/react-query";
 import BasketItem from "./BasketDetails";

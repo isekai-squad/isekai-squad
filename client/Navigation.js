@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavigationContainer, useRoute } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -16,7 +16,7 @@ import SignIn from "./App/Screens/Authentication/SignIn/SignIn";
 import Signup from "./App/Screens/Authentication/signUp/signup";
 import QR_code from "./App/component/QR_code";
 import AboutScreen from "./App/bottomTabScreen/About/AboutScreen";
-import { ProfileProvider } from "./App/Context/ProfileContext";
+import { ProfileContext, ProfileProvider } from "./App/Context/ProfileContext";
 import { VisitProfileProvider } from "./App/Context/VisitProfileContext";
 import ForumCategories from "./App/component/Posts/ForumCategories";
 import UserProfile from "./App/Screens/UserProfile/VisitedProfile";
@@ -27,7 +27,7 @@ import Basket from "./App/Screens/Basket/basket";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Fontisto from "react-native-vector-icons/Fontisto";
- 
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { STYLES } from "./GlobalCss";
 import * as SecureStore from "expo-secure-store";
@@ -40,18 +40,21 @@ import ServiceDetails from "./App/Service/ServiceDetatUser";
 import CreateForumPost from "./App/component/Posts/CreateForumPost";
 import commentsDetails from "./App/component/Posts/CommentsDetails";
 import { io } from "socket.io-client";
-import { jwtDecode } from "jwt-decode";
 import InterviewRequest from "./App/component/Interviews/InterviewRequest";
 import Code from "./App/Service/Code";
 // import Servicee from "./App/Component/Service"
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
 import SeeAll from "./App/Screens/SeeAll/SeeAll";
+import UpgradeAccount from "./App/Screens/PremiumCompany/UpgradeAccount";
+
+import { LogBox } from "react-native";
 const DrawerNavigator = ({ params }) => {
-  const [user , setUser] = useState()
+  LogBox.ignoreAllLogs();
+  const { ProfileData } = useContext(ProfileContext);
   const route = useRoute();
   const { setToken } = route.params;
   const logout = async () => {
@@ -89,14 +92,14 @@ const DrawerNavigator = ({ params }) => {
           ),
         }}
       />
-        <Drawer.Screen
-        name="code"
+      <Drawer.Screen
+        name="My Courses"
         component={Code}
         options={{
-          headerShown: false,
+          // headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <Ionicons
-              name="home"
+              name="book-outline"
               size={size}
               color={focused ? STYLES.COLORS.Priamary : "black"}
             />
@@ -146,8 +149,6 @@ const DrawerNavigator = ({ params }) => {
           ),
         })}
       />
-  
-
       <Drawer.Screen
         name="rooms"
         component={UserChatRoom}
@@ -163,13 +164,13 @@ const DrawerNavigator = ({ params }) => {
         }}
       />
       <Drawer.Screen
-        name="QRCode"
-        component={QR_code}
+        name="Services"
+        component={service}
         options={{
-          headerShown: false,
+          // headerShown: false,
           drawerIcon: ({ focused, size }) => (
-            <Ionicons
-              name="qr-code"
+            <AntDesign
+              name="customerservice"
               size={size}
               color={focused ? STYLES.COLORS.Priamary : "black"}
             />
@@ -191,27 +192,13 @@ const DrawerNavigator = ({ params }) => {
         }}
       />
       <Drawer.Screen
-        name="Services"
-        component={service}
-        options={{
-          // headerShown: false,
-          drawerIcon: ({ focused, size }) => (
-            <AntDesign
-              name="customerservice"
-              size={size}
-              color={focused ? STYLES.COLORS.Priamary : "black"}
-            />
-          ),
-        }}
-      />
-     
-  
-
-      <Drawer.Screen
         name="Post Services"
         component={postServices}
         options={{
           // headerShown: false,
+          drawerItemStyle: {
+            display: ProfileData.role == "ADVISOR" ? "flex" : "none",
+          },
           drawerIcon: ({ focused, size }) => (
             <AntDesign
               name="addfile"
@@ -225,6 +212,9 @@ const DrawerNavigator = ({ params }) => {
         name="AboutScreen"
         component={AboutScreen}
         options={{
+          drawerItemStyle: {
+            display: "none",
+          },
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <Ionicons
@@ -242,22 +232,26 @@ const DrawerNavigator = ({ params }) => {
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <Ionicons
-              name="information-circle"
+              name="body-outline"
               size={size}
               color={focused ? STYLES.COLORS.Priamary : "black"}
             />
           ),
         }}
       />
-      <Drawer.Screen 
-         name="Requests"
-         component={InterviewRequest}
-         options={{headerShown : false ,
-        drawerIcon: ({ focused, size }) => (
-          <Ionicons
-            name="nuclear"
-            size={size}
-            color={focused? STYLES.COLORS.Priamary : "black"}/>)}}      
+      <Drawer.Screen
+        name="Requests"
+        component={InterviewRequest}
+        options={{
+          headerShown: false,
+          drawerIcon: ({ focused, size }) => (
+            <Ionicons
+              name="nuclear"
+              size={size}
+              color={focused ? STYLES.COLORS.Priamary : "black"}
+            />
+          ),
+        }}
       />
     </Drawer.Navigator>
   );
@@ -270,7 +264,6 @@ export const Navigation = () => {
     const res = await SecureStore.getItemAsync("Token");
     setAuth(res);
   };
-
 
   useEffect(() => {
     getCurrentUser();
@@ -306,6 +299,11 @@ export const Navigation = () => {
                 name="ServiceDetails"
                 component={ServiceDetails}
                 // options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="UpgradeAccount"
+                component={UpgradeAccount}
+                options={{ headerShown: false }}
               />
               <Stack.Screen
                 name="chat"
@@ -356,17 +354,17 @@ export const Navigation = () => {
                   drawerLockMode: "",
                 }}
               />
-              <Drawer.Screen 
+              <Drawer.Screen
                 name="CreateForumPost"
                 component={CreateForumPost}
                 options={{
-                  headerShown : false
+                  headerShown: false,
                 }}
               />
               <Drawer.Screen
-              name='CommentsDetails'
-              component={commentsDetails}
-              options={{headerShown : false}}
+                name="CommentsDetails"
+                component={commentsDetails}
+                options={{ headerShown: false }}
               />
             </Drawer.Navigator>
           </VisitProfileProvider>

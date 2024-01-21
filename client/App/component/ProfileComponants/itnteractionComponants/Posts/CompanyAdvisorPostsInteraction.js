@@ -9,14 +9,15 @@ import {
   getUserLikes,
   upVotePost,
 } from "../../../../Context/ProfileContext";
-
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { STYLES } from "../../../../../GlobalCss";
 import CommentsInputs from "./CommentsPostsInputs";
 import AllComments from "./AllPostsComments";
 
-const CompanyAdvisorPostsInteraction = ({ postId }) => {
-  const { userId, refetchPosts } = useContext(ProfileContext);
+const CompanyAdvisorPostsInteraction = ({ postId, postOwner }) => {
+  const { userId, refetchPosts, ProfileData } = useContext(ProfileContext);
 
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
@@ -53,7 +54,17 @@ const CompanyAdvisorPostsInteraction = ({ postId }) => {
     await upVote();
     refetchPostsLikes();
     refetchUserPostLikes();
+
     if (!upvoted) {
+      if(userId!==postOwner){
+        socket.emit("sendNotification", {
+          sender: userId,
+          receiver: postOwner,
+          content: `${ProfileData.name} has Like your Post`,
+          type: "Post",
+          postId: postId,
+        });
+      }
       setUpvoted(true);
       setDownvoted(false);
     } else {
@@ -66,8 +77,8 @@ const CompanyAdvisorPostsInteraction = ({ postId }) => {
     refetchPostsLikes();
     refetchUserPostLikes();
     if (!downvoted) {
-      setUpvoted(false);
       setDownvoted(true);
+      setUpvoted(false);
     } else {
       setDownvoted(false);
     }
@@ -117,13 +128,17 @@ const CompanyAdvisorPostsInteraction = ({ postId }) => {
         </View>
 
         <CommentsInputs
+          postId={postId}
           postsCommentsId={postId}
           refetchPostsComments={refetchPostsComments}
+          postOwner={postOwner}
         />
       </View>
       <AllComments
+        postId={postId}
         postComments={postsComments}
         refetchPostsComments={refetchPostsComments}
+        postOwner={postOwner}
       />
     </View>
   );
