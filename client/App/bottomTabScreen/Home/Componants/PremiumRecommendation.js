@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   Image,
   Linking,
-  Alert,
 } from "react-native";
-import React, { useCallback, useContext, useEffect } from "react";
+
+import React, { useCallback, useContext } from "react";
 import { STYLES } from "../../../../GlobalCss";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +18,7 @@ import {
 } from "../../../Context/ProfileContext";
 import Swiper from "react-native-swiper";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import { useNavigation } from "@react-navigation/native";
 const fetchMostLikedProject = async () => {
   try {
     const { data } = await axios.get(
@@ -32,8 +32,9 @@ const fetchMostLikedProject = async () => {
   }
 };
 
-const PremiumRecommendation = () => {
+const PremiumRecommendation = ({ showAlert, setShowAlert }) => {
   const { ProfileData } = useContext(ProfileContext);
+  const navigation = useNavigation();
   const openFileUrl = useCallback((fileUrl) => {
     Linking.openURL(fileUrl);
   }, []);
@@ -43,12 +44,8 @@ const PremiumRecommendation = () => {
     queryFn: () => fetchMostLikedProject(),
   });
 
-  const checkPremium = () => {
-    if (!ProfileData.premuim) {
-      Alert.alert("Just For premium Company");
-    } else {
-      Alert.alert("Welcome");
-    }
+  const showPremiumAlert = () => {
+    setShowAlert(true);
   };
 
   return (
@@ -71,7 +68,9 @@ const PremiumRecommendation = () => {
             Recommendation
           </Text>
 
-          <TouchableOpacity onPress={checkPremium}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("UpgradeAccount")}
+          >
             <Text
               style={{
                 color: STYLES.COLORS.Priamary,
@@ -138,8 +137,28 @@ const PremiumRecommendation = () => {
               ))}
             </Swiper>
           )}
-          <Interaction postId={data.id} />
+          <Interaction postId={data.id} postOwner={data.User.id} />
         </View>
+        {/* <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Upgrade Your Account to Premium!"
+          message="Unlock the best projects from students and enjoy exclusive features and benefits as a premium member. Upgrade your account now!"
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="Cancel"
+          confirmText="Explore Premium Features"
+          confirmButtonColor="#3498db"
+          onCancelPressed={() => {
+            hideAlert();
+          }}
+          onConfirmPressed={() => {
+            navigation.navigate("Upgrade Account");
+            hideAlert();
+          }}
+        /> */}
       </View>
     )
   );

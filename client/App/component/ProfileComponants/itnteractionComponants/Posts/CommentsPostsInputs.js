@@ -21,15 +21,18 @@ import {
   ProfileContext,
 } from "../../../../Context/ProfileContext";
 import { STYLES } from "../../../../../GlobalCss";
-
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 const CommentsInputs = ({
   refetchPostsComments,
   postsCommentsId,
   commentType,
   replyCommentId,
   showReplyInput,
+  postOwner,
+  postId,
 }) => {
-  const { userId, setRefetchPosts } = useContext(ProfileContext);
+  const { userId, setRefetchPosts,ProfileData } = useContext(ProfileContext);
 
   const [commentText, setCommentText] = useState("");
   const [selectedImageComment, setSelectedImageComment] = useState(null);
@@ -110,6 +113,13 @@ const CommentsInputs = ({
         };
 
         await PostReply(reply);
+        socket.emit("sendNotification", {
+          sender: userId,
+          receiver: postOwner,
+          content: `${ProfileData.name} has Reply your Comment`,
+          type: "Post",
+          postId: postId,
+        });
       } else {
         const comment = {
           userId: userId,
@@ -119,6 +129,16 @@ const CommentsInputs = ({
         };
 
         await PostComment(comment);
+        if(userId!==postOwner){
+
+          socket.emit("sendNotification", {
+            sender: userId,
+            receiver: postOwner,
+            content: `${ProfileData.name} has Comment your Post`,
+            type: "Post",
+            postId: postId,
+          });
+        }
       }
     } catch (error) {
       console.error("Error during submission:", error);

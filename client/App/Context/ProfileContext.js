@@ -28,7 +28,7 @@ export const ProfileProvider = ({ children }) => {
   const githHubRef = useRef("");
   const [userId, setUserId] = useState();
   const [showTabBar, setShowTabBar] = useState(true);
-
+  const [welcome, setWelcome] = useState(false);
   const getCurrentUser = async () => {
     const res = await SecureStore.getItemAsync("Token");
     const decodeResult = jwtDecode(res);
@@ -190,6 +190,8 @@ export const ProfileProvider = ({ children }) => {
         setCheckOurServices,
         showTabBar,
         setShowTabBar,
+        welcome,
+        setWelcome,
       }}
     >
       {children}
@@ -273,6 +275,9 @@ export async function updateProfileTechnologie(data, userId) {
 }
 
 export const useFetchStudentProjects = (userId) => {
+  console.log('====================================');
+  console.log(userId);
+  console.log('====================================');
   const userProjects = async ({ pageParam = 1 }) => {
     try {
       const { data } = await axios.get(
@@ -288,14 +293,14 @@ export const useFetchStudentProjects = (userId) => {
     queryKey: ["projes", userId],
     queryFn: userProjects,
     getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage) return 1; // Handle initial fetch
-      if (lastPage.length === 0) return undefined; // No more pages
+      if (!lastPage) return 1; 
+      if (lastPage.length === 0) return undefined; 
       return allPages.length + 1;
     },
   });
-  console.log("====================================");
-  console.log(data);
-  console.log("====================================");
+//  console.log('====================================');
+//  console.log(data);
+ console.log('====================================');
   return data;
 };
 

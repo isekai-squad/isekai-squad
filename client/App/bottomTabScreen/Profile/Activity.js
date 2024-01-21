@@ -1,8 +1,14 @@
-import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import React, { useContext, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  ActivityIndicator,
+  Text,
+} from "react-native";
 
 import { STYLES } from "../../../GlobalCss";
 import RenderPost from "../../component/ProfileComponants/Render_Posts_Project/RenderPost";
-import { useContext, useEffect } from "react";
 import {
   ProfileContext,
   useFetchStudentProjects,
@@ -22,21 +28,35 @@ const Activity = () => {
     ? useFetchUserPosts(userId)
     : useFetchStudentProjects(userId);
 
-
   const loadNextPageData = () => {
     if (hasNextPage) {
       fetchNextPage();
     }
   };
 
-  // render componants
-  if (refetchPosts) {
-    refetchAllPosts();
-  }
+  // Refetch posts on mount or when needed
+  useEffect(() => {
+    if (refetchPosts) {
+      refetchAllPosts();
+    }
+  }, [refetchPosts]);
 
-  //map into data
   return (
     <View style={styles.container}>
+      {(!data?.pages[0]?.length || !data) && ProfileData.role === "STUDENT" && (
+        <Text style={styles.infoText}>
+          You don't have any projects at the moment. Feel free to start a new
+          project and showcase your work!
+        </Text>
+      )}
+
+      {(!data?.pages[0]?.length || !data) && ProfileData.role !== "STUDENT" && (
+        <Text style={styles.infoText}>
+          It appears that you don't have any posts yet. Share your thoughts,
+          experiences, or updates with the community!
+        </Text>
+      )}
+
       <FlatList
         keyExtractor={(item, index) => index.toString()}
         data={data?.pages?.map((page) => page).flat() ?? []}
@@ -55,7 +75,7 @@ const Activity = () => {
           )
         }
       />
-      {isLoading && (
+          {isLoading && (
         <ActivityIndicator
           size="large"
           color={STYLES.COLORS.Priamary}
@@ -71,6 +91,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingBottom: 100,
+  },
+  infoText: {
+    color: STYLES.COLORS.ShadowColor,
+    width: "90%",
+    textAlign: "center",
+    alignSelf: "center",
+    top: "100%",
+    letterSpacing: 1.5,
+    lineHeight: 30,
+  },
+  loadingIndicator: {
+    marginVertical: 20,
   },
 });
 

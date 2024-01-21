@@ -14,7 +14,7 @@ import {
   getStudentProfile,
   getCompanyProfile,
   getAdvisorProfile,
-  findUser
+  findUser,UpgradeCompany
 } from "../controller/user_controller";
 
 userRoutes.post("/users", getAllUser);
@@ -31,3 +31,4 @@ userRoutes.post("/user/changePassword", ChangePassword);
 userRoutes.get("/user/email/:email", checkEmail);
 userRoutes.post("/company/create", CompanyCreate);
 userRoutes.post('/user/find',findUser)
+userRoutes.patch("/Company/UpgradeAccount/:companyId",UpgradeCompany)

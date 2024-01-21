@@ -41,7 +41,9 @@ const RenderPost = ({ item, refetchPosts }) => {
   }
 
   const [confirmAlert, setConfirmAlert] = useState(false);
-
+console.log('====================================');
+console.log(item,'iiiiiiii');
+console.log('====================================');
   const { mutateAsync: deleteProjectMutate } = useMutation({
     mutationFn: (projectId) => deleteProject(ProfileData.id, projectId),
   });

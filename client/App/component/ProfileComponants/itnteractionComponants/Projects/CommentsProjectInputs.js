@@ -30,9 +30,9 @@ const CommentsInputs = ({
   commentType,
   replyCommentId,
   showReplyInput,
-  postOwner
+  postOwner,
 }) => {
-  const { userId, setRefetchPosts,ProfileData } = useContext(ProfileContext);
+  const { userId, setRefetchPosts, ProfileData } = useContext(ProfileContext);
   const [commentText, setCommentText] = useState("");
   const [selectedImageComment, setSelectedImageComment] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -117,13 +117,15 @@ const CommentsInputs = ({
         };
 
         await PostPostReply(reply);
-        socket.emit("sendNotification", {
-          sender: userId,
-          receiver: postOwner,
-          content: `${ProfileData.name} has Reply your Comment`,
-          type: "Project",
-          postId: projectId,
-        });
+        if (userId !== postOwner) {
+          socket.emit("sendNotification", {
+            sender: userId,
+            receiver: postOwner,
+            content: `${ProfileData.name} has Reply your Comment`,
+            type: "Project",
+            postId: projectId,
+          });
+        }
       } else {
         const comment = {
           userId: userId,

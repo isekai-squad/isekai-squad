@@ -76,9 +76,6 @@ io.on('connection', (socket) => {
   //   }))
     
     socket.on('message', async (data) => {
-      console.log('====================================');
-      console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
-      console.log('====================================');
       const { roomId, text, userId } = data;
       const message = await prisma.messages.create({
         data: {

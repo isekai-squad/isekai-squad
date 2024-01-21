@@ -34,9 +34,6 @@ export const validPayment = async (req: Request, res: Response) => {
     const result = await prisma.payment.createMany({
       data: req.body,
     });
-    console.log('====================================');
-    console.log(req.body);
-    console.log('====================================');
     res.status(200).send("valid payment");
   } catch (err) {
     res.status(400).send(err);
