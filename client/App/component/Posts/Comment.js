@@ -33,7 +33,7 @@ import { io } from "socket.io-client";
 
 const layoutPattern = [1, 2, 3, 2, 1];
 
-const Comment = ({ comment, user }) => {
+const Comment = ({ comment, user , onOpen }) => {
   const [liked, setLiked] = useState(false);
   // const [user , setUser] = useState('')
   const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
@@ -135,6 +135,7 @@ const Comment = ({ comment, user }) => {
             name="dots-three-vertical"
             size={20}
             style={{ padding: 20, color: "#674188" }}
+            onPress={() => onOpen(comment.id)}
           />
         </TouchableOpacity>
       </Box>

@@ -137,6 +137,23 @@ io.on('connection', (socket) => {
     io.to(data.target).emit('ice-candidate', data);
   });
 
+  socket.on('sendRequest' , async ({sender , receiver , message}) => {
+    await prisma.interviewRequest.create({
+      data: {
+        sender,
+        receiver,
+        message
+      },
+    });
+    const requests = await prisma.interviewRequest.count({
+      where : {
+        receiver,
+        state : "Pending"
+      }
+    });
+    io.to(receiver).emit('NewRequest', {requests, receiver})
+    io.emit('updateRequest', {receiver, count : requests})
+  })
   
   
   socket.on("disconnect", () => {

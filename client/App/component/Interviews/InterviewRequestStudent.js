@@ -10,24 +10,66 @@ import {
   Text,
   VStack,
 } from "@gluestack-ui/themed";
+import { useNavigation } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, Linking, ScrollView, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { io } from "socket.io-client";
 
 let arr = [1, 1, 1, 1, 1, 1];
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
-const InterviewRequest = () => {
-  const sendRequest = () => {
-    axios.post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Interviews/1/2`, {
-      message: `"A new interview request has arrived! [User Name] wants to chat about [Topic/Opportunity]. Don't miss out, take action now!"`,
-    }).then(() => console.log('notification sent')).catch((err) => console.log(err))
+const InterviewRequestStudent = ({ route }) => {
+  const [technology, setTechnology] = useState([]);
+
+  const {student , company} = route.params
+  const navigation = useNavigation();
+
+  const sendEmail = async () => {
+    await axios
+      .post(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Interviews/RequestStudent/${student.id}/${company.id}`
+      )
+      .then(() => console.log("email Sent"))
+      .catch((err) => console.log(err));
   };
 
+  const getTechnoligies = async () => {
+    await axios
+      .get(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Expertise/${student.id}`
+      )
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err));
+  };
 
-  
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["studentData"],
+    queryFn: async () => {
+      getTechnoligies();
+      return await axios
+        .get(
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/${student.id}`
+        )
+        .then((res) => res.data)
+        .catch((err) => console.log(err));
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <Center>
+        <ActivityIndicator size="large" color="#674188" />
+      </Center>
+    );
+  }
+
+  // console.log(data)
+
   return (
     <View
       as={SafeAreaView}
@@ -38,6 +80,7 @@ const InterviewRequest = () => {
           name="arrow-left-thin"
           size={46}
           color="#674188"
+          onPress={() => navigation.goBack()}
         />
         <Center borderWidth={0.3} borderColor="#AEAEAE" borderRadius={30}>
           <VStack alignItems="center" paddingVertical={15} space="md">
@@ -48,17 +91,17 @@ const InterviewRequest = () => {
               }}
               borderRadius={20}
             />
-            <Heading>Mohamed Hasan Bouhlel</Heading>
+            <Heading>{data.name}</Heading>
             <Text color="#674188" fontSize={24} fontWeight="$normal">
-              Yen
+              {data.userName}
             </Text>
             <Text fontSize={18} fontWeight="$normal">
-              Web Developement
+              {data.Specialty.name}
             </Text>
             <Divider my="$2" w={300} />
-            <Text color="#674188">hasanbouhlel@gmail.com</Text>
-            <Text>Sousse , Tunisia</Text>
-            <Text>50202120</Text>
+            <Text color="#674188">{data.email}</Text>
+            <Text>{data.location}</Text>
+            <Text>{data.number}</Text>
           </VStack>
         </Center>
         <Center paddingVertical={30}>
@@ -74,15 +117,10 @@ const InterviewRequest = () => {
 
         <VStack paddingHorizontal={10} space="lg">
           <Heading>Bio:</Heading>
-          <Text paddingHorizontal={10}>
-            Lorem ipsum dolor sit amet. Sit quasi explicabo eum quia laudantium
-            ea explicabo iste ad dolores sequi rem eius maxime. Qui voluptas
-            sint a similique magni eos pariatur eius quo optio doloribus qui
-            voluptatem voluptatibus a perferendis galisum.
-          </Text>
+          <Text paddingHorizontal={10}>{data.bio}</Text>
           <Heading>Technologies:</Heading>
           <Box flexDirection="row" flexWrap="wrap">
-            {arr.map(() => (
+            {technology.map((tech) => (
               <View
                 style={{
                   flexDirection: "row",
@@ -108,7 +146,7 @@ const InterviewRequest = () => {
                 <Text
                   style={{ color: "#674188", marginRight: 5, fontSize: 16 }}
                 >
-                  React
+                  tech.name
                 </Text>
               </View>
             ))}
@@ -117,7 +155,9 @@ const InterviewRequest = () => {
             <Heading>Links:</Heading>
             <HStack alignItems="center" space="sm">
               <MaterialCommunityIcons name="github" size={30} />
-              <Text>GithubLink</Text>
+              <Text onPress={() => Linking.openURL(data.GitHub)}>
+                {data.GitHub}
+              </Text>
             </HStack>
             <HStack alignItems="center" space="sm">
               <MaterialCommunityIcons
@@ -125,7 +165,9 @@ const InterviewRequest = () => {
                 color="#0077b5"
                 size={30}
               />
-              <Text>LinkedIN</Text>
+              <Text onPress={() => Linking.openURL(data.Linkedin)}>
+                {data.Linkedin}
+              </Text>
             </HStack>
           </VStack>
         </VStack>
@@ -139,7 +181,20 @@ const InterviewRequest = () => {
               bgColor="#674188"
               action="primary"
             >
-              <ButtonText>Apply</ButtonText>
+              <ButtonText
+                onPress={() => {
+                  sendEmail();
+                  socket.emit("sendRequest", {
+                    sender: student.id,
+                    receiver: company.id,
+                    message:
+                      `A new interview request has arrived! ${student.name} wants to chat about an Interview opportunity. Don't miss out, take action now!`,
+                  });
+                  navigation.goBack()
+                }}
+              >
+                Apply
+              </ButtonText>
             </Button>
           </TouchableOpacity>
         </Box>
@@ -148,4 +203,4 @@ const InterviewRequest = () => {
   );
 };
 
-export default InterviewRequest;
+export default InterviewRequestStudent;

@@ -2,11 +2,12 @@ import express from 'express';
 import * as interviewController from "../controller/Interview_controller"
 const route = express.Router();
 
-route.post('/:studentId/:companyId' , interviewController.addInterview)
-route.get('/:studentId' , interviewController.getInterviewStudent)
-route.get ('/:companyId' , interviewController.getInterviewCompany)
-route.put('/:companyId' , interviewController.updateInterviewCompany)
-route.delete('/:companyId' , interviewController.deleteInterviewCompany)
-route.delete('/:studentId' , interviewController.deleteInterviewStudent)
+route.get ('/:receiver' , interviewController.getInterview)
+route.get('/Requests/:sender' , interviewController.getYourInterview)
+route.put('/:id' , interviewController.updateInterview)
+route.delete('/:receiver' , interviewController.deleteInterviewCompany)
+route.delete('/:receiver' , interviewController.deleteInterviewStudent)
+route.post('/RequestCompany/:studentId/:companyId' , interviewController.sendEmailCompany)
+route.post('/RequestStudent/:studentId/:companyId' , interviewController.sendEmailStudent)
 
 export default route

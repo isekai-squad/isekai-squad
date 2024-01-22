@@ -246,6 +246,8 @@ const CreatePost = () => {
               {Images.map((image) => (
                 <Image
                   size="xl"
+                  alt="404"
+                  key={image.id}
                   source={{ uri: image }}
                   borderRadius={10}
                   resizeMode="stretch"

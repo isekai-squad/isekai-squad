@@ -39,16 +39,16 @@ import moment from "moment";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Swiper from "react-native-swiper";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 import * as SecureStore from "expo-secure-store";
 
-const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
 const PostDetails = ({ route }) => {
-  const [liked , setLiked] = useState(false)
-  const [disliked , setDisliked] = useState(false)
-  const [currentUser , setCurrentUser] = useState()
+  const [liked, setLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
   const navigation = useNavigation();
   const { post, user, posts, category } = route.params;
 
@@ -70,22 +70,29 @@ const PostDetails = ({ route }) => {
     }
   };
 
+  const getCurrentUser = async () => {
+    const res = await SecureStore.getItemAsync("Token");
+    const decodeResult = jwtDecode(res);
+    setCurrentUser(decodeResult);
+  };
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["likes"],
-    queryFn: async () =>
-      await axios
+    queryFn: async () => {
+      getCurrentUser();
+      return await axios
         .get(
           `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/likes/${post.id}`
         )
         .then((res) => res.data)
-        .catch((err) => console.error(err)),
+        .catch((err) => console.error(err));
+    },
     select: (data) => {
       const Nlikes = data.filter((item) => item.like === 1);
       const Ndislikes = data.filter((item) => item.like === 0);
       return Nlikes?.length - Ndislikes?.length;
     },
   });
-
 
   // if (isLoading){
 
@@ -103,9 +110,18 @@ const PostDetails = ({ route }) => {
           `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/increment/${post.id}/${user.id}`
         )
         .then((res) => console.log("liked"))
-        .then(() => socket.emit('') )
         .catch((err) => console.error(err)),
     onSuccess: () => refetch(),
+  });
+
+  const dislike = useMutation({
+    mutationFn: async () =>
+      await axios
+        .post(
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/decrement/${post.id}/${user.id}`
+        )
+        .then(() => console.log("disliked"))
+        .catch((err) => console.log(err)),
   });
 
   return (
@@ -195,8 +211,8 @@ const PostDetails = ({ route }) => {
               borderColor="#674188"
               borderRadius="$full"
               backgroundColor="#674188"
-              onPress={() => ToastAndroid.show("followed." , ToastAndroid.SHORT)}
-            > 
+              onPress={() => ToastAndroid.show("followed.", ToastAndroid.SHORT)}
+            >
               <ButtonText color="white">Follow</ButtonText>
             </Button>
           </Center>
@@ -207,7 +223,7 @@ const PostDetails = ({ route }) => {
             flexDirection: "row",
             padding: 15,
             alignItems: "center",
-            justifyContent : 'space-between'
+            justifyContent: "space-between",
           }}
         >
           <HStack flexDirection="row" alignItems="center" space="xl">
@@ -221,15 +237,36 @@ const PostDetails = ({ route }) => {
           <Center>
             <TouchableOpacity>
               <Icon
-                name={liked ? 'arrow-up-bold' : 'arrow-up-bold-outline'}
+                name={liked ? "arrow-up-bold" : "arrow-up-bold-outline"}
                 color="#674188"
                 size={36}
-                onPress={() =>{ mutation.mutate() ; setLiked(!liked)}}
+                onPress={() => {
+                  mutation.mutate();
+                  setLiked(!liked);
+                  socket.emit("sendNotification", {
+                    sender: currentUser.id,
+                    receiver: post.userId,
+                    content: `${currentUser.name} has liked your Post `,
+                    type: "Forum",
+                    postId: post.id,
+                  });
+                }}
               />
             </TouchableOpacity>
             <Text>{data}</Text>
             <TouchableOpacity>
-              <Icon name={disliked ? 'arrow-down-bold' : 'arrow-down-bold-outline'} color="#674188" size={36} />
+              <Icon
+                name={disliked ? "arrow-down-bold" : "arrow-down-bold-outline"}
+                color="#674188"
+                size={36}
+                onPress={() => {
+                  dislike.mutate();
+                  if (liked === true) {
+                    setLiked(false)
+                  }
+                  setDisliked(!disliked)
+                }}
+              />
             </TouchableOpacity>
           </Center>
         </Box>
@@ -257,7 +294,12 @@ const PostDetails = ({ route }) => {
           <Text style={{ fontSize: 24, fontWeight: "bold" }}>
             More Blogs like this
           </Text>
-          <Icon name="arrow-right-thin" size={36} color="#674188" onPress={navigation.navigate('ForumCategory')} />
+          <Icon
+            name="arrow-right-thin"
+            size={36}
+            color="#674188"
+            onPress={navigation.navigate("ForumCategory")}
+          />
         </View>
         <ScrollView horizontal={true} style={{ padding: 10, marginTop: 10 }}>
           {posts?.map((post) => (

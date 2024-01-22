@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical : 40,
     backgroundColor : 'white',
+    marginBottom : 50
   },
   darkOverlay : {
     ...StyleSheet.absoluteFillObject,

@@ -18,6 +18,8 @@ import {
   Button,
   ButtonText,
   Center,
+  HStack,
+  Image,
   Input,
   InputField,
   InputIcon,
@@ -34,16 +36,15 @@ import axios from "axios";
 import { storage } from "../../../FirebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { io } from "socket.io-client";
 
+ const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
-
-const CreateComment = ({ post,user , refetch }) => {
+const CreateComment = ({ post, user, refetch }) => {
   const [images, setImages] = useState([]);
   const [content, setContent] = useState("");
   const [percent, setPercent] = useState(0);
   // const [user, setUser] = useState("");
-  
-
 
   const fireBaseComment = async (image) => {
     return new Promise(async (resolve, reject) => {
@@ -107,55 +108,24 @@ const CreateComment = ({ post,user , refetch }) => {
     onSuccess: () => refetch(),
   });
 
-
-
   return (
     <View style={styles.container}>
-      <Box style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-            {/* <Suspense fallback={() => <ActivityIndicator color='##674188'/>}>
-            <Avatar size="md">
-              <AvatarFallbackText>SS</AvatarFallbackText>
-              <AvatarImage
-              alt="404"
-              source={{
-                uri: user.pdp,
-              }}
-              />
-            </Avatar>
-            </Suspense> */}
-            <Box
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
-              <Textarea
-                size="xl"
-                h={70}
-                borderRadius={20}
-                style={{ width: 250 }}
-              >
+            <HStack alignItems="center" space="lg">
+              <Textarea size="xl" h={70} borderRadius={20} w={260}>
                 <TextareaInput
                   placeholder="Add a comment"
                   fontSize={16}
                   value={content}
                   onChangeText={(text) => setContent(text)}
                 />
+              </Textarea>
+              <TouchableOpacity>
                 <Icon
                   name="plus-circle"
                   size={24}
-                  style={{
-                    position: "absolute",
-                    right: 10,
-                    top: 20,
-                  }}
                   onPress={handleImageSelection}
                 />
-              </Textarea>
+              </TouchableOpacity>
               <TouchableOpacity>
                 <Icon
                   name="send"
@@ -163,13 +133,31 @@ const CreateComment = ({ post,user , refetch }) => {
                   color="#674188"
                   onPress={async () => {
                     addComment.mutate();
+                    socket.emit("sendNotification" , {
+                      sender : user.id,
+                      receiver : post.userId,
+                      content : `${user.name} has commented on your post`,
+                      type : 'Forum',
+                      postId : post.id
+                    })
                   }}
                 />
               </TouchableOpacity>
-            </Box>
-          </View>
-        </TouchableWithoutFeedback>
-      </Box>
+            </HStack>
+            {images === 0 ? "" : (
+              <HStack alignItems="center" space="md" flexWrap="wrap"paddingVertical={10}>
+                {images.map((image, index) => (
+                  <Image
+                    key={index}
+                    alt="commentImage"
+                    w={100}
+                    h={100}
+                    borderRadius={10}
+                    source={{ uri: image }}
+                  />
+                ))}
+              </HStack>
+            )}
     </View>
   );
 };
@@ -179,6 +167,7 @@ const styles = StyleSheet.create({
     // padding : 15,
     paddingBottom: 10,
     marginTop: 20,
+    // marginBottom : 20
   },
   container1: {
     flex: 1,

@@ -40,7 +40,7 @@ import ServiceDetails from "./App/Service/ServiceDetatUser";
 import CreateForumPost from "./App/component/Posts/CreateForumPost";
 import commentsDetails from "./App/component/Posts/CommentsDetails";
 import { io } from "socket.io-client";
-import InterviewRequest from "./App/component/Interviews/InterviewRequest";
+import InterviewRequest from "./App/component/Interviews/InterviewRequestStudent";
 import Code from "./App/Service/Code";
 // import Servicee from "./App/Component/Service"
 
@@ -52,6 +52,11 @@ import SeeAll from "./App/Screens/SeeAll/SeeAll";
 import UpgradeAccount from "./App/Screens/PremiumCompany/UpgradeAccount";
 
 import { LogBox } from "react-native";
+import InterviewReviewStudent from "./App/component/Interviews/InterviewReviewStudent";
+import InterviewReviewCompany from "./App/component/Interviews/InterviewReviewCompany";
+import InterviewRequestStudent from "./App/component/Interviews/InterviewRequestStudent";
+import InterviewRequestCompany from "./App/component/Interviews/InterviewRequestCompany";
+import YourInterviews from "./App/component/Interviews/YourInterviews";
 const DrawerNavigator = ({ params }) => {
   LogBox.ignoreAllLogs();
   const { ProfileData } = useContext(ProfileContext);
@@ -241,12 +246,12 @@ const DrawerNavigator = ({ params }) => {
       />
       <Drawer.Screen
         name="Requests"
-        component={InterviewRequest}
+        component={YourInterviews}
         options={{
           headerShown: false,
           drawerIcon: ({ focused, size }) => (
             <Ionicons
-              name="nuclear"
+              name="briefcase"
               size={size}
               color={focused ? STYLES.COLORS.Priamary : "black"}
             />
@@ -362,9 +367,29 @@ export const Navigation = () => {
                 }}
               />
               <Drawer.Screen
-                name="CommentsDetails"
-                component={commentsDetails}
-                options={{ headerShown: false }}
+              name='CommentsDetails'
+              component={commentsDetails}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="RequestReviewStudent"
+              component={InterviewReviewStudent}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="RequestReviewCompany"
+              component={InterviewReviewCompany}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="InterviewRequestStudent"
+              component={InterviewRequestStudent}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="InterviewRequestCompany"
+              component={InterviewRequestCompany}
+              options={{headerShown : false}}
               />
             </Drawer.Navigator>
           </VisitProfileProvider>

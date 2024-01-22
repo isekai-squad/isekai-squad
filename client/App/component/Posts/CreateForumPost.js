@@ -3,6 +3,8 @@ import {
   Button,
   ButtonText,
   Center,
+  HStack,
+  Image,
   Input,
   InputField,
   Textarea,
@@ -29,25 +31,25 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useNavigation } from "@react-navigation/native";
 import { jwtDecode } from "jwt-decode";
 import * as SecureStore from "expo-secure-store";
+import { useMutation } from "@tanstack/react-query";
 
 const CreateForumPost = ({ route }) => {
-  const [value, setValue] = useState(null);
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [percent, setPercent] = useState(0);
-  const [user , setUser] = useState('')
+  const [user, setUser] = useState("");
 
-  const { category , refetch } = route.params;
-  const navigation = useNavigation()
+  const { category, refetch } = route.params;
+  const navigation = useNavigation();
 
   const fireBaseForum = async (image) => {
-    return new Promise( async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const response = await fetch(image.uri);
       const blob = await response.blob();
       const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
       const storageRef = ref(storage, `Forum/${category.name}`);
-      const imageRef = ref(storageRef , filename)
+      const imageRef = ref(storageRef, filename);
       const uploadTask = uploadBytesResumable(imageRef, blob);
       uploadTask.on(
         "state_changed",
@@ -80,26 +82,38 @@ const CreateForumPost = ({ route }) => {
   };
   const addPost = async () => {
     await axios
-      .post(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/${user.id}`, {
-        title,
-        content: description,
-        images,
-        category: category.id,
-      })
+      .post(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/forumPost/${user.id}`,
+        {
+          title,
+          content: description,
+          images,
+          category: category.id,
+        }
+      )
       .then((res) => console.log("added successfully"))
-      .then(() => refetch())
+      .then(() => {
+        setImages([])
+        setTitle('')
+        setDescription('')
+      })
       .catch((err) => console.log(err));
   };
+
+  const mutation = useMutation({
+    mutationFn: async () => addPost(),
+    onSuccess: () => refetch(),
+  });
 
   const getCurrentUser = async () => {
     const res = await SecureStore.getItemAsync("Token");
     const decodeResult = jwtDecode(res);
     setUser(decodeResult);
-    }
+  };
 
-    useEffect(() => {
-      getCurrentUser();
-    }, [])
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
   return (
     <ScrollView>
@@ -113,23 +127,22 @@ const CreateForumPost = ({ route }) => {
           }}
         >
           <TouchableOpacity>
-            <Icon name="close" size={24} />
+            <Icon name="close" size={24} onPress={() => navigation.goBack()} />
           </TouchableOpacity>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Create Post</Text>
-          <Button borderRadius={50} bgColor="#674188">
-            <ButtonText>Save</ButtonText>
-          </Button>
-          <Button
-            borderRadius={50}
-            variant="outline"
-            borderColor="#674188"
-            onPress={() => {
-              addPost()
-              // navigation.navigate('Posts' , {category})
-            }}
-          >
-            <ButtonText color="#674188">Publish</ButtonText>
-          </Button>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Create Forum Post</Text>
+          <TouchableOpacity>
+            <Button
+              borderRadius={50}
+              variant="outline"
+              borderColor="#674188"
+              onPress={() => {
+                mutation.mutate();
+                navigation.navigate('ForumCategory')
+              }}
+            >
+              <ButtonText color="#674188">Publish</ButtonText>
+            </Button>
+          </TouchableOpacity>
         </Box>
 
         <View style={{ alignItems: "center", paddingVertical: 30 }}>
@@ -155,6 +168,28 @@ const CreateForumPost = ({ route }) => {
             </Text>
           </Center>
         </View>
+        {images.length === 0 ? (
+          ""
+        ) : (
+          <HStack
+            space="md"
+            alignItems="center"
+            flexWrap="wrap"
+            paddingHorizontal={50}
+            paddingVertical={10}
+          >
+            {images.map((image) => (
+              <Image
+                size="xl"
+                alt="404"
+                key={image.id}
+                source={{ uri: image }}
+                borderRadius={10}
+                resizeMode="stretch"
+              />
+            ))}
+          </HStack>
+        )}
         <Box style={{ paddingHorizontal: 20, padding: 20 }}>
           <VStack space="lg">
             <Text style={{ fontSize: 22, fontWeight: 600 }}>Title</Text>
