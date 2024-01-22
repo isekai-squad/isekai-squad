@@ -79,3 +79,17 @@ export const removeFav = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
+
+
+const addFavPost = async (req: Request, res: Response): Promise<void> => {
+  const {postId} = req.params
+  try {
+    const result = await prisma.favList.create({
+      data : {
+        
+      }
+    })
+  }catch (err) {
+
+  }
+}

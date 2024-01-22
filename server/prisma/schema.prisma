@@ -336,10 +336,10 @@ model InterviewRequest {
   created_at DateTime @default(now())
   state      String   @default("Pending")
   message    String?
-  student    User?    @relation("student", fields: [studentId], references: [id])
-  studentId  String?
-  company    User?    @relation("company", fields: [companyId], references: [id])
-  companyId  String?
+  from    User?    @relation("student", fields: [sender], references: [id])
+  sender  String?
+  to    User?    @relation("company", fields: [receiver], references: [id])
+  receiver  String?
 }
 
 model Calls {

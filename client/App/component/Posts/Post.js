@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { Center, Image } from "@gluestack-ui/themed";
 import {
@@ -23,9 +24,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import moment from "moment";
 
-const Post = ({post , posts , category}) => {
+const Post = ({ post, posts, category }) => {
   const navigation = useNavigation();
-  const id = post.userId
+  const id = post.userId;
 
   const formatTimeDifference = (createdAt) => {
     const now = moment();
@@ -45,79 +46,109 @@ const Post = ({post , posts , category}) => {
     }
   };
 
-
-  const {data , isLoading , error} = useQuery({
-    queryKey : ["forumUser", post.userId],
-    queryFn : async () => axios.get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/${id}`).then(res => res.data),
-  })
-  if(isLoading) return <Center>
-  <ActivityIndicator size="large" color='#674188' />
-</Center>
-
-
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["forumUser", post.userId],
+    queryFn: async () =>
+      axios
+        .get(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/${id}`)
+        .then((res) => res.data),
+  });
+  if (isLoading)
+    return (
+      <Center>
+        <ActivityIndicator size="large" color="#674188" />
+      </Center>
+    );
 
   return (
-    <Box h={200} style={Styles.container}>
-      <Image
-        size="xl"
-        // style={{ marginLeft: 10 }}
-        alt="404"
-        source={{
-          uri: post.images[0],
-        }}
-        borderRadius="$lg"
-      />
+    <Pressable
+      onPress={() => {
+        navigation.navigate("PostDetails", {
+          post,
+          user: data,
+          posts,
+          category,
+        });
+      }}
+    >
+      <Box h={200} style={Styles.container}>
+        <Image
+          size="xl"
+          // style={{ marginLeft: 10 }}
+          alt="404"
+          source={{
+            uri: post.images[0],
+          }}
+          borderRadius="$lg"
+        />
 
-      <View
-        style={{ display: "flex", justifyContent: "center", marginLeft: 10 }}
-      >
-        <TouchableOpacity style={{ width: "50%" }}>
-          <Text
-            style={{
-              lineHeight: 30,
-              fontWeight: "bold",
-              fontSize: 15,
-              width: 200,
-            }}
-            numberOfLines={2}
-            onPress={() => { navigation.navigate("PostDetails" , {post , user : data , posts , category})}}
-          >
-            {post.content}
-          </Text>
-        </TouchableOpacity>
-
-        <View style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
-          <Avatar size="xs" borderRadius="$full">
-            <AvatarFallbackText>SS</AvatarFallbackText>
-            <AvatarImage
-              source={{
-                uri: data.pdp,
+        <View
+          style={{ display: "flex", justifyContent: "center", marginLeft: 10 }}
+        >
+          <TouchableOpacity style={{ width: "50%" }}>
+            <Text
+              style={{
+                lineHeight: 30,
+                fontWeight: "bold",
+                fontSize: 15,
+                width: 200,
               }}
-              alt="404"
-            />
-          </Avatar>
-          <Text style={{ marginLeft: 10, color: "#674188" }}  onPress={()=> navigation.navigate('UserProfile')}>{data.name}</Text>
-        </View>
+              numberOfLines={2}
+              onPress={() => {
+                navigation.navigate("PostDetails", {
+                  post,
+                  user: data,
+                  posts,
+                  category,
+                });
+              }}
+            >
+              {post.content}
+            </Text>
+          </TouchableOpacity>
 
-        <View>
           <View
             style={{ display: "flex", flexDirection: "row", marginTop: 10 }}
           >
-            <Text style={{ marginLeft: 10, color: "#674188" }}>{formatTimeDifference(post.created_at)} ago</Text>
-            <TouchableOpacity>
-              <Icon name="bookmark" size={24} style={{ marginLeft: 80 }} />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Dots
-                name="dots-three-vertical"
-                size={22}
-                // style={{ marginLeft: 20 }}
+            <Avatar size="xs" borderRadius="$full">
+              <AvatarFallbackText>SS</AvatarFallbackText>
+              <AvatarImage
+                source={{
+                  uri: data.pdp,
+                }}
+                alt="404"
               />
-            </TouchableOpacity>
+            </Avatar>
+            <Text
+              style={{ marginLeft: 10, color: "#674188" }}
+              onPress={() => navigation.navigate("UserProfile")}
+            >
+              {data.name}
+            </Text>
+          </View>
+
+          <View>
+            <View
+              style={{ display: "flex", flexDirection: "row", marginTop: 10 }}
+            >
+              <Text style={{ marginLeft: 10, color: "#674188" }}>
+                {formatTimeDifference(post.created_at)} ago
+              </Text>
+              <TouchableOpacity>
+                <Icon name="bookmark" size={24} style={{ marginLeft: 80 }} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Dots
+                  name="dots-three-vertical"
+                  size={22}
+                  // style={{ marginLeft: 20 }}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </Box>
+      </Box>
+    </Pressable>
   );
 };
 const Styles = StyleSheet.create({
@@ -131,7 +162,7 @@ const Styles = StyleSheet.create({
     paddingHorizontal: 5,
     marginBottom: 12,
     elevation: 5,
-    shadowColor:'#52006A'
+    shadowColor: "#52006A",
   },
   headerContainer: {
     flexDirection: "row",

@@ -41,12 +41,16 @@ import CreateForumPost from "./App/component/Posts/CreateForumPost";
 import commentsDetails from "./App/component/Posts/CommentsDetails";
 import { io } from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
-import InterviewRequest from "./App/component/Interviews/InterviewRequest";
+import InterviewRequest from "./App/component/Interviews/InterviewRequestStudent";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`)
 
 import SeeAll from "./App/Screens/SeeAll/SeeAll";
+import InterviewReviewStudent from "./App/component/Interviews/InterviewReviewStudent";
+import InterviewReviewCompany from "./App/component/Interviews/InterviewReviewCompany";
+import InterviewRequestStudent from "./App/component/Interviews/InterviewRequestStudent";
+import InterviewRequestCompany from "./App/component/Interviews/InterviewRequestCompany";
 const DrawerNavigator = ({ params }) => {
   const [user , setUser] = useState()
   const route = useRoute();
@@ -348,6 +352,26 @@ export const Navigation = () => {
               <Drawer.Screen
               name='CommentsDetails'
               component={commentsDetails}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="RequestReviewStudent"
+              component={InterviewReviewStudent}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="RequestReviewCompany"
+              component={InterviewReviewCompany}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="InterviewRequestStudent"
+              component={InterviewRequestStudent}
+              options={{headerShown : false}}
+              />
+              <Stack.Screen
+              name="InterviewRequestCompany"
+              component={InterviewRequestCompany}
               options={{headerShown : false}}
               />
             </Drawer.Navigator>

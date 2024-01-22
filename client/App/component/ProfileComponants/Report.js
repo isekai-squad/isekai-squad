@@ -3,7 +3,7 @@ import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { VisitProfileContext } from "../../Context/VisitProfileContext";
 import { Modalize } from "react-native-modalize";
 function Report() {
-  const { modalRef, setActiveMiddleTab } = useContext(VisitProfileContext);
+  const { modalRef, setActiveMiddleTab , VisitedProfileData} = useContext(VisitProfileContext);
   const CloseModal = () => modalRef?.current?.close();
   const AboutUser = () => {
     modalRef?.current?.close();
