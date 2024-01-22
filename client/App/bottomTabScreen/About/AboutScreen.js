@@ -1,181 +1,179 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 
 const AboutScreen = () => {
   const navigation = useNavigation();
-
+  const [input, setInput] = useState("");
+  const [qrValue, setQrValue] = useState("");
   const [user, setUser] = useState({
-    name: "Ameur Koidja",
-    qrCodeUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOjynLaramHQQQCsoObb7Jpp9ebhcy98dxiA&usqp=CAU",
-    profileImageUrl: "https://picsum.photos/200",
+    profileImageUrl: "https://example.com/profile.jpg",
+    qrCodeUrl: "https://example.com/qrcode.jpg",
   });
 
-  const handleLogin = () => {
-    <QRCode value="http://awesome.link.qr" />;
-    setUser({
-      name: "New User",
-      qrCodeUrl: "https://example.com/newQRCode",
-      profileImageUrl: "https://example.com/newProfileImage",
-    });
+  const setInputValue = (text) => {
+    setInput(text);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.Arrowleft}>
-        <Text style={styles.text}>Isekai QR code</Text>
-
-        <AntDesign
-          name="arrowleft"
-          size={25}
+        <FontAwesome5
+          name="arrow-alt-circle-left"
+          
+          size={30}
           color={"#8244CB"}
           onPress={() => navigation.navigate("Home")}
         />
-      </View>
-
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Text style={styles.code}>My code</Text>
+        <Text style={styles.text}>Isekai QR code</Text>
         <TouchableOpacity onPress={() => navigation.navigate("QRCode")}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>Scan</Text>
+          <AntDesign name="scan1" size={40}  color={"#8244CB"} />
         </TouchableOpacity>
       </View>
-      <View style={styles.backgroundcodeQR}>
-        <View style={styles.profileImgContainer}>
-          <Image
-            source={{
-              uri: user.profileImageUrl,
-            }}
-            style={styles.profileImg}
+
+      <View style={styles.codeSection}>
+        <Text style={styles.code}>My code</Text>
+
+        <View style={styles.backgroundcodeQR}>
+          <View style={styles.profileImgContainer}>
+            <Text style={styles.profileName}>{user.name}</Text>
+          </View>
+          <QRCode
+            value={`http://localhost
+            :3000/${user.name}`}
+            size={200}
           />
-          <Text style={styles.profileName}>{user.name}</Text>
         </View>
-        <Image
-          source={{
-            uri: user.qrCodeUrl,
-          }}
-          style={styles.codeQr}
-        />
       </View>
-      <View style={styles.container}>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 5,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+
+      <View>
+        <View style={styles.saveContainer}>
           <MaterialIcons
             name="save-alt"
             size={18}
             color={"black"}
             style={styles.materialIcons}
           />
-          <Text style={styles.save} onPress={handleLogin}>
-            Save to gallery
-          </Text>
+          <Text style={styles.save}>Save to gallery</Text>
         </View>
-          <Text onPress={()=>navigation.navigate('stripetest')}>go to test</Text>
-        <View>
-          <Text style={styles.share}>Share my code</Text>
+
+        <View style={styles.shareContainer}>
           <AntDesign
             name="sharealt"
             size={18}
             color={"black"}
             style={styles.antDesign}
           />
+          <Text style={styles.share}>Share my code</Text>
         </View>
       </View>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
     backgroundColor: "#ecf0f1",
-    justifyContent: "center",
     padding: 15,
   },
   text: {
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 10,
-  },
-  code: {
-    padding: 25,
-    fontSize: 20,
-    justifyContent: "flex-end",
-    fontWeight: "bold",
-    marginBottom: 10,
-    left: -60,
-  },
-  scan: {
-    padding: 17,
-    fontSize: 20,
-    justifyContent: "flex-start",
-    fontWeight: "bold",
-    marginBottom: 10,
-    left: 60,
-  },
-  profileImg: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: "#ABB8C3",
-    top: -20,
-  },
-  backgroundcodeQR: {
-    width: 340,
-    height: 380,
-    borderRadius: 20,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  antDesign: {
-    alignItems: "left",
-    position: "absolute",
-    left: -30,
-  },
-  materialIcons: {
-    alignItems: "left",
-    position: "absolute",
-    left: -30,
-  },
-  codeQr: {
-    width: 250,
-    height: 250,
-    borderRadius: 50,
+    textAlign: "center",
   },
   Arrowleft: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     width: "100%",
+    marginBottom: 20,
+  },
+  codeSection: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  code: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  scanText: {
+    color: "#8244CB",
+    marginBottom: 20,
+  },
+  backgroundcodeQR: {
+    width: 300,
+    height: 350,
+    borderRadius: 20,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  profileImgContainer: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  profileImg: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "#ABB8C3",
+  },
+  profileName: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  input: {
+    height: 40,
+    width: "80%",
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 10,
+  },
+  generateButton: {
+    color: "#8244CB",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  saveContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
   },
   save: {
     fontSize: 15,
     fontWeight: "bold",
-    marginBottom: 12,
+    marginLeft: 5,
+  },
+  shareContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   share: {
     fontSize: 15,
     fontWeight: "bold",
-    marginBottom: 11,
-  },
-  profileName: {
-    marginTop: -10,
-    fontSize: 18,
-    fontWeight: "bold",
+    marginRight: 5,
   },
 });
 

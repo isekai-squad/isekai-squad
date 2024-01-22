@@ -12,6 +12,6 @@ notificationRouter.put(
   notification_controller.updateNotificationsSeenForUser
 );
 
-notificationRouter.post("/" , notification_controller.addNotification)
+notificationRouter.post("/", notification_controller.addNotification);
 
 export default notificationRouter;

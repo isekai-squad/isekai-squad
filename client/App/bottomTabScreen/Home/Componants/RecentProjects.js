@@ -37,7 +37,6 @@ const RecentProjects = () => {
     queryKey: ["expertise"],
     queryFn: () => fetchExpertise(),
   });
-
   const [activeTab, setActiveTab] = useState(expertise ? expertise[0].id : "1");
 
   const handleTabPress = (tab) => {

@@ -30,6 +30,7 @@ const RenderProfile = ({ AllProfiles }) => {
   };
 
   const CreateRoom = async (user2Id) => {
+
     try {
       const { data } = await axios.post(
         `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/chat/room/create`,
@@ -40,7 +41,6 @@ const RenderProfile = ({ AllProfiles }) => {
       );
 
       const other = data.users.find((user) => user.id !== userId);
-
       navigation.navigate("chat", {
         userId: userId,
         roomId: data.rooms[0].roomId,

@@ -22,6 +22,22 @@ export const getInterview = async (req: Request, res: Response) => {
   }
 };
 
+export const getYourInterview = async (req : Request , res : Response) => {
+  const {sender} = req.params
+  try {
+    const result = await prisma.interviewRequest.findMany({
+      where : {sender},
+      include : {
+        to : true,
+        from : true
+      }
+    })
+    res.status(200).send(result)
+  }catch (err) {
+    console.log(err)
+    res.status(400).send(err)
+  }
+}
 
 export const updateInterview = async (req: Request, res: Response) => {
   const { id } = req.params;

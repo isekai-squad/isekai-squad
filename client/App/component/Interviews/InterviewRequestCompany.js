@@ -26,13 +26,13 @@ const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 const InterviewRequestCompany = ({ route }) => {
   const [technology, setTechnology] = useState([]);
 
-  // const {studentId , companyId} = route.params
+  const {student , company} = route.params
   const navigation = useNavigation();
 
   const sendEmail = async () => {
     await axios
       .post(
-        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Interviews/RequestCompany/9d3602be-bbaa-4db0-a8bf-efcac909f056/7ffade13-c504-4331-8dbe-b722083db5ed`
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Interviews/RequestCompany/${student.id}/${company.id}`
       )
       .then(() => console.log("email Sent"))
       .catch((err) => console.log(err));
@@ -41,19 +41,19 @@ const InterviewRequestCompany = ({ route }) => {
   const getTechnoligies = async () => {
     await axios
       .get(
-        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Expertise/9d3602be-bbaa-4db0-a8bf-efcac909f056`
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Expertise/${company.id}`
       )
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
   };
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["CompanyData"],
+    queryKey: ["CompanyData", company.id],
     queryFn: async () => {
       getTechnoligies();
       return await axios
         .get(
-          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/9d3602be-bbaa-4db0-a8bf-efcac909f056`
+          `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/api/user/${company.id}`
         )
         .then((res) => res.data)
         .catch((err) => console.log(err));
@@ -185,11 +185,12 @@ const InterviewRequestCompany = ({ route }) => {
                 onPress={() => {
                   sendEmail();
                   socket.emit("sendRequest", {
-                    sender: "7ffade13-c504-4331-8dbe-b722083db5ed",
-                    receiver: "9d3602be-bbaa-4db0-a8bf-efcac909f056",
+                    sender: company.id,
+                    receiver: student.id,
                     message:
-                      "A new interview request has arrived! [User Name] wants to chat about [Topic/Opportunity]. Don't miss out, take action now!",
+                      `A new interview request has arrived! ${company.name} wants to chat about Your Projects. Don't miss out, take action now!`,
                   });
+                  navigation.goBack()
                 }}
               >
                 Apply

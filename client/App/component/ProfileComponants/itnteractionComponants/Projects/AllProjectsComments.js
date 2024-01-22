@@ -11,8 +11,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { STYLES } from "../../../../../GlobalCss";
 import AllReplyComments from "./AllReplyProjectComments";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
-const AllComments = ({ projectsComments, refetchProjectComments }) => {
+const AllComments = ({ projectsComments, refetchProjectComments ,projectId}) => {
   const [showAllComments, setShowAllComments] = useState(false);
 
   const visibleComments = showAllComments
@@ -31,6 +33,7 @@ const AllComments = ({ projectsComments, refetchProjectComments }) => {
             key={index}
             comment={comment}
             refetchProjectComments={refetchProjectComments}
+            projectId={projectId}
           />
         ))}
         {projectsComments.length > 2 && !showAllComments && (
@@ -47,7 +50,7 @@ const AllComments = ({ projectsComments, refetchProjectComments }) => {
   }
 };
 
-const CommentItem = ({ comment, refetchProjectComments }) => {
+const CommentItem = ({ comment, refetchProjectComments ,projectId}) => {
   const { id, content, created_at, likes, User, images } = comment;
   const [replyInput, setReplyInput] = useState(false);
   const [showAllReplies, setShowAllReplies] = useState(false);
@@ -71,6 +74,20 @@ const CommentItem = ({ comment, refetchProjectComments }) => {
 
   const likeComment = async () => {
     await upLikeComment(id);
+    if(userId!==User.id){
+
+      
+      socket.emit("sendNotification", {
+        sender: userId,
+        receiver: User.id,
+        content: `${User.name} has Like your Comment`,
+        type: "Project",
+        postId: projectId,
+      });
+      
+    }
+
+
     setActiveLikeComment((prev) => !prev);
     refetchProjectComments();
   };
@@ -102,7 +119,7 @@ const CommentItem = ({ comment, refetchProjectComments }) => {
 
   return (
     <View style={styles.commentContainer}>
-      {/* ====================== */}
+      {/* ===========COMMENT OWNER=========== */}
       <View style={styles.userContainer}>
         {User && (
           <>
@@ -111,12 +128,14 @@ const CommentItem = ({ comment, refetchProjectComments }) => {
           </>
         )}
       </View>
-      {/* ====================== */}
+      
+      {/* ===========COMMENT OWNER=========== */}
       <View>
         <Text style={styles.commentText}>{content || "No comment"}</Text>
         {images && <Image source={{ uri: images }} width={150} height={150} />}
       </View>
-      {/* ====================== */}
+
+      {/* =========INTERACTION COMMENTS============ */}
       <View style={{ flex: 1 }}>
         <View style={styles.metaContainer}>
           <Text style={styles.timeText}>
@@ -142,24 +161,32 @@ const CommentItem = ({ comment, refetchProjectComments }) => {
             </TouchableOpacity>
           </View>
         </View>
+        {/* ===========INPUT REPLY COMMENTS=========== */}
+
         {replyInput && (
           <CommentsInputs
             commentType={"reply"}
             replyCommentId={id}
             showReplyInput={setReplyInput}
+            postOwner={User.id}
+            projectId={projectId}
+
           />
         )}
       </View>
-      {/* ====================== */}
+
+      {/* ===========ALL REPLY COMMENTS=========== */}
       {Array.isArray(visibleReplies) &&
         visibleReplies.map((replyComment, index) => (
           <AllReplyComments
             key={index}
             comment={replyComment}
             refetchReplyComments={refetchReplyComments}
+            projectId={projectId}
           />
         ))}
-      {/* ===================== */}
+
+      {/* =========SHOW MORE REPLY============ */}
       {projectsReplyComments?.length > 2 && !showAllReplies && (
         <TouchableOpacity
           onPress={handleShowMoreReplies}

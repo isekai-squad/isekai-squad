@@ -2,13 +2,17 @@ import React, { useContext } from "react";
 import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { VisitProfileContext } from "../../Context/VisitProfileContext";
 import { Modalize } from "react-native-modalize";
+import { useNavigation } from "@react-navigation/native";
+import { ProfileContext } from "../../Context/ProfileContext";
 function Report() {
   const { modalRef, setActiveMiddleTab , VisitedProfileData} = useContext(VisitProfileContext);
+  const {ProfileData} = useContext(ProfileContext)
   const CloseModal = () => modalRef?.current?.close();
   const AboutUser = () => {
     modalRef?.current?.close();
     setActiveMiddleTab("About");
   };
+  const navigation = useNavigation()
 
   return (
     <Modalize
@@ -33,6 +37,15 @@ function Report() {
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnTouchable}>
           <Text style={{ ...styles.btnText, color: "red" }}>Restrict</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnTouchable} onPress={() => {
+              if(VisitedProfileData.role === "STUDENT") {
+                navigation.navigate("InterviewRequestCompany", {student : VisitedProfileData , company : ProfileData })
+              } else if (VisitedProfileData.role === "COMPANY") {
+                    navigation.navigate("InterviewRequestStudent" , {student : ProfileData , company : VisitedProfileData})
+              }
+        }}>
+          <Text style={styles.btnText}>Start Interview</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnTouchable}>
           <Text style={styles.btnText}>Share To...</Text>

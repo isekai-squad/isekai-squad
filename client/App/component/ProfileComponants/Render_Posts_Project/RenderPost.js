@@ -41,7 +41,9 @@ const RenderPost = ({ item, refetchPosts }) => {
   }
 
   const [confirmAlert, setConfirmAlert] = useState(false);
-
+console.log('====================================');
+console.log(item,'iiiiiiii');
+console.log('====================================');
   const { mutateAsync: deleteProjectMutate } = useMutation({
     mutationFn: (projectId) => deleteProject(ProfileData.id, projectId),
   });
@@ -134,7 +136,7 @@ const RenderPost = ({ item, refetchPosts }) => {
         </Swiper>
       )}
 
-      <Interaction postId={item.id} />
+      <Interaction postId={item.id} postOwner={item.userId} />
 
       <AwesomeAlert
         show={confirmAlert}

@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { ProfileContext } from "../../Context/ProfileContext";
-import CheckoutScreen from "../../component/Stripe";
+import CheckoutScreen from "./Stripe";
 import { STYLES } from "../../../GlobalCss";
 import { useQuery } from "@tanstack/react-query";
 import BasketItem from "./BasketDetails";
@@ -45,7 +45,7 @@ const Basket = () => {
         const response = await axios.get(
           `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/baskets/${userId}`
         );
-   
+
         return response.data;
       } catch (error) {
         console.error("Error fetching basket:", error);

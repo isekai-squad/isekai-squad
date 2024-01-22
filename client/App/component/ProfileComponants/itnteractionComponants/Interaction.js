@@ -5,7 +5,7 @@ import { ProfileContext } from "../../../Context/ProfileContext";
 import StudentPostsInteraction from "./Projects/StudentProjectInteraction";
 import CompanyAdvisorPostsInteraction from "./Posts/CompanyAdvisorPostsInteraction";
 
-const Interaction = ({ postId }) => {
+const Interaction = ({ postId,postOwner }) => {
   const route = useRoute();
   const { visitedProfileData } = useContext(VisitProfileContext);
   const { ProfileData } = useContext(ProfileContext);
@@ -17,9 +17,9 @@ const Interaction = ({ postId }) => {
     return isStudentProfile(
       isVisitedProfile ? visitedProfileData : ProfileData
     ) ? (
-      <StudentPostsInteraction projectId={postId} />
+      <StudentPostsInteraction projectId={postId} postOwner={postOwner}/>
     ) : (
-      <CompanyAdvisorPostsInteraction postId={postId} />
+      <CompanyAdvisorPostsInteraction postId={postId}  postOwner={postOwner}/>
     );
   };
 

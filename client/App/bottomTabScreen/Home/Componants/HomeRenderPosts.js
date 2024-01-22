@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import {
   Image,
   Linking,
@@ -13,20 +13,33 @@ import Swiper from "react-native-swiper";
 import Interaction from "../../../component/ProfileComponants/itnteractionComponants/Interaction";
 import { STYLES } from "../../../../GlobalCss";
 import { formatTimeDifference } from "../../../Context/ProfileContext";
+import { useNavigation } from "@react-navigation/native";
+import { VisitProfileContext } from "../../../Context/VisitProfileContext";
 
 const HomeRenderPosts = ({ item }) => {
+  const navigation = useNavigation();
+  const { setVisitedProfileId } = useContext(VisitProfileContext);
+
   const openFileUrl = useCallback((fileUrl) => {
     Linking.openURL(fileUrl);
   }, []);
 
+  const ShowProfile = async (id) => {
+    setVisitedProfileId(id);
+    navigation.navigate("Visited Profile", { id: id });
+  };
   return (
     <View key={item?.id} style={styles.postContainer}>
       <View style={styles.userContainer}>
         <View style={styles.userInfoContainer}>
-          <View style={styles.footerContainer}>
+          <TouchableOpacity
+                onPress={() => ShowProfile(item.id)}
+            style={styles.footerContainer}
+          >
             <Image source={{ uri: item.pdp }} style={styles.userImage} />
             <Text style={styles.userName}>{item.name}</Text>
-          </View>
+          </TouchableOpacity>
+
           <Text style={styles.createdAt}>
             {formatTimeDifference(item.project[0]?.created_at)}
           </Text>
@@ -74,7 +87,7 @@ const HomeRenderPosts = ({ item }) => {
           ))}
         </Swiper>
       )}
-      <Interaction postId={item.project[0]?.id} />
+      <Interaction postId={item.project[0]?.id} postOwner={item.id} />
     </View>
   );
 };

@@ -80,7 +80,7 @@ export const getAllCommentsProject = async (req: Request, res: Response) => {
     const result = await prisma.project_comments.findMany({
       where: { projectId },
       include: {
-        User: { select: { name: true, pdp: true } },
+        User: { select: { id:true,name: true, pdp: true } },
         likes: true,
       },
       orderBy: {
@@ -102,7 +102,7 @@ export const getAllReplyCommentsProject = async (
     const result = await prisma.replies.findMany({
       where: { project_commentsId: project_commentsId },
       include: {
-        User: { select: { name: true, pdp: true } },
+        User: { select: { id:true,name: true, pdp: true } },
         likes: true,
       },
       orderBy: {
@@ -122,7 +122,7 @@ export const getAllReplyCommentsPosts = async (req: Request, res: Response) => {
     const result = await prisma.replies.findMany({
       where: { post_commentsId: post_commentsId },
       include: {
-        User: { select: { name: true, pdp: true } },
+        User: { select: {id:true ,name: true, pdp: true } },
         likes: true,
       },
       orderBy: {
@@ -144,7 +144,7 @@ export const getAllCommentsPost = async (req: Request, res: Response) => {
     const result = await prisma.post_comments.findMany({
       where: { postId },
       include: {
-        User: { select: { name: true, pdp: true } },
+        User: { select: { id:true,name: true, pdp: true } },
         likes: true,
       },
       orderBy: {

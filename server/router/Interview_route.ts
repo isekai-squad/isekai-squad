@@ -3,6 +3,7 @@ import * as interviewController from "../controller/Interview_controller"
 const route = express.Router();
 
 route.get ('/:receiver' , interviewController.getInterview)
+route.get('/Requests/:sender' , interviewController.getYourInterview)
 route.put('/:id' , interviewController.updateInterview)
 route.delete('/:receiver' , interviewController.deleteInterviewCompany)
 route.delete('/:receiver' , interviewController.deleteInterviewStudent)

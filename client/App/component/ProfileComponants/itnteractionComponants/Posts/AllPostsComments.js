@@ -12,8 +12,9 @@ import {
   getAllPostsReplyComments,
 } from "../../../../Context/ProfileContext";
 import { STYLES } from "../../../../../GlobalCss";
-
-const AllComments = ({ postComments, refetchPostsComments }) => {
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
+const AllComments = ({ postComments, refetchPostsComments, postId }) => {
   const [showAllComments, setShowAllComments] = useState(false);
 
   const visibleComments = showAllComments
@@ -32,6 +33,7 @@ const AllComments = ({ postComments, refetchPostsComments }) => {
             key={index}
             comment={comment}
             refetchPostsComments={refetchPostsComments}
+            postId={postId}
           />
         ))}
         {postComments.length > 2 && !showAllComments && (
@@ -48,12 +50,12 @@ const AllComments = ({ postComments, refetchPostsComments }) => {
   }
 };
 
-const CommentItem = ({ comment, refetchPostsComments }) => {
+const CommentItem = ({ comment, refetchPostsComments, postId }) => {
   const { id, content, created_at, likes, User, images } = comment;
   const [replyInput, setReplyInput] = useState(false);
   const [showAllReplies, setShowAllReplies] = useState(false);
 
-  const { refetchPosts, userId } = useContext(ProfileContext);
+  const { refetchPosts, userId, ProfileData } = useContext(ProfileContext);
 
   // ================LIKE COMMENT==================
   const { data: postsReplyComments, refetch: refetchPostsReplyComments } =
@@ -71,6 +73,15 @@ const CommentItem = ({ comment, refetchPostsComments }) => {
 
   const likeComment = async () => {
     await upLikeComment(id);
+    if (userId !== User.id) {
+      socket.emit("sendNotification", {
+        sender: userId,
+        receiver: User.id,
+        content: `${ProfileData.name} has Like your Comment`,
+        type: "Post",
+        postId: postId,
+      });
+    }
     setActiveLikeComment((prev) => !prev);
     refetchPostsComments();
   };
@@ -149,6 +160,8 @@ const CommentItem = ({ comment, refetchPostsComments }) => {
             commentType={"reply"}
             replyCommentId={id}
             showReplyInput={setReplyInput}
+            postId={postId}
+            postOwner={User.id}
           />
         )}
       </View>
@@ -159,6 +172,7 @@ const CommentItem = ({ comment, refetchPostsComments }) => {
             key={index}
             comment={replyComment}
             refetchPostsReplyComments={refetchPostsReplyComments}
+            postId={postId}
           />
         ))}
       {/* ===================== */}

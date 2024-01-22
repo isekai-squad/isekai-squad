@@ -8,10 +8,13 @@ import {
 import { STYLES } from "../../../../../GlobalCss";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useMutation } from "@tanstack/react-query";
+import { io } from "socket.io-client";
+const socket = io(`http://${process.env.EXPO_PUBLIC_IP_KEY}:4070`);
 
-const AllReplyComments = ({ comment, refetchReplyComments }) => {
+const AllReplyComments = ({ comment, refetchReplyComments, projectId }) => {
   const { id, content, created_at, likes, User, image } = comment;
-  const { userId } = useContext(ProfileContext);
+
+  const { userId, ProfileData } = useContext(ProfileContext);
 
   // ==============================================
 
@@ -25,6 +28,15 @@ const AllReplyComments = ({ comment, refetchReplyComments }) => {
 
   const likeReplyComment = async () => {
     await upLikeReplyComment(id);
+    if (userId !== User.id) {
+      socket.emit("sendNotification", {
+        sender: userId,
+        receiver: User.id,
+        content: `${ProfileData.name} has liked your Reply`,
+        type: "Project",
+        postId: projectId,
+      });
+    }
     setActiveLikeReplyComment((prev) => !prev);
     refetchReplyComments();
   };

@@ -12,19 +12,19 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import Entypo from "react-native-vector-icons/Entypo";
 import { ProfileContext } from "../Context/ProfileContext";
 
+
 const ServiceDetaite = ({ navigation, route }) => {
   const {userId}=useContext(ProfileContext)
   const item = route.params.item;
+ 
 
   const handleAddToBasket = async (serviceId) => {
-    const API = process.env.EXPO_PUBLIC_IP_KEY;
     try {
-      const response = await axios.post(`http://${API}:4070/baskets`, {
-        userId: userId,
-        serviceId: item
-      });
+      const response = await axios.post(
+        `http://${process.env.EXPO_PUBLIC_IP_KEY}:4070/Baybaskets/${userId}/${serviceId}`
+      );
 
-      console.log("UpVote successful:", response.data);
+      console.log("post successful:", response.data);
     } catch (error) {
       console.error("Error during UpVote:", error.message);
     }
@@ -32,10 +32,7 @@ const ServiceDetaite = ({ navigation, route }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity 
-      onPress={() =>
-        navigation.navigate("Services")
-      }>
+      <TouchableOpacity onPress={() => navigation.navigate("Services")}>
         <Entypo name="arrow-with-circle-left" size={30} color="#8244CB" />
       </TouchableOpacity>
       <Text style={styles.title}>{item.title}</Text>
@@ -50,6 +47,7 @@ const ServiceDetaite = ({ navigation, route }) => {
           <Fontisto name="shopping-basket-add" size={25} color="#FFF" />
           <Text style={styles.addToBasketButtonText}>Add to Basket</Text>
         </TouchableOpacity>
+
         <View></View>
       </View>
     </ScrollView>
@@ -59,6 +57,7 @@ const ServiceDetaite = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "white",
   },
   title: {
     fontSize: 24,
@@ -111,16 +110,3 @@ const styles = StyleSheet.create({
 });
 
 export default ServiceDetaite;
-
-{
-  /* <View style={styles.voteContainer}>
-<TouchableOpacity onPress={() => handleUpVote(item.serviceId)}>
-  <AntDesign name="like2" size={24} color="#8244CB" />
-</TouchableOpacity>
-<Text style={styles.likes}>{likes[item.serviceId]}</Text>
-<TouchableOpacity onPress={() => handleDownVote(item.serviceId)}>
-  <AntDesign name="dislike2" size={24} color="#8244CB" />
-</TouchableOpacity>
-</View>
-</View> */
-}
